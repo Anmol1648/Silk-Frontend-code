@@ -1,0 +1,1527 @@
+/* ============================================================
+   CompanyProfile — Exact port of silkAnkit readiness styles
+   Fonts: Schibsted Grotesk (UI), Newsreader (headings)
+   Colors: Exact hex values from silkAnkit globals.css :root
+   ============================================================ */
+
+/* ── Google Fonts ──────────────────────────────────────────── */
+
+/* ── Exact CSS variables from silkAnkit globals.css :root ─── */
+:root {
+  /* Primary — graphite black */
+  --cp-primary: oklch(0.22 0.01 265);
+  --cp-primary-hover: oklch(0.30 0.01 265);
+  --cp-primary-active: oklch(0.15 0.008 265);
+  --cp-primary-fg: oklch(0.985 0 0);
+  --cp-primary-sheen: oklch(0.86 0.008 265);
+  --cp-primary-sheen-soft: oklch(0.78 0.01 265);
+
+  /* Chrome — exact values */
+  --cp-bg: #ffffff;
+  --cp-fg: #030712;
+  --cp-fg-subtle: #9ca3af;
+  --cp-card: #ffffff;
+  --cp-card-fg: #030712;
+  --cp-popover: #ffffff;
+  --cp-popover-fg: #1f2937;
+  --cp-secondary: #fafafa;
+  --cp-secondary-fg: #374151;
+  --cp-muted: #f4f4f5;
+  --cp-muted-fg: #6b7280;
+  --cp-accent: #f4f4f5;
+  --cp-accent-fg: #111827;
+  --cp-surface-hover: #f7f7f8;
+  --cp-surface-focus: #ececed;
+  --cp-destructive: #e11d48;
+  --cp-border: #f3f4f6;
+  --cp-input: #e5e7eb;
+  --cp-ring: rgb(3 7 18 / 0.06);
+
+  /* AI states */
+  --cp-status-ai: oklch(0.965 0.018 290);
+  --cp-status-ai-fg: oklch(0.46 0.08 290);
+
+  /* Readiness gauge */
+  --cp-readiness-mark: oklch(0.70 0.10 230);
+  --cp-readiness-mark-soft: oklch(0.70 0.10 230 / 0.20);
+
+  /* Side panel timing */
+  --cp-aside: 340px;
+  --cp-aside-shift: 300ms;
+  --cp-aside-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Radius — 10px base */
+  --cp-radius: 0.625rem;
+
+  --cp-popover-shadow: 0 12px 32px -8px rgb(0 0 0 / 0.18);
+}
+
+/* ── Silk Thinking Animation ──────────────────────────────── */
+@keyframes silk-think-gleam {
+  0% {
+    background-position: 140% 0;
+  }
+
+  100% {
+    background-position: -40% 0;
+  }
+}
+
+@keyframes silk-think-mark {
+
+  0%,
+  100% {
+    color: #9ca3af;
+    opacity: 0.7;
+  }
+
+  50% {
+    color: #030712;
+    opacity: 1;
+  }
+}
+
+.silk-think-text {
+  background-image: linear-gradient(100deg,
+      #9ca3af 0%,
+      #9ca3af 38%,
+      #d1d5db 46%,
+      #ffffff 50%,
+      #d1d5db 54%,
+      #9ca3af 62%,
+      #9ca3af 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: silk-think-gleam 1.35s linear infinite;
+}
+
+.silk-think-mark {
+  color: #9ca3af;
+  animation: silk-think-mark 1.35s ease-in-out infinite;
+}
+
+/* ── Font families ─────────────────────────────────────────── */
+.cp-shell,
+.cp-shell * {
+  font-family: 'Schibsted Grotesk', system-ui, -apple-system, sans-serif;
+}
+
+.cp-heading {
+  font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+}
+
+/* Override parent layout container */
+.ds-content:has(.cp-shell) {
+  padding: 0;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+}
+
+.ds-main-area:has(.cp-shell) {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Shell — exact match: relative flex h-full min-h-0 w-full items-stretch overflow-hidden ── */
+.cp-shell {
+  position: relative;
+  display: flex;
+  height: calc(100vh - 64px);
+  min-height: 0;
+  width: 100%;
+  align-items: stretch;
+  overflow: hidden;
+  background: var(--cp-bg);
+  color: var(--cp-fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Main scroll area — exact: min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-none pl-10 pb-8 ── */
+.cp-main {
+  min-height: 0;
+  min-width: 0;
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: none;
+  padding-left: 2.5rem;
+  /* pl-10 */
+  padding-bottom: 2rem;
+  /* pb-8 */
+  transition: padding-right var(--cp-aside-shift) var(--cp-aside-ease);
+}
+
+/* ── Inner width constraint — mx-auto w-full max-w-[1100px] / max-w-[760px] ── */
+.cp-inner {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 1100px;
+  transition: max-width var(--cp-aside-shift) var(--cp-aside-ease);
+}
+
+.cp-inner--narrow {
+  max-width: 760px;
+}
+
+/* ── Header — mb-8 flex items-start justify-between gap-6 ── */
+.cp-header {
+  margin-bottom: 2rem !important;
+  padding-bottom: 0.5rem;
+  /* Additional fallback buffer to prevent gap collapse */
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border: none !important;
+}
+
+/* ── Greeting text — font-heading text-[32px] font-normal leading-[1.2] tracking-[-0.03em] text-foreground-subtle ── */
+.cp-greeting {
+  font-family: 'Newsreader', Georgia, serif !important;
+  font-size: 32px !important;
+  font-weight: 400 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.03em !important;
+  color: #9ca3af !important;
+  font-optical-sizing: auto !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+/* ── Headline — font-heading mt-1 text-[32px] font-normal leading-[1.2] tracking-[-0.03em] text-foreground ── */
+.cp-headline {
+  font-family: 'Newsreader', Georgia, serif !important;
+  font-size: 32px !important;
+  font-weight: 400 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.03em !important;
+  color: #030712 !important;
+  font-optical-sizing: auto !important;
+  margin-top: 0.25rem !important;
+  border: none !important;
+}
+
+.cp-headline-underline {
+  font-family: 'Newsreader', Georgia, serif !important;
+  font-style: normal !important;
+  font-optical-sizing: auto !important;
+  text-decoration: underline !important;
+  text-decoration-color: rgba(3, 7, 18, 0.2) !important;
+  text-decoration-thickness: 1.5px !important;
+  text-underline-offset: 7px !important;
+}
+
+/* ── Submit button — h-9 rounded-lg border border-input bg-background px-3 text-[13.5px] font-medium text-secondary-foreground ── */
+.cp-submit-btn {
+  display: inline-flex;
+  height: 2.25rem;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  border: 1px solid var(--cp-input);
+  background: var(--cp-bg);
+  padding: 0 0.75rem;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--cp-secondary-fg);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.cp-submit-btn:hover {
+  border-color: rgb(3 7 18 / 0.25);
+  background: var(--cp-secondary);
+}
+
+.cp-submit-btn svg {
+  color: var(--cp-muted-fg);
+}
+
+/* ── Tabs wrapper — sticky top-0 z-20 -mx-10 bg-background px-10 ── */
+.cp-tabs-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin-left: -2.5rem;
+  margin-right: -2.5rem;
+  background: var(--cp-bg);
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}
+
+.cp-tabs-wrap--stuck {
+  border-bottom: 1px solid var(--cp-border);
+}
+
+/* ── Tabs row — flex w-full max-w-[760px] flex-nowrap items-center gap-1 overflow-x-auto py-2 ── */
+.cp-tabs {
+  display: flex;
+  width: 100%;
+  max-width: 760px;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  scrollbar-width: none;
+}
+
+.cp-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Tab button — h-8 rounded-lg px-3 text-[14px] ── */
+.cp-tab {
+  display: inline-flex;
+  height: 2rem;
+  align-items: center;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  padding: 0 0.75rem;
+  font-size: 14px;
+  border: none;
+  background: transparent;
+  color: var(--cp-fg-subtle);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.cp-tab:hover {
+  background: var(--cp-surface-hover);
+  color: var(--cp-fg);
+}
+
+.cp-tab--active {
+  gap: 0.375rem;
+  background: var(--cp-muted);
+  font-weight: 500;
+  color: var(--cp-fg);
+}
+
+/* ── Content row — mt-8 flex w-full items-start gap-12 ── */
+.cp-content-row {
+  margin-top: 2rem;
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 3rem;
+}
+
+/* ── Sections column — min-w-0 w-full max-w-[760px] shrink-0 flex-col gap-12 ── */
+.cp-sections-col {
+  display: flex;
+  min-width: 0;
+  width: 100%;
+  max-width: 760px;
+  flex-shrink: 0;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* ── Category gap — flex-col gap-4 ── */
+.cp-cat-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Subsection card — overflow-visible rounded-xl bg-background ring-1 ring-foreground/6 ── */
+.cp-subsection {
+  overflow: visible;
+  border-radius: calc(var(--cp-radius) * 1.4);
+  background: var(--cp-bg);
+  box-shadow: 0 0 0 1px rgb(3 7 18 / 0.06);
+}
+
+/* ── Subsection header — flex items-center justify-between gap-3 border-b border-foreground/4 bg-secondary px-5 py-3 ── */
+.cp-subsection-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgb(3 7 18 / 0.04);
+  background: var(--cp-secondary);
+  padding: 0.75rem 1.25rem;
+  border-top-left-radius: calc(var(--cp-radius) * 1.4);
+  border-top-right-radius: calc(var(--cp-radius) * 1.4);
+}
+
+.cp-subsection-header-left {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+/* ── Subsection number badge — grid h-6 min-w-6 place-items-center rounded-md bg-background px-1.5 font-mono text-[10px] font-medium tabular-nums text-muted-foreground ring-1 ring-foreground/6 ── */
+.cp-subsection-num {
+  display: grid;
+  height: 1.5rem;
+  min-width: 1.5rem;
+  place-items: center;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  background: var(--cp-bg);
+  padding: 0 0.375rem;
+  font-family: ui-monospace, 'SF Mono', Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--cp-muted-fg);
+  box-shadow: 0 0 0 1px rgb(3 7 18 / 0.06);
+}
+
+/* ── Subsection title — truncate text-[14px] font-medium text-foreground ── */
+.cp-subsection-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cp-fg);
+  margin: 0;
+}
+
+/* ── Subsection count — shrink-0 text-[12px] tabular-nums text-foreground-subtle ── */
+.cp-subsection-count {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--cp-fg-subtle);
+}
+
+/* ── Subsection body — flex flex-col gap-6 px-6 py-5 ── */
+.cp-subsection-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.25rem 1.5rem;
+}
+
+/* ── Compact row — grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 ── */
+.cp-compact-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: 1.5rem;
+  row-gap: 1.25rem;
+}
+
+.cp-compact-row > * {
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .cp-compact-row {
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+  }
+}
+
+/* ── Field wrapper — group ── */
+.cp-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.cp-field:focus-within {
+  z-index: 100;
+}
+
+.cp-field:hover .cp-edge-actions {
+  opacity: 1;
+}
+
+/* ── Field header — flex items-center gap-2 mb-1.5 ── */
+.cp-field-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.375rem;
+  flex-wrap: nowrap;
+}
+
+/* ── Field label — text-[14px] font-medium text-foreground ── */
+.cp-field-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cp-fg);
+  line-height: 1.35;
+}
+
+/* ── Field actions (right side) — ml-auto flex shrink-0 items-center gap-1 ── */
+.cp-field-actions {
+  margin-left: auto;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* ── Edge actions — opacity-0 group-hover:opacity-100 ── */
+.cp-edge-actions {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.cp-edge-actions--visible {
+  opacity: 1;
+}
+
+/* ── Status tags ── */
+/* AI Draft — text-[11px] font-medium rounded-md bg-status-ai px-1.5 py-px text-status-ai-foreground */
+.cp-tag-ai {
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 0.25rem;
+  background: var(--cp-status-ai);
+  padding: 2px 0.375rem;
+  color: var(--cp-status-ai-fg);
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.cp-status-tag-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Confirmed — text-[11px] font-medium text-primary/70 */
+.cp-tag-confirmed {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgb(3 7 18 / 0.7);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cp-tag-confirmed:hover {
+  background: rgb(3 7 18 / 0.06);
+  border-radius: 0.25rem;
+  padding: 0 0.25rem;
+  color: var(--cp-fg);
+}
+
+/* ── Confirm button — rounded px-1.5 py-0.5 text-[11px] font-medium text-primary/70 ── */
+.cp-confirm-btn {
+  border-radius: 0.25rem;
+  padding: 2px 0.375rem;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgb(3 7 18 / 0.7);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.cp-confirm-btn:hover {
+  background: rgb(3 7 18 / 0.06);
+  color: var(--cp-fg);
+}
+
+/* ── Ask Silk button — rounded px-1.5 py-0.5 text-[11px] font-medium tracking-wide whitespace-nowrap bg-primary text-primary-foreground ── */
+.cp-ask-btn {
+  border-radius: 0.25rem;
+  padding: 2px 0.375rem;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+  background: var(--cp-primary);
+  color: var(--cp-primary-fg);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-family: inherit;
+}
+
+.cp-ask-btn:hover {
+  background: var(--cp-primary-hover);
+}
+
+.cp-ask-btn[data-active="true"] {
+  background: var(--cp-primary-hover);
+}
+
+/* ── Input — w-full rounded-lg border-0 bg-secondary px-4 py-3 text-[14px] text-foreground placeholder:text-foreground-subtle outline-none ── */
+.cp-input {
+  width: 100%;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  border: 0;
+  background: var(--cp-secondary);
+  padding: 0.75rem 1rem;
+  font-size: 14px;
+  color: var(--cp-fg);
+  outline: none;
+  transition: box-shadow 0.15s ease;
+  font-family: inherit;
+}
+
+.cp-input::placeholder {
+  color: var(--cp-fg-subtle);
+}
+
+.cp-input:focus {
+  box-shadow: 0 0 0 1px rgb(3 7 18 / 0.05);
+}
+
+/* ── Textarea ── */
+.cp-textarea {
+  width: 100%;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  border: 0;
+  background: var(--cp-secondary);
+  padding: 0.75rem 1rem;
+  font-size: 14px;
+  color: var(--cp-fg);
+  outline: none;
+  resize: none;
+  line-height: 1.625;
+  font-family: inherit;
+  transition: box-shadow 0.15s ease;
+}
+
+.cp-textarea::placeholder {
+  color: var(--cp-fg-subtle);
+}
+
+.cp-textarea:focus {
+  box-shadow: 0 0 0 1px rgb(3 7 18 / 0.05);
+}
+
+/* ── Shell input (currency/percent/months) — flex w-full items-center rounded-lg border-0 bg-secondary ── */
+.cp-shell-input {
+  display: flex;
+  flex-wrap: nowrap !important;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  border: 0;
+  background: var(--cp-secondary);
+  outline: none;
+  transition: box-shadow 0.15s ease;
+}
+
+.cp-shell-input:focus-within {
+  box-shadow: 0 0 0 1px rgb(3 7 18 / 0.05);
+}
+
+/* ── Shell inner input ── */
+.cp-shell-input input {
+  min-width: 0 !important;
+  flex: 1 !important;
+  background: transparent !important;
+  padding: 0.625rem 0.75rem !important;
+  font-size: 14px !important;
+  font-variant-numeric: tabular-nums !important;
+  color: var(--cp-fg) !important;
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+}
+
+.cp-shell-input input::placeholder {
+  color: var(--cp-fg-subtle);
+}
+
+/* ── Shell suffix (%, months) — shrink-0 pr-3 text-[13px] font-medium text-foreground-subtle ── */
+.cp-shell-suffix {
+  flex-shrink: 0;
+  padding-right: 0.75rem;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cp-fg-subtle);
+}
+
+/* ── Currency prefix button — m-1 flex items-center gap-1 rounded-md px-2 py-1.5 text-[13px] font-medium tabular-nums text-foreground/55 ── */
+.cp-currency-prefix {
+  margin: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  padding: 0.375rem 0.5rem;
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: rgb(3 7 18 / 0.55);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.cp-currency-prefix:hover {
+  background: var(--cp-muted);
+  color: var(--cp-fg);
+}
+
+/* ── Divider in shell — my-2 w-px shrink-0 bg-input/90 ── */
+.cp-shell-divider {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  width: 1px;
+  flex-shrink: 0;
+  background: rgba(229, 231, 235, 0.9);
+}
+
+/* ── Scale select ── */
+.cp-scale-btn {
+  margin: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  padding: 0.375rem 0.5rem;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgb(3 7 18 / 0.55);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.cp-scale-btn:hover {
+  background: var(--cp-muted);
+  color: var(--cp-fg);
+}
+
+/* ── Dropdown popover — w-[120px] p-1 gap-0 rounded-xl ring-1 ring-foreground/6 shadow-popover ── */
+.cp-dropdown {
+  position: absolute;
+  z-index: 50;
+  background: var(--cp-popover);
+  border-radius: calc(var(--cp-radius) * 1.4);
+  box-shadow: var(--cp-popover-shadow), 0 0 0 1px rgb(3 7 18 / 0.06);
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.cp-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  padding: 0.5rem 0.625rem;
+  text-align: left;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--cp-secondary-fg);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+  font-family: inherit;
+}
+
+.cp-dropdown-item:hover {
+  background: rgb(3 7 18 / 0.06);
+  color: var(--cp-fg);
+}
+
+.cp-dropdown-item--selected {
+  color: var(--cp-fg);
+  font-weight: 500;
+}
+
+/* ── Select combobox trigger — rounded-lg border-0 bg-secondary shadow-none ── */
+.cp-combobox-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  border: 0;
+  background: var(--cp-secondary);
+  padding: 0.75rem 1rem;
+  font-size: 14px;
+  color: var(--cp-fg);
+  cursor: pointer;
+  outline: none;
+  box-shadow: none;
+  font-family: inherit;
+  transition: box-shadow 0.15s ease;
+}
+
+.cp-combobox-trigger:focus {
+  box-shadow: 0 0 0 1px rgb(3 7 18 / 0.05);
+}
+
+.cp-combobox-trigger--placeholder {
+  color: var(--cp-fg-subtle);
+}
+
+/* ── Combobox popover ── */
+.cp-combobox-popover {
+  position: absolute;
+  z-index: 50;
+  width: 100%;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--cp-popover);
+  border-radius: calc(var(--cp-radius) * 1.4);
+  box-shadow: var(--cp-popover-shadow), 0 0 0 1px rgb(3 7 18 / 0.06);
+  padding: 0.25rem;
+  margin-top: 0.375rem;
+}
+
+.cp-combobox-search {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--cp-border);
+  padding: 0.625rem 0.75rem;
+  font-size: 13px;
+  color: var(--cp-fg);
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+}
+
+.cp-combobox-search::placeholder {
+  color: var(--cp-fg-subtle);
+}
+
+.cp-combobox-empty {
+  padding: 0.75rem;
+  font-size: 13px;
+  color: var(--cp-fg-subtle);
+  text-align: center;
+}
+
+/* ── Hint — mt-1.5 text-[12px] text-foreground-subtle leading-snug ── */
+.cp-hint {
+  margin-top: 0.375rem;
+  font-size: 12px;
+  color: var(--cp-fg-subtle);
+  line-height: 1.4;
+}
+
+/* ── Document upload field ── */
+.cp-upload-zone {
+  border: 1.5px dashed var(--cp-input);
+  border-radius: calc(var(--cp-radius) * 0.8);
+  padding: 1.25rem;
+  text-align: center;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.cp-upload-zone:hover,
+.cp-upload-zone--active {
+  border-color: var(--cp-fg-subtle);
+  background: var(--cp-secondary);
+}
+
+.cp-upload-zone-text {
+  font-size: 13px;
+  color: var(--cp-fg-subtle);
+}
+
+.cp-upload-zone-text strong {
+  color: var(--cp-fg);
+  font-weight: 500;
+}
+
+.cp-doc-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  background: var(--cp-secondary);
+  transition: background 0.15s ease;
+}
+
+.cp-doc-item:hover {
+  background: var(--cp-muted);
+}
+
+.cp-doc-icon {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: calc(var(--cp-radius) * 0.6);
+  background: var(--cp-bg);
+  box-shadow: 0 0 0 1px rgb(3 7 18 / 0.06);
+  flex-shrink: 0;
+}
+
+.cp-doc-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cp-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
+}
+
+.cp-doc-status {
+  font-size: 11px;
+  color: var(--cp-fg-subtle);
+  flex-shrink: 0;
+}
+
+.cp-doc-actions {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.cp-doc-action-btn {
+  display: grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  border-radius: calc(var(--cp-radius) * 0.6);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--cp-fg-subtle);
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.cp-doc-action-btn:hover {
+  background: var(--cp-muted);
+  color: var(--cp-fg);
+}
+
+/* ── Insight card — w-[292px] shrink-0 ── */
+.cp-insight {
+  width: 292px;
+  flex-shrink: 0;
+  transition: opacity var(--cp-aside-shift) var(--cp-aside-ease);
+  position: sticky;
+  top: 60px;
+}
+
+.cp-insight--hidden {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.cp-insight--visible {
+  opacity: 1;
+}
+
+/* ── Insight card body — rounded-xl bg-background p-6 ring-1 ring-foreground/6 ── */
+.cp-insight-card {
+  border-radius: calc(var(--cp-radius) * 1.4);
+  background: var(--cp-bg);
+  padding: 1.5rem;
+  box-shadow: 0 0 0 1px rgb(3 7 18 / 0.06);
+}
+
+/* ── Gauge center text — font-heading text-[28px] font-normal leading-none tracking-[-0.05em] text-foreground tabular-nums ── */
+.cp-gauge-score {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--cp-fg);
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+
+/* ── Gauge subtitle — mt-1 text-[11px] text-foreground-subtle ── */
+.cp-gauge-subtitle {
+  margin-top: 0.25rem;
+  font-size: 11px;
+  color: var(--cp-fg-subtle);
+}
+
+/* ── Gauge ladder badge — rounded-full bg-[readiness-mark-soft] px-2.5 py-0.5 text-[11px] font-medium text-popover-foreground ── */
+.cp-gauge-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  background: var(--cp-readiness-mark-soft);
+  padding: 2px 0.625rem;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--cp-popover-fg);
+}
+
+/* ── Gauge verified — mt-1.5 text-[11px] tabular-nums text-foreground-subtle ── */
+.cp-gauge-verified {
+  margin-top: 0.375rem;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--cp-fg-subtle);
+}
+
+/* ── Next actions — text-[11px] font-medium tracking-[0.04em] text-foreground-subtle ── */
+.cp-next-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--cp-fg-subtle);
+  margin: 0;
+}
+
+/* ── Action reason — text-[13px] leading-relaxed text-foreground/55 ── */
+.cp-action-text {
+  font-size: 13px;
+  line-height: 1.625;
+  color: rgb(3 7 18 / 0.55);
+  margin: 0;
+}
+
+/* ── Action name mark ── */
+.cp-action-name {
+  margin-right: 0.25rem;
+  border-radius: 4px;
+  padding: 1px 0.25rem;
+  font-weight: 500;
+  font-style: normal;
+  background: var(--cp-readiness-mark-soft);
+  color: var(--cp-fg);
+}
+
+.cp-pill-btn {
+  display: inline-flex;
+  height: 1.75rem;
+  max-width: 100%;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 9999px;
+  background: var(--cp-muted);
+  padding: 0 0.75rem;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--cp-popover-fg);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.cp-pill-btn:hover {
+  background: var(--cp-surface-focus);
+  color: var(--cp-fg);
+}
+
+/* ── Side panel — fixed right side inside shell ── */
+.cp-side-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 340px;
+  border-left: 1px solid var(--cp-border, #e5e7eb);
+  background: var(--cp-bg, #ffffff);
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  transform: translateX(0);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cp-side-panel--leaving {
+  transform: translateX(100%);
+}
+
+/* ── Panel header — flex items-center justify-between gap-3 border-b border-border px-5 py-3 ── */
+.cp-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--cp-border);
+  padding: 0.75rem 1.25rem;
+  flex-shrink: 0;
+}
+
+.cp-panel-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cp-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.cp-panel-close {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--cp-fg-subtle);
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+/* ── Currency Input Shell ── */
+.cp-currency-shell {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  height: 2.25rem;
+  border-radius: 0.625rem;
+  background: #fafafa;
+  border: 1px solid #f3f4f6;
+  padding: 0 0.25rem;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cp-currency-shell:focus-within {
+  background: #ffffff;
+  border-color: #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.cp-currency-prefix-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 0.4rem;
+  height: 100%;
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 0.375rem;
+}
+
+.cp-currency-prefix-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.cp-currency-divider {
+  width: 1px;
+  height: 1.25rem;
+  background: #e5e7eb;
+  margin: 0 0.125rem;
+  flex-shrink: 0;
+}
+
+.cp-currency-amount {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 0.5rem;
+  font-size: 14px;
+  font-weight: 500;
+  color: #030712;
+}
+
+.cp-panel-close:hover {
+  background: var(--cp-muted);
+  color: var(--cp-fg);
+}
+
+/* ── Panel tabs — flex border-b border-border ── */
+.cp-panel-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--cp-border);
+  flex-shrink: 0;
+}
+
+.cp-panel-tab {
+  flex: 1;
+  padding: 0.625rem 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--cp-fg-subtle);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  text-align: center;
+}
+
+.cp-panel-tab:hover {
+  color: var(--cp-fg);
+}
+
+.cp-panel-tab--active {
+  color: var(--cp-fg);
+  border-bottom-color: var(--cp-fg);
+}
+
+/* ── Panel body — flex-1 overflow-y-auto ── */
+.cp-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+}
+
+/* ── Chat messages ── */
+.cp-chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cp-chat-msg {
+  max-width: 88%;
+  padding: 0.625rem 0.75rem;
+  border-radius: calc(var(--cp-radius) * 0.8);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.cp-chat-msg--user {
+  align-self: flex-end;
+  background: var(--cp-primary);
+  color: var(--cp-primary-fg);
+}
+
+.cp-chat-msg--ai {
+  align-self: flex-start;
+  background: var(--cp-secondary);
+  color: var(--cp-fg);
+}
+
+/* ── Chat input bar — bottom of panel ── */
+.cp-chat-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--cp-border);
+  flex-shrink: 0;
+}
+
+.cp-chat-input {
+  outline: none;
+}
+
+.cp-chat-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.cp-chat-input::placeholder {
+  color: var(--cp-fg-subtle);
+}
+
+.cp-chat-send {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border-radius: 9999px;
+  background: var(--cp-primary);
+  color: var(--cp-primary-fg);
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.cp-chat-send:hover {
+  background: var(--cp-primary-hover);
+}
+
+.cp-chat-send:disabled {
+  background: var(--cp-muted);
+  color: var(--cp-muted-fg);
+  cursor: default;
+}
+
+/* ── Sources list ── */
+.cp-source-chip {
+  display: flex;
+  gap: 0.75rem;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.cp-source-chip:hover {
+  background-color: #fafafa;
+}
+
+.cp-source-chip .cp-source-title {
+  color: #1f2937;
+  transition: color 0.15s ease;
+}
+
+.cp-source-chip:hover .cp-source-title {
+  color: var(--cp-fg);
+}
+
+.cp-source-chip .cp-source-arrow {
+  color: rgba(3, 7, 18, 0.2);
+  transition: color 0.15s ease;
+}
+
+.cp-source-chip:hover .cp-source-arrow {
+  color: var(--cp-primary);
+}
+
+/* ── Silk AI button (graphite shimmer) ── */
+@keyframes cp-silk-shimmer {
+  0% {
+    transform: translateX(-130%) skewX(-18deg);
+  }
+
+  55%,
+  100% {
+    transform: translateX(230%) skewX(-18deg);
+  }
+}
+
+.cp-silk-ai-btn {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  height: 2.25rem;
+  padding: 1px;
+  border-radius: 0.5rem;
+  border: none;
+  background: linear-gradient(135deg, var(--cp-primary-sheen-soft) 0%, var(--cp-primary) 52%, var(--cp-primary-sheen) 100%);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.cp-silk-ai-btn--icon {
+  height: 2rem;
+  width: 2rem;
+  border-radius: 9999px;
+}
+
+.cp-silk-ai-btn--icon .cp-silk-ai-btn__inner {
+  justify-content: center;
+  padding: 0;
+  border-radius: 9999px;
+}
+
+.cp-silk-ai-btn:disabled {
+  cursor: default;
+  background: var(--cp-muted);
+}
+
+.cp-silk-ai-btn:disabled .cp-silk-ai-btn__inner,
+.cp-silk-ai-btn:disabled:hover .cp-silk-ai-btn__inner,
+.cp-silk-ai-btn:disabled:active .cp-silk-ai-btn__inner {
+  background: var(--cp-muted);
+  color: var(--cp-muted-fg);
+}
+
+.cp-silk-ai-btn:disabled .cp-silk-ai-btn__mark {
+  opacity: 0.5;
+}
+
+.cp-silk-ai-btn__inner {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+  width: 100%;
+  padding: 0 0.95rem 0 0.7rem;
+  border-radius: calc(0.5rem - 1px);
+  color: var(--cp-primary-fg);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.14) 0%, transparent 45%),
+    linear-gradient(180deg,
+      color-mix(in oklch, var(--cp-primary-hover) 85%, white) 0%,
+      var(--cp-primary-hover) 55%,
+      var(--cp-primary) 100%);
+  transition: background 0.18s ease;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+.cp-silk-ai-btn__inner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 42%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.06) 35%, rgba(255, 255, 255, 0.18) 50%, rgba(255, 255, 255, 0.06) 65%, transparent 100%);
+  animation: cp-silk-shimmer 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ── Animation ── */
+@keyframes cp-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cp-enter {
+  animation: cp-enter 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Thinking shimmer text ── */
+@keyframes cp-think-gleam {
+  0% {
+    background-position: 140% 0;
+  }
+
+  100% {
+    background-position: -40% 0;
+  }
+}
+
+.cp-thinking {
+  background-image: linear-gradient(100deg,
+      var(--cp-fg-subtle) 0%,
+      var(--cp-fg-subtle) 38%,
+      color-mix(in srgb, var(--cp-fg-subtle) 55%, var(--cp-bg)) 46%,
+      var(--cp-secondary) 50%,
+      color-mix(in srgb, var(--cp-fg-subtle) 55%, var(--cp-bg)) 54%,
+      var(--cp-fg-subtle) 62%,
+      var(--cp-fg-subtle) 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: cp-think-gleam 1.35s linear infinite;
+}
+
+/* ── Ask Silk AI side panel chat messages ── */
+.cp-chat-msg-user {
+  margin-left: auto;
+  width: fit-content;
+  max-width: 88%;
+  border-radius: 0.75rem;
+  background-color: var(--cp-muted);
+  padding: 0.625rem 0.875rem;
+  font-size: 13px;
+  color: var(--cp-popover-fg);
+  line-height: 1.375;
+  white-space: pre-wrap;
+}
+
+.cp-chat-msg-ai {
+  font-size: 13px;
+  color: var(--cp-popover-fg);
+  line-height: 1.625;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.cp-source-chip {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  text-align: left;
+  border-radius: 0.75rem;
+  transition: background-color 150ms ease;
+  text-decoration: none;
+}
+
+.cp-source-chip:hover {
+  background-color: var(--cp-secondary);
+}
+
+.cp-source-title {
+  display: block;
+  font-size: 13px;
+  color: var(--cp-popover-fg);
+  line-height: 1.375;
+}
+
+.cp-source-chip:hover .cp-source-title {
+  color: var(--cp-fg);
+}
+
+.cp-source-excerpt {
+  margin-top: 0.125rem;
+  display: block;
+  font-size: 12px;
+  color: var(--cp-fg-subtle);
+  line-height: 1.375;
+}
+
+.cp-status-tag-btn:hover .cp-status-default {
+  display: none !important;
+}
+
+.cp-status-tag-btn:hover .cp-status-hover {
+  display: inline !important;
+}
+
+
+.cp-composer-btn {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.cp-composer-btn:disabled {
+  background-color: transparent;
+  color: #9ca3af;
+  cursor: default;
+}
+
+.cp-composer-btn:not(:disabled) {
+  background-color: #111827;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.cp-search-input::placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+}

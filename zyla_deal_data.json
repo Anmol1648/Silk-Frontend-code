@@ -1,0 +1,3864 @@
+{
+  "company": "Zyla Health",
+  "sector": "Healthtech",
+  "sub_sector": "Healthtech",
+  "deal_stage": "Series A",
+  "ask_amount": "₹350 Cr",
+  "capital_raised": "₹60 Cr",
+  "assessment_date": "2026-07-30",
+  "overall_score": 6.834892156862746,
+  "deal_rating": "Good",
+  "band_legend": [
+    {
+      "band": "Excellent",
+      "score": 9,
+      "color": "green"
+    },
+    {
+      "band": "Good",
+      "score": 7,
+      "color": "teal"
+    },
+    {
+      "band": "Fair",
+      "score": 5,
+      "color": "amber"
+    },
+    {
+      "band": "Poor",
+      "score": 3,
+      "color": "red"
+    }
+  ],
+  "categories": [
+    {
+      "code": "A",
+      "name": "Team",
+      "weight": 0.2,
+      "applied_weight": 0.2,
+      "override_score": 7.734999999999999,
+      "system_score": 7.734999999999999,
+      "band": "Good",
+      "is_overridden": false,
+      "not_enough_information": false,
+      "children": [
+        {
+          "code": "A.1",
+          "name": "Founder Profile",
+          "weight": 0.55,
+          "applied_weight": 0.55,
+          "override_score": 8.2,
+          "system_score": 8.2,
+          "band": "Good",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "children": [
+            {
+              "code": "A.1.a",
+              "name": "Founder Education",
+              "weight": 0.2,
+              "applied_weight": 0.2,
+              "override_score": 9,
+              "system_score": 9,
+              "band": "Excellent",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "value_display": "Excellent",
+              "period_basis": "Actual",
+              "as_of": "as at 2026-08-23",
+              "so_what": "Strong founder education in a relevant domain from top-tier institutions provides a solid foundation for the company's strategic and operational leadership in healthtech.",
+              "reasoning": "Khushboo Aggarwal, the CEO and Founder, holds a Pharmacy (Hons.) degree from BITS Pilani and an MBA from IIM-K. Both institutions are considered top-tier in India, and her Pharmacy degree is directly relevant to the healthcare sector, satisfying the 'Excellent' criteria.",
+              "dictionary": {
+                "measured_on": "Highest relevant qualification and the standing of the institution, judged against whether this sector actually requires technical or regulatory literacy.",
+                "defined_as": "Highest relevant qualification and the standing of the institution, judged against whether this sector actually requires technical or regulatory literacy.",
+                "normally_found_in": "Not in the model — take from the pitch deck team page, LinkedIn, or the company's own bios."
+              },
+              "citations": [
+                {
+                  "source_tier": "Tier 2",
+                  "source_type": "Company Deck",
+                  "source": "Project Orah Teaser_vff.pptx",
+                  "locator": "slide 20",
+                  "quote": "Khushboo Aggarwal: Pharmacy (Hons.) BITS Pilani, MBA IIM-K."
+                },
+                {
+                  "source_tier": "Tier 3",
+                  "source_type": "Web Research",
+                  "source": "Web Research",
+                  "locator": "Batch 2, Q3 retrieved 2026-08-23",
+                  "quote": "Khushboo Aggarwal (Founder & CEO): Education: Pharmacy (Hons.) from BITS Pilani and an MBA from IIMK (IIM Kozhikode)."
+                }
+              ],
+              "scoring_criteria": {
+                "bands": {
+                  "Excellent": "Degree directly in the domain from a top-tier institution (IIT / IIM / ISB / NIT / BITS / equivalent global), or a professional qualification that is a licence to operate in this sector.",
+                  "Good": "Top-tier institution but adjacent field, OR domain-specific degree from a credible non-tier-1 institution, OR a recognised domain certification earned while operating.",
+                  "Fair": "Graduate in an unrelated field with no domain qualification, but no evidence the gap has hurt execution.",
+                  "Poor": "No relevant formal education and no substitute credential, in a sector where technical or regulatory literacy is a precondition."
+                },
+                "evidence_required": "Institution, degree, year. Note explicitly if education is irrelevant to this sector and score on operating record instead."
+              },
+              "weights": {
+                "weight_within_parent": 0.25,
+                "share_of_overall_score": 0.031,
+                "contribution_to_score": 0.275,
+                "total_score": 6.57
+              },
+              "drawer": {
+                "header": {
+                  "parameter_name": "Founder Education",
+                  "system_score": 9,
+                  "band": "Excellent"
+                },
+                "reasoning_box": {
+                  "text": "A pharmacy degree is a domain qualification in healthcare and BITS Pilani / IIM-K are tier-1. CTO holds Computer Science, Delhi University. Meets the Excellent anchor squarely."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "Degree directly in the domain from a top-tier institution (IIT / IIM / ISB / NIT / BITS / equivalent global), or a professional qualification that is a licence to operate in this sector."
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "Top-tier institution but adjacent field, OR domain-specific degree from a credible non-tier-1 institution, OR a recognised domain certification earned while operating."
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "Graduate in an unrelated field with no domain qualification, but no evidence the gap has hurt execution."
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "No relevant formal education and no substitute credential, in a sector where technical or regulatory literacy is a precondition."
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "M. Cover_Zyla Health",
+                  "source_date": "2026-07-01",
+                  "diligence_ask": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence."
+                },
+                "override_form": {
+                  "override_score": 9,
+                  "reason": null
+                }
+              },
+              "confidence_reason": "Founder Education was verified from source documents.",
+              "basis": null,
+              "alternative_reading": null,
+              "data_gaps": []
+            },
+            {
+              "code": "A.1.b",
+              "name": "Founder Industry Network",
+              "weight": 0.2,
+              "applied_weight": 0.2,
+              "override_score": 9,
+              "system_score": 9,
+              "band": "Excellent",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Founder Industry Network",
+                  "system_score": 9,
+                  "band": "Excellent"
+                },
+                "reasoning_box": {
+                  "text": "Eight marquee logos are externally corroborated. Capped at 3 (the Excellent cut) because attribution specifically to the founder's network is inferred, not stated — supported by FY25–FY26 sales-team cost of only c.₹1.1 Cr, which implies founder-led origination. Confirm logo-by-logo in DD."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "≥ 3 Count"
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "≥ 2 Count"
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "≥ 1 Count"
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "Fails the Fair cut"
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "Startup Story Media — \"Zyla Health Raises $4 Million in Series A Funding\"",
+                  "source_date": "2026-07-30",
+                  "diligence_ask": "Already at the top band on current evidence. Confirm the following in due diligence so the rating holds: Capped at 3 (the Excellent cut) because attribution specifically to the founder's network is inferred, not stated — supported by FY25–FY26 sales-team cost of only c.₹1.1 Cr, which implies founder-led origination."
+                },
+                "override_form": {
+                  "override_score": 9,
+                  "reason": null
+                }
+              },
+              "reasoning": "Eight marquee logos are externally corroborated. Capped at 3 (the Excellent cut) because attribution specifically to the founder's network is inferred, not stated — supported by FY25–FY26 sales-team cost of only c.₹1.1 Cr, which implies founder-led origination. Confirm logo-by-logo in DD.",
+              "value_display": "Excellent",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Founder Industry Network was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "Startup Story Media — \"Zyla Health Raises $4 Million in Series A Funding\"",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "Already at the top band on current evidence. Confirm the following in due diligence so the rating holds: Capped at 3 (the Excellent cut) because attribution specifically to the founder's network is inferred, not stated — supported by FY25–FY26 sales-team cost of only c.₹1.1 Cr, which implies founder-led origination.",
+                  "retrieved_on": "2026-07-30",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "≥ 3 Count",
+                  "Good": "≥ 2 Count",
+                  "Fair": "≥ 1 Count",
+                  "Poor": "Fails the Fair cut"
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.2,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "A.1.c",
+              "name": "Co-Founder Relationship",
+              "weight": 0.2,
+              "applied_weight": 0.2,
+              "override_score": 9,
+              "system_score": 9,
+              "band": "Excellent",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Co-Founder Relationship",
+                  "system_score": 9,
+                  "band": "Excellent"
+                },
+                "reasoning_box": {
+                  "text": "GAP AND CONFLICT. Press at the Nov-2023 Series A names Tanmay Patil as co-founder; the July-2026 deck does not mention him and names Aishwary Bhashkar instead. Nine years is the company's age, not a verified co-founder tenure. If Bhashkar joined later the true figure could be materially lower. See Evidence & Workings D90 — must be confirmed."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "≥ 6 Years"
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "≥ 4 Years"
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "≥ 2 Years"
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "Fails the Fair cut"
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "Digital Health News — \"Healthtech Startup Zyla Raises $4Mn Series A\"",
+                  "source_date": "2026-07-30",
+                  "diligence_ask": "Already at the top band on current evidence. Confirm the following in due diligence so the rating holds: GAP AND CONFLICT."
+                },
+                "override_form": {
+                  "override_score": 9,
+                  "reason": null
+                }
+              },
+              "reasoning": "GAP AND CONFLICT. Press at the Nov-2023 Series A names Tanmay Patil as co-founder; the July-2026 deck does not mention him and names Aishwary Bhashkar instead. Nine years is the company's age, not a verified co-founder tenure. If Bhashkar joined later the true figure could be materially lower. See Evidence & Workings D90 — must be confirmed.",
+              "value_display": "Excellent",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Co-Founder Relationship was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "Digital Health News — \"Healthtech Startup Zyla Raises $4Mn Series A\"",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "Already at the top band on current evidence. Confirm the following in due diligence so the rating holds: GAP AND CONFLICT.",
+                  "retrieved_on": "2026-07-30",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "≥ 6 Years",
+                  "Good": "≥ 4 Years",
+                  "Fair": "≥ 2 Years",
+                  "Poor": "Fails the Fair cut"
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.2,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "A.1.d",
+              "name": "Founder Industry Experience",
+              "weight": 0.2,
+              "applied_weight": 0.2,
+              "override_score": 9,
+              "system_score": 9,
+              "band": "Excellent",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Founder Industry Experience",
+                  "system_score": 9,
+                  "band": "Excellent"
+                },
+                "reasoning_box": {
+                  "text": "Directly relevant healthcare experience across consulting and nine years operating Zyla. Comfortably above the 10-year Excellent cut."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "≥ 10 Years"
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "≥ 6 Years"
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "≥ 3 Years"
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "Fails the Fair cut"
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "M. Cover_Zyla Health",
+                  "source_date": "2026-07-01",
+                  "diligence_ask": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence."
+                },
+                "override_form": {
+                  "override_score": 9,
+                  "reason": null
+                }
+              },
+              "reasoning": "Directly relevant healthcare experience across consulting and nine years operating Zyla. Comfortably above the 10-year Excellent cut.",
+              "value_display": "Excellent",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Founder Industry Experience was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "M. Cover_Zyla Health",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence.",
+                  "retrieved_on": "2026-07-01",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "≥ 10 Years",
+                  "Good": "≥ 6 Years",
+                  "Fair": "≥ 3 Years",
+                  "Poor": "Fails the Fair cut"
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.2,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "A.1.e",
+              "name": "Prior Startup Experience",
+              "weight": 0.2,
+              "applied_weight": 0.2,
+              "override_score": 5,
+              "system_score": 5,
+              "band": "Fair",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Prior Startup Experience",
+                  "system_score": 5,
+                  "band": "Fair"
+                },
+                "reasoning_box": {
+                  "text": "The CEO has no prior founding experience. The CTO founded MirrAR but its funding history and outcome are not documented anywhere in the material, so the Good anchor (\"reached institutional funding, whatever the outcome\") is not demonstrably met and the band below is taken, per the Qualitative Anchors instruction."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "Founded a prior venture with a realised exit, or scaled one past INR 100 Cr revenue — has been through a full cycle and knows what breaks."
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "Founded a prior venture that reached institutional funding, whatever the outcome; or a documented, well-handled failure with clear lessons."
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "Was among the first 20 employees of a funded startup, or held a senior role through a scaling phase, but has not founded before."
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "No startup exposure at all — career entirely in large corporates, government, or family business with no comparable operating stress."
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "M. Cover_Zyla Health",
+                  "source_date": "2026-07-01",
+                  "diligence_ask": "Confirm the gap noted in diligence — The CTO founded MirrAR but its funding history and outcome are not documented anywhere in the material, so the Good anchor (\"reached institutional funding, whatever the outcome\") is not demonstrably met and the band below is taken, per the Qualitative Anchors instruction. — to verify whether this parameter should move from Fair (5.0) to Good (7.0)."
+                },
+                "override_form": {
+                  "override_score": 5,
+                  "reason": null
+                }
+              },
+              "reasoning": "The CEO has no prior founding experience. The CTO founded MirrAR but its funding history and outcome are not documented anywhere in the material, so the Good anchor (\"reached institutional funding, whatever the outcome\") is not demonstrably met and the band below is taken, per the Qualitative Anchors instruction.",
+              "value_display": "Fair",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Prior Startup Experience was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "M. Cover_Zyla Health",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "Confirm the gap noted in diligence — The CTO founded MirrAR but its funding history and outcome are not documented anywhere in the material, so the Good anchor (\"reached institutional funding, whatever the outcome\") is not demonstrably met and the band below is taken, per the Qualitative Anchors instruction. — to verify whether this parameter should move from Fair (5.0) to Good (7.0).",
+                  "retrieved_on": "2026-07-01",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "Founded a prior venture with a realised exit, or scaled one past INR 100 Cr revenue — has been through a full cycle and knows what breaks.",
+                  "Good": "Founded a prior venture that reached institutional funding, whatever the outcome; or a documented, well-handled failure with clear lessons.",
+                  "Fair": "Was among the first 20 employees of a funded startup, or held a senior role through a scaling phase, but has not founded before.",
+                  "Poor": "No startup exposure at all — career entirely in large corporates, government, or family business with no comparable operating stress."
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.2,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            }
+          ]
+        },
+        {
+          "code": "A.2",
+          "name": "Leadership Team",
+          "weight": 0.25,
+          "applied_weight": 0.25,
+          "override_score": 6.5,
+          "system_score": 6.5,
+          "band": "Good",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "children": [
+            {
+              "code": "A.2.a",
+              "name": "Product & Technology Leadership",
+              "weight": 0.25,
+              "applied_weight": 0.25,
+              "override_score": 7,
+              "system_score": 7,
+              "band": "Good",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Product & Technology Leadership",
+                  "system_score": 7,
+                  "band": "Good"
+                },
+                "reasoning_box": {
+                  "text": "Full-time, credible, long in seat. Held back from Excellent because there is no evidence he has shipped and scaled a comparable product at the next stage of scale, and the deck gives no start date or product-scale metrics."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "Full-time product or engineering leader, in seat more than 12 months, has already shipped and scaled a comparable product at the next stage of scale. Owns the roadmap outright — the founder is genuinely free of the function."
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "Full-time, credible product or tech leader with relevant domain experience, but either under 12 months in seat or running the function for the first time at this scale."
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "Interim, fractional or agency-based product and engineering cover — or the founder is still acting CTO/CPO while an active search runs."
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "Vacant with no active search, or filled by someone plainly under-qualified, in a company whose product is its primary differentiator."
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "M. Cover_Zyla Health",
+                  "source_date": "2026-07-01",
+                  "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward."
+                },
+                "override_form": {
+                  "override_score": 7,
+                  "reason": null
+                }
+              },
+              "reasoning": "Full-time, credible, long in seat. Held back from Excellent because there is no evidence he has shipped and scaled a comparable product at the next stage of scale, and the deck gives no start date or product-scale metrics.",
+              "value_display": "Good",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Product & Technology Leadership was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "M. Cover_Zyla Health",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward.",
+                  "retrieved_on": "2026-07-01",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "Full-time product or engineering leader, in seat more than 12 months, has already shipped and scaled a comparable product at the next stage of scale. Owns the roadmap outright — the founder is genuinely free of the function.",
+                  "Good": "Full-time, credible product or tech leader with relevant domain experience, but either under 12 months in seat or running the function for the first time at this scale.",
+                  "Fair": "Interim, fractional or agency-based product and engineering cover — or the founder is still acting CTO/CPO while an active search runs.",
+                  "Poor": "Vacant with no active search, or filled by someone plainly under-qualified, in a company whose product is its primary differentiator."
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.25,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "A.2.b",
+              "name": "Sales & GTM Leadership",
+              "weight": 0.25,
+              "applied_weight": 0.25,
+              "override_score": 7,
+              "system_score": 7,
+              "band": "Good",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Sales & GTM Leadership",
+                  "system_score": 7,
+                  "band": "Good"
+                },
+                "reasoning_box": {
+                  "text": "Two full-time commercial leaders, with the CBO bringing directly relevant healthcare-sector relationships. Not Excellent: no start dates, no evidence of a quota-carrying team through the next revenue band, and no confirmation that the founder has stopped closing the largest accounts."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "Full-time revenue leader, in seat more than 12 months, has built and quota-carried a team through the next revenue band. Pipeline and forecast discipline are demonstrably theirs, not the founder's."
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "Full-time, credible sales or GTM leader with relevant channel experience, but either under 12 months in seat or scaling a team for the first time."
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "Fractional CRO, commission-only consultants, or the founder is still the primary closer while an active search runs."
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "Vacant with no active search, or filled by someone with no experience of this buyer or channel, in a company that must sell its way to the next round."
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "M. Cover_Zyla Health",
+                  "source_date": "2026-07-01",
+                  "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward."
+                },
+                "override_form": {
+                  "override_score": 7,
+                  "reason": null
+                }
+              },
+              "reasoning": "Two full-time commercial leaders, with the CBO bringing directly relevant healthcare-sector relationships. Not Excellent: no start dates, no evidence of a quota-carrying team through the next revenue band, and no confirmation that the founder has stopped closing the largest accounts.",
+              "value_display": "Good",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Sales & GTM Leadership was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "M. Cover_Zyla Health",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward.",
+                  "retrieved_on": "2026-07-01",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "Full-time revenue leader, in seat more than 12 months, has built and quota-carried a team through the next revenue band. Pipeline and forecast discipline are demonstrably theirs, not the founder's.",
+                  "Good": "Full-time, credible sales or GTM leader with relevant channel experience, but either under 12 months in seat or scaling a team for the first time.",
+                  "Fair": "Fractional CRO, commission-only consultants, or the founder is still the primary closer while an active search runs.",
+                  "Poor": "Vacant with no active search, or filled by someone with no experience of this buyer or channel, in a company that must sell its way to the next round."
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.25,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "A.2.c",
+              "name": "Finance Leadership",
+              "weight": 0.25,
+              "applied_weight": 0.25,
+              "override_score": 5,
+              "system_score": 5,
+              "band": "Fair",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Finance Leadership",
+                  "system_score": 5,
+                  "band": "Fair"
+                },
+                "reasoning_box": {
+                  "text": "No CFO or finance head is named, and the company already carries institutional capital — which points to Poor. Held at Fair because the quarterly cost build in the model is of genuine MIS quality, implying real finance capability somewhere in the business. Confirm who owns the monthly close and the date of the last closed MIS."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "Full-time CFO or finance head, in seat more than 12 months, has taken a company through audit, diligence and a funding round. MIS closes monthly without founder involvement."
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "Full-time, credible finance leader, but either under 12 months in seat or without prior transaction and diligence exposure."
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "Outsourced accountant or fractional CFO handling compliance only — no management reporting discipline, or the founder still owns the numbers."
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "Vacant with no active search, or books maintained only for statutory filing, in a company already carrying institutional capital."
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "M. Cover_Zyla Health",
+                  "source_date": "2026-07-01",
+                  "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward."
+                },
+                "override_form": {
+                  "override_score": 5,
+                  "reason": null
+                }
+              },
+              "reasoning": "No CFO or finance head is named, and the company already carries institutional capital — which points to Poor. Held at Fair because the quarterly cost build in the model is of genuine MIS quality, implying real finance capability somewhere in the business. Confirm who owns the monthly close and the date of the last closed MIS.",
+              "value_display": "Fair",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Finance Leadership was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "M. Cover_Zyla Health",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward.",
+                  "retrieved_on": "2026-07-01",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "Full-time CFO or finance head, in seat more than 12 months, has taken a company through audit, diligence and a funding round. MIS closes monthly without founder involvement.",
+                  "Good": "Full-time, credible finance leader, but either under 12 months in seat or without prior transaction and diligence exposure.",
+                  "Fair": "Outsourced accountant or fractional CFO handling compliance only — no management reporting discipline, or the founder still owns the numbers.",
+                  "Poor": "Vacant with no active search, or books maintained only for statutory filing, in a company already carrying institutional capital."
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.25,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "A.2.d",
+              "name": "Operations Leadership",
+              "weight": 0.25,
+              "applied_weight": 0.25,
+              "override_score": 7,
+              "system_score": 7,
+              "band": "Good",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Operations Leadership",
+                  "system_score": 7,
+                  "band": "Good"
+                },
+                "reasoning_box": {
+                  "text": "Full-time operations leader with high-volume experience (Oyo, EXL). Not Excellent: no start date and no evidence he has run this function at several times current volume in a clinical setting."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "Full-time operations leader, in seat more than 12 months, has run this function at several times current volume. Unit economics and service levels are owned and instrumented by them."
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "Full-time, credible operations leader with relevant sector experience, but either under 12 months in seat or without experience of the next volume step."
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "Interim or vendor-managed operations cover, or the founder is still resolving day-to-day exceptions while an active search runs."
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "Vacant with no active search, or filled without relevant sector experience, in a business whose margin depends on operational execution."
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "M. Cover_Zyla Health",
+                  "source_date": "2026-07-01",
+                  "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward."
+                },
+                "override_form": {
+                  "override_score": 7,
+                  "reason": null
+                }
+              },
+              "reasoning": "Full-time operations leader with high-volume experience (Oyo, EXL). Not Excellent: no start date and no evidence he has run this function at several times current volume in a clinical setting.",
+              "value_display": "Good",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Operations Leadership was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "M. Cover_Zyla Health",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward.",
+                  "retrieved_on": "2026-07-01",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "Full-time operations leader, in seat more than 12 months, has run this function at several times current volume. Unit economics and service levels are owned and instrumented by them.",
+                  "Good": "Full-time, credible operations leader with relevant sector experience, but either under 12 months in seat or without experience of the next volume step.",
+                  "Fair": "Interim or vendor-managed operations cover, or the founder is still resolving day-to-day exceptions while an active search runs.",
+                  "Poor": "Vacant with no active search, or filled without relevant sector experience, in a business whose margin depends on operational execution."
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.25,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            }
+          ]
+        },
+        {
+          "code": "A.3",
+          "name": "Board, Advisors & Investors",
+          "weight": 0.2,
+          "applied_weight": 0.2,
+          "override_score": 8,
+          "system_score": 8,
+          "band": "Good",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "children": [
+            {
+              "code": "A.3.a",
+              "name": "Formal Board",
+              "weight": 0.333333333333333,
+              "applied_weight": 0,
+              "override_score": null,
+              "system_score": null,
+              "band": "Poor",
+              "is_overridden": false,
+              "not_enough_information": true,
+              "drawer": null,
+              "value_display": "Poor",
+              "evidence_tier": "Not Evidenced",
+              "confidence": "low",
+              "confidence_reason": "No direct source evidence found for Formal Board.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [],
+              "scoring_criteria": null,
+              "weights": {
+                "weight_within_parent": 0.333333333333333,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "A.3.b",
+              "name": "Advisor Quality",
+              "weight": 0.333333333333333,
+              "applied_weight": 0.5,
+              "override_score": 7,
+              "system_score": 7,
+              "band": "Good",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Advisor Quality",
+                  "system_score": 7,
+                  "band": "Good"
+                },
+                "reasoning_box": {
+                  "text": "Two named advisors of genuine standing — one pharma operator, one HR/legal. Engagement cadence and terms are not disclosed."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "≥ 3 Count"
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "≥ 2 Count"
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "≥ 1 Count"
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "Fails the Fair cut"
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "M. Cover_Zyla Health",
+                  "source_date": "2026-07-01",
+                  "diligence_ask": "Confirm the gap noted in diligence — Engagement cadence and terms are not disclosed. — to verify whether this parameter should move from Good (7.0) to Excellent (9.0)."
+                },
+                "override_form": {
+                  "override_score": 7,
+                  "reason": null
+                }
+              },
+              "reasoning": "Two named advisors of genuine standing — one pharma operator, one HR/legal. Engagement cadence and terms are not disclosed.",
+              "value_display": "Good",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Advisor Quality was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "M. Cover_Zyla Health",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "Confirm the gap noted in diligence — Engagement cadence and terms are not disclosed. — to verify whether this parameter should move from Good (7.0) to Excellent (9.0).",
+                  "retrieved_on": "2026-07-01",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "≥ 3 Count",
+                  "Good": "≥ 2 Count",
+                  "Fair": "≥ 1 Count",
+                  "Poor": "Fails the Fair cut"
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.333333333333333,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "A.3.c",
+              "name": "Investor Quality",
+              "weight": 0.333333333333333,
+              "applied_weight": 0.5,
+              "override_score": 9,
+              "system_score": 9,
+              "band": "Excellent",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Investor Quality",
+                  "system_score": 9,
+                  "band": "Excellent"
+                },
+                "reasoning_box": {
+                  "text": "Five institutional names, well clear of the Excellent cut of 3. Corroborated by the lead investor's own disclosure (Tier 1)."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "≥ 3 Count"
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "≥ 2 Count"
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "≥ 1 Count"
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "Fails the Fair cut"
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "Exfinity Venture Partners — investor's own media page",
+                  "source_date": "2026-07-30",
+                  "diligence_ask": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence."
+                },
+                "override_form": {
+                  "override_score": 9,
+                  "reason": null
+                }
+              },
+              "reasoning": "Five institutional names, well clear of the Excellent cut of 3. Corroborated by the lead investor's own disclosure (Tier 1).",
+              "value_display": "Excellent",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Investor Quality was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "Exfinity Venture Partners — investor's own media page",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence.",
+                  "retrieved_on": "2026-07-30",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "≥ 3 Count",
+                  "Good": "≥ 2 Count",
+                  "Fair": "≥ 1 Count",
+                  "Poor": "Fails the Fair cut"
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.333333333333333,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "B",
+      "name": "Financials",
+      "weight": 0.2,
+      "applied_weight": 0.2,
+      "override_score": 5.6499999999999995,
+      "system_score": 5.6499999999999995,
+      "band": "Fair",
+      "is_overridden": false,
+      "not_enough_information": false,
+      "children": [
+        {
+          "code": "B.1",
+          "name": "Revenue Scale",
+          "weight": 0.1,
+          "applied_weight": 0.1,
+          "override_score": 5,
+          "system_score": 5,
+          "band": "Fair",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Revenue Scale",
+              "system_score": 5,
+              "band": "Fair"
+            },
+            "reasoning_box": {
+              "text": "₹27.24 Cr FY26 actual — Fair band, and the binding constraint on the Financials category (the Series A Good cut is ₹40 Cr). POST-YEAR-END EVIDENCE THAT COULD MOVE THIS: the teaser's current-traction page reports 61 clients and 217,000+ lives against FY26's 51 clients and 212,940 lives, so part of the FY27 ramp to 81 clients is already delivered. Multiplying 217,000 lives by the quoted ₹2,106 average sponsored preventive-care spend gives ₹45.7 Cr, which sits between the FY26 actual and the FY27E plan of ₹55.04 Cr — but ₹2,106 is described as spend per life, not revenue per life, and it exceeds the plan's own FY27E ARPU of ₹1,790, so the two are not the same measure and it has NOT been used to score. Scored on the FY26 actual. ASK for monthly revenue for FY26 and Q1FY27: the model contains no quarterly revenue series at all, and if Q1FY27 is running at ₹11–12 Cr this row moves to Good. Workings and the cross-check at Evidence & Workings rows 45 and 71."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 75 INR Cr"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ 40 INR Cr"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ 15 INR Cr"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": null,
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 5,
+              "reason": null
+            }
+          },
+          "reasoning": "₹27.24 Cr FY26 actual — Fair band, and the binding constraint on the Financials category (the Series A Good cut is ₹40 Cr). POST-YEAR-END EVIDENCE THAT COULD MOVE THIS: the teaser's current-traction page reports 61 clients and 217,000+ lives against FY26's 51 clients and 212,940 lives, so part of the FY27 ramp to 81 clients is already delivered. Multiplying 217,000 lives by the quoted ₹2,106 average sponsored preventive-care spend gives ₹45.7 Cr, which sits between the FY26 actual and the FY27E plan of ₹55.04 Cr — but ₹2,106 is described as spend per life, not revenue per life, and it exceeds the plan's own FY27E ARPU of ₹1,790, so the two are not the same measure and it has NOT been used to score. Scored on the FY26 actual. ASK for monthly revenue for FY26 and Q1FY27: the model contains no quarterly revenue series at all, and if Q1FY27 is running at ₹11–12 Cr this row moves to Good. Workings and the cross-check at Evidence & Workings rows 45 and 71.",
+          "value_display": "Fair",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Revenue Scale was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 75 INR Cr",
+              "Good": "≥ 40 INR Cr",
+              "Fair": "≥ 15 INR Cr",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.1,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "B.2",
+          "name": "Revenue Growth",
+          "weight": 0.15,
+          "applied_weight": 0.15,
+          "override_score": 7,
+          "system_score": 7,
+          "band": "Good",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Revenue Growth",
+              "system_score": 7,
+              "band": "Good"
+            },
+            "reasoning_box": {
+              "text": "82.9% on operating revenue; 71.9% including other income. Good band either way. Note growth was 107% in FY24 and 78% in FY25 — it is not decelerating, which is unusual at this scale."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 100 %"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ 70 %"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ 40 %"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": null,
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 7,
+              "reason": null
+            }
+          },
+          "reasoning": "82.9% on operating revenue; 71.9% including other income. Good band either way. Note growth was 107% in FY24 and 78% in FY25 — it is not decelerating, which is unusual at this scale.",
+          "value_display": "Good",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Revenue Growth was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 100 %",
+              "Good": "≥ 70 %",
+              "Fair": "≥ 40 %",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.15,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "B.3",
+          "name": "Gross Margin CM1",
+          "weight": 0.15,
+          "applied_weight": 0.15,
+          "override_score": 5,
+          "system_score": 5,
+          "band": "Fair",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Gross Margin CM1",
+              "system_score": 5,
+              "band": "Fair"
+            },
+            "reasoning_box": {
+              "text": "32.5% on the model's own CM1 line (after clinical and ops delivery cost). The deck's headline \"48.8% gross margin\" is the pre-labour figure and would score Good; CM1 is the honest delivery margin and scores Fair."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 55 %"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ 40 %"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ 25 %"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": null,
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 5,
+              "reason": null
+            }
+          },
+          "reasoning": "32.5% on the model's own CM1 line (after clinical and ops delivery cost). The deck's headline \"48.8% gross margin\" is the pre-labour figure and would score Good; CM1 is the honest delivery margin and scores Fair.",
+          "value_display": "Fair",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Gross Margin CM1 was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 55 %",
+              "Good": "≥ 40 %",
+              "Fair": "≥ 25 %",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.15,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "B.4",
+          "name": "Contribution Margin CM2",
+          "weight": 0.15,
+          "applied_weight": 0.15,
+          "override_score": 7,
+          "system_score": 7,
+          "band": "Good",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Contribution Margin CM2",
+              "system_score": 7,
+              "band": "Good"
+            },
+            "reasoning_box": {
+              "text": "28.6%, Good band. Only ₹1.06 Cr of sales and marketing spend sits between CM1 and CM2 — 3.9% of revenue. That is the zero-CAC claim quantified."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 30 %"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ 18 %"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ 5 %"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": null,
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 7,
+              "reason": null
+            }
+          },
+          "reasoning": "28.6%, Good band. Only ₹1.06 Cr of sales and marketing spend sits between CM1 and CM2 — 3.9% of revenue. That is the zero-CAC claim quantified.",
+          "value_display": "Good",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Contribution Margin CM2 was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 30 %",
+              "Good": "≥ 18 %",
+              "Fair": "≥ 5 %",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.15,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "B.5",
+          "name": "EBITDA Margin",
+          "weight": 0.15,
+          "applied_weight": 0.15,
+          "override_score": 3,
+          "system_score": 3,
+          "band": "Poor",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "EBITDA Margin",
+              "system_score": 3,
+              "band": "Poor"
+            },
+            "reasoning_box": {
+              "text": "-25.1%, which falls 0.1 points below the Fair cut of -25.0% and therefore bands as Poor. On the including-other-income denominator it is -24.3% and would band Fair. Genuinely knife-edge — do not over-read the Poor."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 5 %"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ -5 %"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ -25 %"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": null,
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Poor (3.0) band holds, rather than moving to Fair (5.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 3,
+              "reason": null
+            }
+          },
+          "reasoning": "-25.1%, which falls 0.1 points below the Fair cut of -25.0% and therefore bands as Poor. On the including-other-income denominator it is -24.3% and would band Fair. Genuinely knife-edge — do not over-read the Poor.",
+          "value_display": "Poor",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "EBITDA Margin was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 5 %",
+              "Good": "≥ -5 %",
+              "Fair": "≥ -25 %",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.15,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "B.6",
+          "name": "PAT Margin",
+          "weight": 0.1,
+          "applied_weight": 0.1,
+          "override_score": 5,
+          "system_score": 5,
+          "band": "Fair",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "PAT Margin",
+              "system_score": 5,
+              "band": "Fair"
+            },
+            "reasoning_box": {
+              "text": "-28.8%, Fair band. No tax charge — ₹32.4 Cr of carried-forward losses remain and shelter profits into FY30 on the plan."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 0 %"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ -10 %"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ -30 %"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": null,
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 5,
+              "reason": null
+            }
+          },
+          "reasoning": "-28.8%, Fair band. No tax charge — ₹32.4 Cr of carried-forward losses remain and shelter profits into FY30 on the plan.",
+          "value_display": "Fair",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "PAT Margin was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 0 %",
+              "Good": "≥ -10 %",
+              "Fair": "≥ -30 %",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.1,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "B.7",
+          "name": "Cash Runway",
+          "weight": 0.075,
+          "applied_weight": 0.075,
+          "override_score": 3,
+          "system_score": 3,
+          "band": "Poor",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Cash Runway",
+              "system_score": 3,
+              "band": "Poor"
+            },
+            "reasoning_box": {
+              "text": "SINGLE LARGEST OPEN ITEM. Nil months on liquid cash — FY26 closing cash is negative ₹0.55 Cr against average net burn of ₹0.91 Cr per month. But M. BS row 11 carries ₹17.89 Cr of \"Investments\" held flat with no schedule; if that is liquid treasury, runway is c.19.7 months and this becomes Good. Confidence is Medium on the classification, High on the arithmetic. Resolve before any recommendation is acted on."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 24 Months"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ 18 Months"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ 12 Months"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": null,
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Poor (3.0) band holds, rather than moving to Fair (5.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 3,
+              "reason": null
+            }
+          },
+          "reasoning": "SINGLE LARGEST OPEN ITEM. Nil months on liquid cash — FY26 closing cash is negative ₹0.55 Cr against average net burn of ₹0.91 Cr per month. But M. BS row 11 carries ₹17.89 Cr of \"Investments\" held flat with no schedule; if that is liquid treasury, runway is c.19.7 months and this becomes Good. Confidence is Medium on the classification, High on the arithmetic. Resolve before any recommendation is acted on.",
+          "value_display": "Poor",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Cash Runway was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 24 Months",
+              "Good": "≥ 18 Months",
+              "Fair": "≥ 12 Months",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.075,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "B.8",
+          "name": "Working Capital Cycle",
+          "weight": 0.075,
+          "applied_weight": 0.075,
+          "override_score": 9,
+          "system_score": 9,
+          "band": "Excellent",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Working Capital Cycle",
+              "system_score": 9,
+              "band": "Excellent"
+            },
+            "reasoning_box": {
+              "text": "9.7 days, Excellent. Sponsor-funded B2B collections are fast. Watch the unexplained step down from 10 days to 5 days from FY31 in the plan."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≤ 15 Days"
+              },
+              {
+                "band": "Good",
+                "definition": "≤ 40 Days"
+              },
+              {
+                "band": "Fair",
+                "definition": "≤ 70 Days"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": "Negative search result across Entrackr, Inc42, Digital Health News and Business Standard",
+              "source_date": "2026-07-30",
+              "diligence_ask": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence."
+            },
+            "override_form": {
+              "override_score": 9,
+              "reason": null
+            }
+          },
+          "reasoning": "9.7 days, Excellent. Sponsor-funded B2B collections are fast. Watch the unexplained step down from 10 days to 5 days from FY31 in the plan.",
+          "value_display": "Excellent",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Working Capital Cycle was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Negative search result across Entrackr, Inc42, Digital Health News and Business Standard",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≤ 15 Days",
+              "Good": "≤ 40 Days",
+              "Fair": "≤ 70 Days",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.075,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "B.9",
+          "name": "Debt Level",
+          "weight": 0.05,
+          "applied_weight": 0.05,
+          "override_score": 9,
+          "system_score": 9,
+          "band": "Excellent",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Debt Level",
+              "system_score": 9,
+              "band": "Excellent"
+            },
+            "reasoning_box": {
+              "text": "4.9%, Excellent. ₹1.33 Cr of borrowings at 12%, fully amortised by FY28. Leverage is not an issue here."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≤ 10 %"
+              },
+              {
+                "band": "Good",
+                "definition": "≤ 20 %"
+              },
+              {
+                "band": "Fair",
+                "definition": "≤ 40 %"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": null,
+              "source_date": "2026-07-30",
+              "diligence_ask": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence."
+            },
+            "override_form": {
+              "override_score": 9,
+              "reason": null
+            }
+          },
+          "reasoning": "4.9%, Excellent. ₹1.33 Cr of borrowings at 12%, fully amortised by FY28. Leverage is not an issue here.",
+          "value_display": "Excellent",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Debt Level was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≤ 10 %",
+              "Good": "≤ 20 %",
+              "Fair": "≤ 40 %",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.05,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        }
+      ]
+    },
+    {
+      "code": "C",
+      "name": "Business Quality",
+      "weight": 0.1,
+      "applied_weight": 0.1,
+      "override_score": 6.6000000000000005,
+      "system_score": 6.6000000000000005,
+      "band": "Good",
+      "is_overridden": false,
+      "not_enough_information": false,
+      "children": [
+        {
+          "code": "C.1",
+          "name": "Company Age",
+          "weight": 0.1,
+          "applied_weight": 0.13333333333333333,
+          "override_score": 5,
+          "system_score": 5,
+          "band": "Fair",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Company Age",
+              "system_score": 5,
+              "band": "Fair"
+            },
+            "reasoning_box": {
+              "text": "Nine years as at 30-Jul-2026. The Series A ideal band is 2–6 years and the Fair tolerance runs to 9, so this lands exactly on the Fair boundary. The company's own timeline explains it: 2017–2023 was B2C validation, and B2B product-market fit was only reached from 2023. A nine-year-old company raising a ₹60 Cr Series A is a genuine flag — it means six years produced little scale."
+            },
+            "predefined_system_rubric": null,
+            "extracted_source_data": {
+              "source_document": "Digital Health News — \"Healthtech Startup Zyla Raises $4Mn Series A\"",
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 5,
+              "reason": null
+            }
+          },
+          "reasoning": "Nine years as at 30-Jul-2026. The Series A ideal band is 2–6 years and the Fair tolerance runs to 9, so this lands exactly on the Fair boundary. The company's own timeline explains it: 2017–2023 was B2C validation, and B2B product-market fit was only reached from 2023. A nine-year-old company raising a ₹60 Cr Series A is a genuine flag — it means six years produced little scale.",
+          "value_display": "Fair",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Company Age was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Digital Health News — \"Healthtech Startup Zyla Raises $4Mn Series A\"",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.1,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "C.2",
+          "name": "Revenue Predictability",
+          "weight": 0.2,
+          "applied_weight": 0.26666666666666666,
+          "override_score": 9,
+          "system_score": 9,
+          "band": "Excellent",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Revenue Predictability",
+              "system_score": 9,
+              "band": "Excellent"
+            },
+            "reasoning_box": {
+              "text": "82.2% from corporate and domestic-insurance contracts — Excellent band. But this is a revenue-line classification, not a contract read: no tenor, notice period or renewal term appears in the model. Corporate wellness budgets that re-tender annually are repeat, not recurring. Sight the five largest contracts."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 65 %"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ 45 %"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ 20 %"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": "Digital Health News — Series A coverage, quoting the founder",
+              "source_date": "2026-07-30",
+              "diligence_ask": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence."
+            },
+            "override_form": {
+              "override_score": 9,
+              "reason": null
+            }
+          },
+          "reasoning": "82.2% from corporate and domestic-insurance contracts — Excellent band. But this is a revenue-line classification, not a contract read: no tenor, notice period or renewal term appears in the model. Corporate wellness budgets that re-tender annually are repeat, not recurring. Sight the five largest contracts.",
+          "value_display": "Excellent",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Revenue Predictability was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Digital Health News — Series A coverage, quoting the founder",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 65 %",
+              "Good": "≥ 45 %",
+              "Fair": "≥ 20 %",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.2,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "C.3",
+          "name": "Competitive Moat",
+          "weight": 0.2,
+          "applied_weight": 0.26666666666666666,
+          "override_score": 6.000000000000001,
+          "system_score": 6.000000000000001,
+          "band": "Fair",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "children": [
+            {
+              "code": "C.3.a",
+              "name": "Proprietary IP & Technology",
+              "weight": 0.2,
+              "applied_weight": 0.5,
+              "override_score": 7,
+              "system_score": 7,
+              "band": "Good",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Proprietary IP & Technology",
+                  "system_score": 7,
+                  "band": "Good"
+                },
+                "reasoning_box": {
+                  "text": "Genuinely proprietary domain layer with clinician-in-the-loop validation on millions of interactions, and the core know-how is held in-house — that is the Good anchor. Not Excellent: no granted patent or registered IP is evidenced, and there is no evidence of enforcement. The company's own \"data moat\" claim is plausible but unquantified — ask how many labelled clinical interactions exist and who owns the labels."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "Granted patents or registered IP central to the product, or a proprietary data asset a competitor could not rebuild — and the company has shown willingness to enforce it."
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "Filed applications, or genuinely proprietary technology giving a lead time of more than 12 months, with the core know-how held in-house."
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "Accumulated know-how and process advantage that a well-funded competitor could replicate within 6–12 months."
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "Off-the-shelf or licensed stack with nothing proprietary; the product is a configuration of tools anyone can buy."
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "Inc42 and Digital Health News",
+                  "source_date": "2026-07-30",
+                  "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward."
+                },
+                "override_form": {
+                  "override_score": 7,
+                  "reason": null
+                }
+              },
+              "reasoning": "Genuinely proprietary domain layer with clinician-in-the-loop validation on millions of interactions, and the core know-how is held in-house — that is the Good anchor. Not Excellent: no granted patent or registered IP is evidenced, and there is no evidence of enforcement. The company's own \"data moat\" claim is plausible but unquantified — ask how many labelled clinical interactions exist and who owns the labels.",
+              "value_display": "Good",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Proprietary IP & Technology was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "Inc42 and Digital Health News",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward.",
+                  "retrieved_on": "2026-07-30",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "Granted patents or registered IP central to the product, or a proprietary data asset a competitor could not rebuild — and the company has shown willingness to enforce it.",
+                  "Good": "Filed applications, or genuinely proprietary technology giving a lead time of more than 12 months, with the core know-how held in-house.",
+                  "Fair": "Accumulated know-how and process advantage that a well-funded competitor could replicate within 6–12 months.",
+                  "Poor": "Off-the-shelf or licensed stack with nothing proprietary; the product is a configuration of tools anyone can buy."
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.2,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "C.3.b",
+              "name": "Network Effects",
+              "weight": 0.2,
+              "applied_weight": 0.5,
+              "override_score": 5,
+              "system_score": 5,
+              "band": "Fair",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Network Effects",
+                  "system_score": 5,
+                  "band": "Fair"
+                },
+                "reasoning_box": {
+                  "text": "There is no genuine network effect here. Low CAC comes from sponsor-funded distribution, not from users making the product better for other users. The family repeat-usage loop is one-sided and local, which is the Fair anchor. The Poor anchor (\"growth is bought\") does not fit because growth is not bought — it is channelled."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "Each additional user measurably improves the product for the rest, evidenced by cohort retention improving and CAC falling as the base grows."
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "Real cross-side benefit with marketplace liquidity established in the core geography or category, though not yet visible in CAC."
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "Network effects are local or one-sided — they exist within a city or a category but do not travel."
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "No network effect. Growth is bought, and the tenth thousand customer gets no more value than the first."
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "Inc42 and Digital Health News",
+                  "source_date": "2026-07-30",
+                  "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward."
+                },
+                "override_form": {
+                  "override_score": 5,
+                  "reason": null
+                }
+              },
+              "reasoning": "There is no genuine network effect here. Low CAC comes from sponsor-funded distribution, not from users making the product better for other users. The family repeat-usage loop is one-sided and local, which is the Fair anchor. The Poor anchor (\"growth is bought\") does not fit because growth is not bought — it is channelled.",
+              "value_display": "Fair",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Network Effects was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "Inc42 and Digital Health News",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward.",
+                  "retrieved_on": "2026-07-30",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "Each additional user measurably improves the product for the rest, evidenced by cohort retention improving and CAC falling as the base grows.",
+                  "Good": "Real cross-side benefit with marketplace liquidity established in the core geography or category, though not yet visible in CAC.",
+                  "Fair": "Network effects are local or one-sided — they exist within a city or a category but do not travel.",
+                  "Poor": "No network effect. Growth is bought, and the tenth thousand customer gets no more value than the first."
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.2,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "C.3.c",
+              "name": "Brand Strength",
+              "weight": 0.2,
+              "applied_weight": 0,
+              "override_score": null,
+              "system_score": null,
+              "band": "Poor",
+              "is_overridden": false,
+              "not_enough_information": true,
+              "drawer": null,
+              "value_display": "Poor",
+              "evidence_tier": "Not Evidenced",
+              "confidence": "low",
+              "confidence_reason": "No direct source evidence found for Brand Strength.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [],
+              "scoring_criteria": null,
+              "weights": {
+                "weight_within_parent": 0.2,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "C.3.d",
+              "name": "Customer Stickiness",
+              "weight": 0.2,
+              "applied_weight": 0,
+              "override_score": null,
+              "system_score": null,
+              "band": "Poor",
+              "is_overridden": false,
+              "not_enough_information": true,
+              "drawer": null,
+              "value_display": "Poor",
+              "evidence_tier": "Not Evidenced",
+              "confidence": "low",
+              "confidence_reason": "No direct source evidence found for Customer Stickiness.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [],
+              "scoring_criteria": null,
+              "weights": {
+                "weight_within_parent": 0.2,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "C.3.e",
+              "name": "Scale & Cost Advantage",
+              "weight": 0.2,
+              "applied_weight": 0,
+              "override_score": null,
+              "system_score": null,
+              "band": "Poor",
+              "is_overridden": false,
+              "not_enough_information": true,
+              "drawer": null,
+              "value_display": "Poor",
+              "evidence_tier": "Not Evidenced",
+              "confidence": "low",
+              "confidence_reason": "No direct source evidence found for Scale & Cost Advantage.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [],
+              "scoring_criteria": null,
+              "weights": {
+                "weight_within_parent": 0.2,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            }
+          ]
+        },
+        {
+          "code": "C.4",
+          "name": "Scalability",
+          "weight": 0.15,
+          "applied_weight": 0,
+          "override_score": null,
+          "system_score": null,
+          "band": "Poor",
+          "is_overridden": false,
+          "not_enough_information": true,
+          "drawer": null,
+          "value_display": "Poor",
+          "evidence_tier": "Not Evidenced",
+          "confidence": "low",
+          "confidence_reason": "No direct source evidence found for Scalability.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.15,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "C.5",
+          "name": "Pricing Power",
+          "weight": 0.1,
+          "applied_weight": 0.13333333333333333,
+          "override_score": 3,
+          "system_score": 3,
+          "band": "Poor",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Pricing Power",
+              "system_score": 3,
+              "band": "Poor"
+            },
+            "reasoning_box": {
+              "text": "-239 bps on CM1, or -865 bps on the deck's gross-margin definition. Poor on either. Margin fell while revenue grew 83% because the mix moved to lower-margin corporate work — ARPU per life more than halved. The plan then assumes uninterrupted margin expansion every year to FY33 with no stated mechanism. This is the single biggest forecast question."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 300 bps"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ 100 bps"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ 0 bps"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": null,
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Poor (3.0) band holds, rather than moving to Fair (5.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 3,
+              "reason": null
+            }
+          },
+          "reasoning": "-239 bps on CM1, or -865 bps on the deck's gross-margin definition. Poor on either. Margin fell while revenue grew 83% because the mix moved to lower-margin corporate work — ARPU per life more than halved. The plan then assumes uninterrupted margin expansion every year to FY33 with no stated mechanism. This is the single biggest forecast question.",
+          "value_display": "Poor",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Pricing Power was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 300 bps",
+              "Good": "≥ 100 bps",
+              "Fair": "≥ 0 bps",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.1,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "C.6",
+          "name": "Client Concentration",
+          "weight": 0.1,
+          "applied_weight": 0.13333333333333333,
+          "override_score": 9,
+          "system_score": 9,
+          "band": "Excellent",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Client Concentration",
+              "system_score": 9,
+              "band": "Excellent"
+            },
+            "reasoning_box": {
+              "text": "40.8% — Excellent band (Series A cut 45%), but this is a BOUNDED ESTIMATE, not an actual. No client-level revenue table exists in the model. The build deliberately takes the most concentrated reading of every channel: the whole domestic-insurance line as one insurer, the whole pharma line as one partner, the whole B2B2C line as one account, plus the two largest corporates at 2.5x and 2.0x the average corporate account. On a looser reading it is c.35%. The conclusion is therefore robust to the assumption — concentration is not severe — but the score is close to the band edge and must be replaced with the actual top-ten table. The teaser's Corp 1–10 table was deliberately NOT used: those accounts carry 1.0k–4.0k lives against a c.4.1k average, so it is an adoption-rate sample and would have flattered the answer."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≤ 45 %"
+              },
+              {
+                "band": "Good",
+                "definition": "≤ 65 %"
+              },
+              {
+                "band": "Fair",
+                "definition": "≤ 80 %"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": "M. Cover_Zyla Health",
+              "source_date": "2026-07-01",
+              "diligence_ask": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence."
+            },
+            "override_form": {
+              "override_score": 9,
+              "reason": null
+            }
+          },
+          "reasoning": "40.8% — Excellent band (Series A cut 45%), but this is a BOUNDED ESTIMATE, not an actual. No client-level revenue table exists in the model. The build deliberately takes the most concentrated reading of every channel: the whole domestic-insurance line as one insurer, the whole pharma line as one partner, the whole B2B2C line as one account, plus the two largest corporates at 2.5x and 2.0x the average corporate account. On a looser reading it is c.35%. The conclusion is therefore robust to the assumption — concentration is not severe — but the score is close to the band edge and must be replaced with the actual top-ten table. The teaser's Corp 1–10 table was deliberately NOT used: those accounts carry 1.0k–4.0k lives against a c.4.1k average, so it is an adoption-rate sample and would have flattered the answer.",
+          "value_display": "Excellent",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Client Concentration was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "M. Cover_Zyla Health",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence.",
+              "retrieved_on": "2026-07-01",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≤ 45 %",
+              "Good": "≤ 65 %",
+              "Fair": "≤ 80 %",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.1,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "C.7",
+          "name": "Supplier Concentration",
+          "weight": 0.1,
+          "applied_weight": 0,
+          "override_score": null,
+          "system_score": null,
+          "band": "Poor",
+          "is_overridden": false,
+          "not_enough_information": true,
+          "drawer": null,
+          "value_display": "Poor",
+          "evidence_tier": "Not Evidenced",
+          "confidence": "low",
+          "confidence_reason": "No direct source evidence found for Supplier Concentration.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.1,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "C.8",
+          "name": "Government Regulation",
+          "weight": 0.05,
+          "applied_weight": 0.06666666666666667,
+          "override_score": 5,
+          "system_score": 5,
+          "band": "Fair",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Government Regulation",
+              "system_score": 5,
+              "band": "Fair"
+            },
+            "reasoning_box": {
+              "text": "Fair. Policy direction is a clear and well-documented tailwind — the teaser sets out IRDAI's \"Insurance for All by 2047\" (2022), the National Health Claims Exchange (2023), the Bima Trinity of Bima Sugam, Vistaar and Vahak (2024), and 100% insurance FDI with composite licences under the new Insurance Bill (2025), alongside Ayushman Bharat Digital Mission and ABHA interoperability which our external sources cite as the primary driver of Indian digital health growth. Zyla is also not itself a licensed entity: it does not underwrite, dispense or operate a hospital, so it captures the tailwind without carrying the licensing burden, and it holds SOC 2 and ISO 27001. BUT IT IS NOT GOOD, FOR TWO REASONS. It employs doctors delivering remote clinical advice, which brings it inside the Telemedicine Practice Guidelines; and it processes sensitive personal health data at very large scale (2L+ paid lives) under a DPDP Act regime whose operating rules are still bedding in. A licensed-adjacent sector with periodic compliance obligations and a known change in the pipeline whose impact is not yet clear is precisely the Fair anchor. ASK: the DPDP compliance assessment and consent architecture; medical-council registration status of the clinical team; the SOC 2 report and ISO 27001 certificate with dates; and the data-processing agreements with insurer clients and the liability they carry. Supporting evidence recorded at Evidence & Workings row 72."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "No licensing regime, no price control, no pending adverse legislation; regulation is, if anything, a tailwind."
+              },
+              {
+                "band": "Good",
+                "definition": "Light-touch registration or self-certification only, with a stable regime and nothing material in the pipeline."
+              },
+              {
+                "band": "Fair",
+                "definition": "A licensed sector with periodic compliance obligations, or a known change in the pipeline whose impact is not yet clear."
+              },
+              {
+                "band": "Poor",
+                "definition": "Price-controlled or heavily licensed, dependent on a subsidy or approval that could be withdrawn, or facing live adverse regulatory action."
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": "Grand View Research (ABDM as growth driver)",
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 5,
+              "reason": null
+            }
+          },
+          "reasoning": "Fair. Policy direction is a clear and well-documented tailwind — the teaser sets out IRDAI's \"Insurance for All by 2047\" (2022), the National Health Claims Exchange (2023), the Bima Trinity of Bima Sugam, Vistaar and Vahak (2024), and 100% insurance FDI with composite licences under the new Insurance Bill (2025), alongside Ayushman Bharat Digital Mission and ABHA interoperability which our external sources cite as the primary driver of Indian digital health growth. Zyla is also not itself a licensed entity: it does not underwrite, dispense or operate a hospital, so it captures the tailwind without carrying the licensing burden, and it holds SOC 2 and ISO 27001. BUT IT IS NOT GOOD, FOR TWO REASONS. It employs doctors delivering remote clinical advice, which brings it inside the Telemedicine Practice Guidelines; and it processes sensitive personal health data at very large scale (2L+ paid lives) under a DPDP Act regime whose operating rules are still bedding in. A licensed-adjacent sector with periodic compliance obligations and a known change in the pipeline whose impact is not yet clear is precisely the Fair anchor. ASK: the DPDP compliance assessment and consent architecture; medical-council registration status of the clinical team; the SOC 2 report and ISO 27001 certificate with dates; and the data-processing agreements with insurer clients and the liability they carry. Supporting evidence recorded at Evidence & Workings row 72.",
+          "value_display": "Fair",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Government Regulation was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Grand View Research (ABDM as growth driver)",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "No licensing regime, no price control, no pending adverse legislation; regulation is, if anything, a tailwind.",
+              "Good": "Light-touch registration or self-certification only, with a stable regime and nothing material in the pipeline.",
+              "Fair": "A licensed sector with periodic compliance obligations, or a known change in the pipeline whose impact is not yet clear.",
+              "Poor": "Price-controlled or heavily licensed, dependent on a subsidy or approval that could be withdrawn, or facing live adverse regulatory action."
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.05,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        }
+      ]
+    },
+    {
+      "code": "D",
+      "name": "Deal Dynamics",
+      "weight": 0.1,
+      "applied_weight": 0.1,
+      "override_score": 7.470588235294118,
+      "system_score": 7.470588235294118,
+      "band": "Good",
+      "is_overridden": false,
+      "not_enough_information": false,
+      "children": [
+        {
+          "code": "D.1",
+          "name": "Raise vs Last Round",
+          "weight": 0.15,
+          "applied_weight": 0.17647058823529413,
+          "override_score": 9,
+          "system_score": 9,
+          "band": "Excellent",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Raise vs Last Round",
+              "system_score": 9,
+              "band": "Excellent"
+            },
+            "reasoning_box": {
+              "text": "1.60x against the last priced round — Excellent band (ideal 1.5x–3.0x). But 6.0x against the ₹10 Cr the balance sheet shows was raised in FY26, which would be Poor. The FY26 infusion is undocumented. Ask what it was, from whom and at what price; the answer swings this parameter by four score points."
+            },
+            "predefined_system_rubric": null,
+            "extracted_source_data": {
+              "source_document": "Exfinity Venture Partners — investor's own media page",
+              "source_date": "2026-07-30",
+              "diligence_ask": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence."
+            },
+            "override_form": {
+              "override_score": 9,
+              "reason": null
+            }
+          },
+          "reasoning": "1.60x against the last priced round — Excellent band (ideal 1.5x–3.0x). But 6.0x against the ₹10 Cr the balance sheet shows was raised in FY26, which would be Poor. The FY26 infusion is undocumented. Ask what it was, from whom and at what price; the answer swings this parameter by four score points.",
+          "value_display": "Excellent",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Raise vs Last Round was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Exfinity Venture Partners — investor's own media page",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.15,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "D.2",
+          "name": "Raise vs Total Raised",
+          "weight": 0.15,
+          "applied_weight": 0.17647058823529413,
+          "override_score": 3,
+          "system_score": 3,
+          "band": "Poor",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Raise vs Total Raised",
+              "system_score": 3,
+              "band": "Poor"
+            },
+            "reasoning_box": {
+              "text": "182.9% — Poor. The ask is nearly twice all the equity ever taken in. On the external estimate of total capital raised (c.₹51 Cr) it would be 115% and score Fair. The ₹18 Cr difference between the balance sheet and the external funding record needs reconciling."
+            },
+            "predefined_system_rubric": null,
+            "extracted_source_data": {
+              "source_document": "Entrepreneur India — \"Zyla Health Raises Series A Funding To Accelerate Growth\"",
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Poor (3.0) band holds, rather than moving to Fair (5.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 3,
+              "reason": null
+            }
+          },
+          "reasoning": "182.9% — Poor. The ask is nearly twice all the equity ever taken in. On the external estimate of total capital raised (c.₹51 Cr) it would be 115% and score Fair. The ₹18 Cr difference between the balance sheet and the external funding record needs reconciling.",
+          "value_display": "Poor",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Raise vs Total Raised was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Entrepreneur India — \"Zyla Health Raises Series A Funding To Accelerate Growth\"",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Poor (3.0) band holds, rather than moving to Fair (5.0) or being revised downward.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.15,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "D.3",
+          "name": "Existing Investor Contribution",
+          "weight": 0.2,
+          "applied_weight": 0.23529411764705885,
+          "override_score": 9,
+          "system_score": 9,
+          "band": "Excellent",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Existing Investor Contribution",
+              "system_score": 9,
+              "band": "Excellent"
+            },
+            "reasoning_box": {
+              "text": "INFERENCE — MUST BE CONFIRMED. ₹30 Cr of ₹60 Cr is 50%, which is Excellent (Series A cut 40%). But the deck says \"committed / closed\" without saying by whom. If that ₹30 Cr is existing investors following on, the Excellent score is right and it is a strong conviction signal. If it is new money, this parameter is not evidenced at all and should be blanked. Get the commitment letters and the investor names before this score is relied on."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 40 %"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ 25 %"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ 10 %"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": "M. Cover_Zyla Health",
+              "source_date": "2026-07-01",
+              "diligence_ask": "Already at the top band on current evidence. Confirm the following in due diligence so the rating holds: INFERENCE — MUST BE CONFIRMED."
+            },
+            "override_form": {
+              "override_score": 9,
+              "reason": null
+            }
+          },
+          "reasoning": "INFERENCE — MUST BE CONFIRMED. ₹30 Cr of ₹60 Cr is 50%, which is Excellent (Series A cut 40%). But the deck says \"committed / closed\" without saying by whom. If that ₹30 Cr is existing investors following on, the Excellent score is right and it is a strong conviction signal. If it is new money, this parameter is not evidenced at all and should be blanked. Get the commitment letters and the investor names before this score is relied on.",
+          "value_display": "Excellent",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Existing Investor Contribution was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "M. Cover_Zyla Health",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "Already at the top band on current evidence. Confirm the following in due diligence so the rating holds: INFERENCE — MUST BE CONFIRMED.",
+              "retrieved_on": "2026-07-01",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 40 %",
+              "Good": "≥ 25 %",
+              "Fair": "≥ 10 %",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.2,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "D.4",
+          "name": "Valuation Expectations",
+          "weight": 0.15,
+          "applied_weight": 0.17647058823529413,
+          "override_score": 9,
+          "system_score": 9,
+          "band": "Excellent",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Valuation Expectations",
+              "system_score": 9,
+              "band": "Excellent"
+            },
+            "reasoning_box": {
+              "text": "-41.2% — a discount to the peer median, so Excellent (lower is better). Read this with care: all four comps are 2021–23 rounds struck before the healthtech re-rating, so 21.8x is very likely generous and the true discount is smaller. Also unresolved: whether ₹350 Cr is pre- or post-money (post-money would give 10.6x and a wider discount), and whether the raise is ₹60 Cr or the ₹50 Cr the same sheet shows."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≤ 0 %"
+              },
+              {
+                "band": "Good",
+                "definition": "≤ 25 %"
+              },
+              {
+                "band": "Fair",
+                "definition": "≤ 60 %"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": "Inc42 and BW Disrupt",
+              "source_date": "2026-07-30",
+              "diligence_ask": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence."
+            },
+            "override_form": {
+              "override_score": 9,
+              "reason": null
+            }
+          },
+          "reasoning": "-41.2% — a discount to the peer median, so Excellent (lower is better). Read this with care: all four comps are 2021–23 rounds struck before the healthtech re-rating, so 21.8x is very likely generous and the true discount is smaller. Also unresolved: whether ₹350 Cr is pre- or post-money (post-money would give 10.6x and a wider discount), and whether the raise is ₹60 Cr or the ₹50 Cr the same sheet shows.",
+          "value_display": "Excellent",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Valuation Expectations was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Inc42 and BW Disrupt",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≤ 0 %",
+              "Good": "≤ 25 %",
+              "Fair": "≤ 60 %",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.15,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "D.5",
+          "name": "Founder Dilution",
+          "weight": 0.1,
+          "applied_weight": 0,
+          "override_score": null,
+          "system_score": null,
+          "band": "Poor",
+          "is_overridden": false,
+          "not_enough_information": true,
+          "drawer": null,
+          "value_display": "Poor",
+          "evidence_tier": "Not Evidenced",
+          "confidence": "low",
+          "confidence_reason": "No direct source evidence found for Founder Dilution.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.1,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "D.6",
+          "name": "Founder Process Discipline",
+          "weight": 0.05,
+          "applied_weight": 0,
+          "override_score": null,
+          "system_score": null,
+          "band": "Poor",
+          "is_overridden": false,
+          "not_enough_information": true,
+          "drawer": null,
+          "value_display": "Poor",
+          "evidence_tier": "Not Evidenced",
+          "confidence": "low",
+          "confidence_reason": "No direct source evidence found for Founder Process Discipline.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.05,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "D.7",
+          "name": "Use of Proceeds",
+          "weight": 0.1,
+          "applied_weight": 0.11764705882352942,
+          "override_score": 9,
+          "system_score": 9,
+          "band": "Excellent",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Use of Proceeds",
+              "system_score": 9,
+              "band": "Excellent"
+            },
+            "reasoning_box": {
+              "text": "98.9% — Excellent (cut 80%). All three stated uses are growth and only ₹0.67 Cr goes to debt. Caveat: cash was nil at FY26 year end, so economically part of the round will plug working capital whatever the stated intent. This is the stated use, not the economic use."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 80 %"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ 60 %"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ 40 %"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": "M. Cover_Zyla Health",
+              "source_date": "2026-07-01",
+              "diligence_ask": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence."
+            },
+            "override_form": {
+              "override_score": 9,
+              "reason": null
+            }
+          },
+          "reasoning": "98.9% — Excellent (cut 80%). All three stated uses are growth and only ₹0.67 Cr goes to debt. Caveat: cash was nil at FY26 year end, so economically part of the round will plug working capital whatever the stated intent. This is the stated use, not the economic use.",
+          "value_display": "Excellent",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Use of Proceeds was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "M. Cover_Zyla Health",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence.",
+              "retrieved_on": "2026-07-01",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 80 %",
+              "Good": "≥ 60 %",
+              "Fair": "≥ 40 %",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.1,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "D.8",
+          "name": "Seller Motivation",
+          "weight": 0.1,
+          "applied_weight": 0.11764705882352942,
+          "override_score": 5,
+          "system_score": 5,
+          "band": "Fair",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Seller Motivation",
+              "system_score": 5,
+              "band": "Fair"
+            },
+            "reasoning_box": {
+              "text": "The story is genuinely good — specific, costed and partly executed, which on its own would be Good or better. But the Qualitative Anchors instruction for this parameter is explicit: short runway caps it at Fair however good the story, and cross-checking against B.7 shows nil months of liquid runway. Capped at Fair accordingly. If the ₹17.89 Cr investments balance proves liquid, runway is c.19.7 months and this should be revisited to Good."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "A specific, time-bound, board-approved use for the money (committed capex, a signed contract to fund, a defined market entry) with more than 12 months of runway — raising from strength."
+              },
+              {
+                "band": "Good",
+                "definition": "A credible growth need with a coherent plan, and enough runway that the timetable is not being set by the bank balance."
+              },
+              {
+                "band": "Fair",
+                "definition": "Vague or opportunistic — 'raising because the market is open' — with no specific plan for deployment."
+              },
+              {
+                "band": "Poor",
+                "definition": "Distress: under 6 months of runway, or an undisclosed motive such as founder fatigue, a shareholder dispute or a quiet search for an exit."
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": "hrnxt.com, reporting ETtech",
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 5,
+              "reason": null
+            }
+          },
+          "reasoning": "The story is genuinely good — specific, costed and partly executed, which on its own would be Good or better. But the Qualitative Anchors instruction for this parameter is explicit: short runway caps it at Fair however good the story, and cross-checking against B.7 shows nil months of liquid runway. Capped at Fair accordingly. If the ₹17.89 Cr investments balance proves liquid, runway is c.19.7 months and this should be revisited to Good.",
+          "value_display": "Fair",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Seller Motivation was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "hrnxt.com, reporting ETtech",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "A specific, time-bound, board-approved use for the money (committed capex, a signed contract to fund, a defined market entry) with more than 12 months of runway — raising from strength.",
+              "Good": "A credible growth need with a coherent plan, and enough runway that the timetable is not being set by the bank balance.",
+              "Fair": "Vague or opportunistic — 'raising because the market is open' — with no specific plan for deployment.",
+              "Poor": "Distress: under 6 months of runway, or an undisclosed motive such as founder fatigue, a shareholder dispute or a quiet search for an exit."
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.1,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        }
+      ]
+    },
+    {
+      "code": "E",
+      "name": "Sector Attractiveness",
+      "weight": 0.1,
+      "applied_weight": 0.1,
+      "override_score": 6.7749999999999995,
+      "system_score": 6.7749999999999995,
+      "band": "Good",
+      "is_overridden": false,
+      "not_enough_information": false,
+      "children": [
+        {
+          "code": "E.1",
+          "name": "Market Size & Growth",
+          "weight": 0.2,
+          "applied_weight": 0.2,
+          "override_score": 9,
+          "system_score": 9,
+          "band": "Excellent",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Market Size & Growth",
+              "system_score": 9,
+              "band": "Excellent"
+            },
+            "reasoning_box": {
+              "text": "Excellent band (cut US$10 Bn). Corroborated in scale by three further independent reports (IMARC US$16.1 Bn 2024, 6Wresearch US$11.2 Bn 2024, MRFR US$8.1 Bn 2024). The 2024 base is used rather than a forecast year, which is the conservative choice."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 10 US$ Bn"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ 3 US$ Bn"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ 1 US$ Bn"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": "Grand View Research — India Digital Health Market Report",
+              "source_date": "2026-07-30",
+              "diligence_ask": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence."
+            },
+            "override_form": {
+              "override_score": 9,
+              "reason": null
+            }
+          },
+          "reasoning": "Excellent band (cut US$10 Bn). Corroborated in scale by three further independent reports (IMARC US$16.1 Bn 2024, 6Wresearch US$11.2 Bn 2024, MRFR US$8.1 Bn 2024). The 2024 base is used rather than a forecast year, which is the conservative choice.",
+          "value_display": "Excellent",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Market Size & Growth was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Grand View Research — India Digital Health Market Report",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "Already at the top band (Excellent, 9.0) on current evidence — confirm no material facts remain undisclosed during due diligence.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 10 US$ Bn",
+              "Good": "≥ 3 US$ Bn",
+              "Fair": "≥ 1 US$ Bn",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.2,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "E.2",
+          "name": "Deal Velocity",
+          "weight": 0.175,
+          "applied_weight": 0.175,
+          "override_score": 7,
+          "system_score": 7,
+          "band": "Good",
+          "is_overridden": false,
+          "not_enough_information": true,
+          "drawer": null,
+          "value_display": "Good",
+          "evidence_tier": "Not Evidenced",
+          "confidence": "low",
+          "confidence_reason": "No direct source evidence found for Deal Velocity.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.175,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "E.3",
+          "name": "Deal Ticket Size",
+          "weight": 0.175,
+          "applied_weight": 0.175,
+          "override_score": 5,
+          "system_score": 5,
+          "band": "Fair",
+          "is_overridden": false,
+          "not_enough_information": true,
+          "drawer": null,
+          "value_display": "Fair",
+          "evidence_tier": "Not Evidenced",
+          "confidence": "low",
+          "confidence_reason": "No direct source evidence found for Deal Ticket Size.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.175,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "E.4",
+          "name": "Peer Tenor",
+          "weight": 0.075,
+          "applied_weight": 0.075,
+          "override_score": 7,
+          "system_score": 7,
+          "band": "Good",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Peer Tenor",
+              "system_score": 7,
+              "band": "Good"
+            },
+            "reasoning_box": {
+              "text": "7.5 years average, Good band (Excellent cut 8). Two of the three peers are well-established; the average is pulled down by PB Health, which is only 18 months old but is by far the best capitalised. Zyla at 9 years is older than the peer average."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≥ 8 Years"
+              },
+              {
+                "band": "Good",
+                "definition": "≥ 5 Years"
+              },
+              {
+                "band": "Fair",
+                "definition": "≥ 3 Years"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": "Business Standard",
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 7,
+              "reason": null
+            }
+          },
+          "reasoning": "7.5 years average, Good band (Excellent cut 8). Two of the three peers are well-established; the average is pulled down by PB Health, which is only 18 months old but is by far the best capitalised. Zyla at 9 years is older than the peer average.",
+          "value_display": "Good",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Peer Tenor was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Business Standard",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≥ 8 Years",
+              "Good": "≥ 5 Years",
+              "Fair": "≥ 3 Years",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.075,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "E.5",
+          "name": "Peer Raise Recency",
+          "weight": 0.075,
+          "applied_weight": 0.075,
+          "override_score": 5,
+          "system_score": 5,
+          "band": "Fair",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Peer Raise Recency",
+              "system_score": 5,
+              "band": "Fair"
+            },
+            "reasoning_box": {
+              "text": "22 months average, Fair band (cuts 9 / 18 / 30). BeatO's 44-month drought is the signal here: the best-funded pure-play chronic-care company in India has not raised since Nov-2022."
+            },
+            "predefined_system_rubric": [
+              {
+                "band": "Excellent",
+                "definition": "≤ 9 Months"
+              },
+              {
+                "band": "Good",
+                "definition": "≤ 18 Months"
+              },
+              {
+                "band": "Fair",
+                "definition": "≤ 30 Months"
+              },
+              {
+                "band": "Poor",
+                "definition": "Fails the Fair cut"
+              }
+            ],
+            "extracted_source_data": {
+              "source_document": "Business Standard",
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 5,
+              "reason": null
+            }
+          },
+          "reasoning": "22 months average, Fair band (cuts 9 / 18 / 30). BeatO's 44-month drought is the signal here: the best-funded pure-play chronic-care company in India has not raised since Nov-2022.",
+          "value_display": "Fair",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Peer Raise Recency was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Business Standard",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": {
+            "basis": "Anchor-scored",
+            "bands": {
+              "Excellent": "≤ 9 Months",
+              "Good": "≤ 18 Months",
+              "Fair": "≤ 30 Months",
+              "Poor": "Fails the Fair cut"
+            },
+            "evidence_required": null
+          },
+          "weights": {
+            "weight_within_parent": 0.075,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "E.6",
+          "name": "Active Investors",
+          "weight": 0.175,
+          "applied_weight": 0.175,
+          "override_score": 7,
+          "system_score": 7,
+          "band": "Good",
+          "is_overridden": false,
+          "not_enough_information": true,
+          "drawer": null,
+          "value_display": "Good",
+          "evidence_tier": "Not Evidenced",
+          "confidence": "low",
+          "confidence_reason": "No direct source evidence found for Active Investors.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.175,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "E.7",
+          "name": "News Flow & Sentiment",
+          "weight": 0.125,
+          "applied_weight": 0.125,
+          "override_score": 6,
+          "system_score": 6,
+          "band": "Fair",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "children": [
+            {
+              "code": "E.7.a",
+              "name": "Peer News Flow",
+              "weight": 0.5,
+              "applied_weight": 0.5,
+              "override_score": 5,
+              "system_score": 5,
+              "band": "Fair",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Peer News Flow",
+                  "system_score": 5,
+                  "band": "Fair"
+                },
+                "reasoning_box": {
+                  "text": "One distinct positive named-peer capital event in the twelve months to Jul-2026 — the PB Health / Fitterfly acquisition. Fair band (cuts 5 / 3 / 1). The window was widened from six to twelve months (Assumption B.8) because a strict Feb–Jul 2026 window returned zero evidenced peer events; on that strict basis the score would have been Poor. The thinness is itself the finding."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "≥ 5 Count"
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "≥ 3 Count"
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "≥ 1 Count"
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "Fails the Fair cut"
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "Inc42 and BW Disrupt",
+                  "source_date": "2026-07-30",
+                  "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward."
+                },
+                "override_form": {
+                  "override_score": 5,
+                  "reason": null
+                }
+              },
+              "reasoning": "One distinct positive named-peer capital event in the twelve months to Jul-2026 — the PB Health / Fitterfly acquisition. Fair band (cuts 5 / 3 / 1). The window was widened from six to twelve months (Assumption B.8) because a strict Feb–Jul 2026 window returned zero evidenced peer events; on that strict basis the score would have been Poor. The thinness is itself the finding.",
+              "value_display": "Fair",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Peer News Flow was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "Inc42 and BW Disrupt",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Fair (5.0) band holds, rather than moving to Good (7.0) or being revised downward.",
+                  "retrieved_on": "2026-07-30",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "≥ 5 Count",
+                  "Good": "≥ 3 Count",
+                  "Fair": "≥ 1 Count",
+                  "Poor": "Fails the Fair cut"
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.5,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            },
+            {
+              "code": "E.7.b",
+              "name": "Sector News Flow",
+              "weight": 0.5,
+              "applied_weight": 0.5,
+              "override_score": 7,
+              "system_score": 7,
+              "band": "Good",
+              "is_overridden": false,
+              "not_enough_information": false,
+              "drawer": {
+                "header": {
+                  "parameter_name": "Sector News Flow",
+                  "system_score": 7,
+                  "band": "Good"
+                },
+                "reasoning_box": {
+                  "text": "Four positive to two negative events, a ratio of 2.0 — Good band (cuts 3.0 / 1.5 / 0.8). Deliberately not scored Excellent: the structural story is intact but Indian healthtech is being crowded out of the capital allocation by AI and fintech, and that is a real headwind for this raise."
+                },
+                "predefined_system_rubric": [
+                  {
+                    "band": "Excellent",
+                    "definition": "≥ 3 x"
+                  },
+                  {
+                    "band": "Good",
+                    "definition": "≥ 1.5 x"
+                  },
+                  {
+                    "band": "Fair",
+                    "definition": "≥ 0.8 x"
+                  },
+                  {
+                    "band": "Poor",
+                    "definition": "Fails the Fair cut"
+                  }
+                ],
+                "extracted_source_data": {
+                  "source_document": "Entrackr",
+                  "source_date": "2026-07-30",
+                  "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward."
+                },
+                "override_form": {
+                  "override_score": 7,
+                  "reason": null
+                }
+              },
+              "reasoning": "Four positive to two negative events, a ratio of 2.0 — Good band (cuts 3.0 / 1.5 / 0.8). Deliberately not scored Excellent: the structural story is intact but Indian healthtech is being crowded out of the capital allocation by AI and fintech, and that is a real headwind for this raise.",
+              "value_display": "Good",
+              "evidence_tier": "Verified",
+              "confidence": "high",
+              "confidence_reason": "Sector News Flow was verified from source documents.",
+              "as_of": "August 2026",
+              "period_basis": "Actual",
+              "basis": null,
+              "so_what": null,
+              "alternative_reading": null,
+              "data_gaps": [],
+              "citations": [
+                {
+                  "source": "Entrackr",
+                  "source_type": "Company document",
+                  "source_rank": 2,
+                  "source_tier": 2,
+                  "locator": "",
+                  "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward.",
+                  "retrieved_on": "2026-07-30",
+                  "url": ""
+                }
+              ],
+              "scoring_criteria": {
+                "basis": "Anchor-scored",
+                "bands": {
+                  "Excellent": "≥ 3 x",
+                  "Good": "≥ 1.5 x",
+                  "Fair": "≥ 0.8 x",
+                  "Poor": "Fails the Fair cut"
+                },
+                "evidence_required": null
+              },
+              "weights": {
+                "weight_within_parent": 0.5,
+                "share_of_overall_score": null,
+                "contribution_to_score": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "F",
+      "name": "Sub-Sector Attractiveness",
+      "weight": 0.2,
+      "applied_weight": 0.2,
+      "override_score": 7.2,
+      "system_score": 7.2,
+      "band": "Good",
+      "is_overridden": false,
+      "not_enough_information": false,
+      "children": [
+        {
+          "code": "F.1",
+          "name": "Market Size & Growth",
+          "weight": 0.2,
+          "applied_weight": 0.2,
+          "override_score": 7,
+          "system_score": 7,
+          "band": "Good",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Market Size & Growth",
+              "system_score": 7,
+              "band": "Good"
+            },
+            "reasoning_box": {
+              "text": "US$5.0 Bn, Good band (Excellent cut US$10 Bn). Derived, because no India-specific digital chronic-care TAM is published. The 45% share is the weakest assumption in the assessment, but the top-down cross-check (US$8.3 Bn) lands in the same band so the score is not sensitive to it."
+            },
+            "predefined_system_rubric": null,
+            "extracted_source_data": {
+              "source_document": "Fortune Business Insights — Digital Health Market",
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 7,
+              "reason": null
+            }
+          },
+          "reasoning": "US$5.0 Bn, Good band (Excellent cut US$10 Bn). Derived, because no India-specific digital chronic-care TAM is published. The 45% share is the weakest assumption in the assessment, but the top-down cross-check (US$8.3 Bn) lands in the same band so the score is not sensitive to it.",
+          "value_display": "Good",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Market Size & Growth was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Fortune Business Insights — Digital Health Market",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.2,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "F.2",
+          "name": "Deal Velocity",
+          "weight": 0.2,
+          "applied_weight": 0.2,
+          "override_score": 9,
+          "system_score": 9,
+          "band": "Excellent",
+          "is_overridden": false,
+          "not_enough_information": true,
+          "drawer": null,
+          "value_display": "Excellent",
+          "evidence_tier": "Not Evidenced",
+          "confidence": "low",
+          "confidence_reason": "No direct source evidence found for Deal Velocity.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.2,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "F.3",
+          "name": "Deal Ticket Size",
+          "weight": 0.2,
+          "applied_weight": 0.2,
+          "override_score": 5,
+          "system_score": 5,
+          "band": "Fair",
+          "is_overridden": false,
+          "not_enough_information": true,
+          "drawer": null,
+          "value_display": "Fair",
+          "evidence_tier": "Not Evidenced",
+          "confidence": "low",
+          "confidence_reason": "No direct source evidence found for Deal Ticket Size.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.2,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "F.4",
+          "name": "Peer Tenor",
+          "weight": 0.1,
+          "applied_weight": 0.1,
+          "override_score": 7,
+          "system_score": 7,
+          "band": "Good",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Peer Tenor",
+              "system_score": 7,
+              "band": "Good"
+            },
+            "reasoning_box": {
+              "text": "7.5 years, Good band. The peer set is common to E.4 and F.4 because the deal database resolves both Zyla's sector and its clubbed sub-sector to \"Healthtech\". All three peers — PB Health, Fitterfly, BeatO — are chronic-care players, so the set is if anything a better fit for the sub-sector than the sector."
+            },
+            "predefined_system_rubric": null,
+            "extracted_source_data": {
+              "source_document": "Business Standard",
+              "source_date": "2026-07-30",
+              "diligence_ask": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward."
+            },
+            "override_form": {
+              "override_score": 7,
+              "reason": null
+            }
+          },
+          "reasoning": "7.5 years, Good band. The peer set is common to E.4 and F.4 because the deal database resolves both Zyla's sector and its clubbed sub-sector to \"Healthtech\". All three peers — PB Health, Fitterfly, BeatO — are chronic-care players, so the set is if anything a better fit for the sub-sector than the sector.",
+          "value_display": "Good",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Peer Tenor was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Business Standard",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "No specific evidence gap is called out in the current material for this parameter. Independently verify the underlying evidence in due diligence to confirm the Good (7.0) band holds, rather than moving to Excellent (9.0) or being revised downward.",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.1,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "F.5",
+          "name": "Peer Raise Recency",
+          "weight": 0.1,
+          "applied_weight": 0.1,
+          "override_score": 5,
+          "system_score": 5,
+          "band": "Fair",
+          "is_overridden": false,
+          "not_enough_information": false,
+          "drawer": {
+            "header": {
+              "parameter_name": "Peer Raise Recency",
+              "system_score": 5,
+              "band": "Fair"
+            },
+            "reasoning_box": {
+              "text": "22 months, Fair band. See the note at E.5 — BeatO's 44-month gap without a raise is the material signal for this sub-sector."
+            },
+            "predefined_system_rubric": null,
+            "extracted_source_data": {
+              "source_document": "Business Standard",
+              "source_date": "2026-07-30",
+              "diligence_ask": "Confirm the gap noted in diligence — See the note at E.5 — BeatO's 44-month gap without a raise is the material signal for this sub-sector. — to verify whether this parameter should move from Fair (5.0) to Good (7.0)."
+            },
+            "override_form": {
+              "override_score": 5,
+              "reason": null
+            }
+          },
+          "reasoning": "22 months, Fair band. See the note at E.5 — BeatO's 44-month gap without a raise is the material signal for this sub-sector.",
+          "value_display": "Fair",
+          "evidence_tier": "Verified",
+          "confidence": "high",
+          "confidence_reason": "Peer Raise Recency was verified from source documents.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [
+            {
+              "source": "Business Standard",
+              "source_type": "Company document",
+              "source_rank": 2,
+              "source_tier": 2,
+              "locator": "",
+              "quote": "Confirm the gap noted in diligence — See the note at E.5 — BeatO's 44-month gap without a raise is the material signal for this sub-sector. — to verify whether this parameter should move from Fair (5.0) to Good (7.0).",
+              "retrieved_on": "2026-07-30",
+              "url": ""
+            }
+          ],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.1,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        },
+        {
+          "code": "F.6",
+          "name": "Active Investors",
+          "weight": 0.2,
+          "applied_weight": 0.2,
+          "override_score": 9,
+          "system_score": 9,
+          "band": "Excellent",
+          "is_overridden": false,
+          "not_enough_information": true,
+          "drawer": null,
+          "value_display": "Excellent",
+          "evidence_tier": "Not Evidenced",
+          "confidence": "low",
+          "confidence_reason": "No direct source evidence found for Active Investors.",
+          "as_of": "August 2026",
+          "period_basis": "Actual",
+          "basis": null,
+          "so_what": null,
+          "alternative_reading": null,
+          "data_gaps": [],
+          "citations": [],
+          "scoring_criteria": null,
+          "weights": {
+            "weight_within_parent": 0.2,
+            "share_of_overall_score": null,
+            "contribution_to_score": null
+          }
+        }
+      ]
+    }
+  ]
+}

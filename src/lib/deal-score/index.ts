@@ -1,0 +1,120 @@
+export type {
+  Citation,
+  DealBand,
+  DealFlag,
+  DealInput,
+  DealMandate,
+  DealMove,
+  DealReport,
+  FlagKind,
+  LeafBand,
+  LeafEvidence,
+  MeasuredFact,
+  Rubric,
+  ScoreNode,
+  ScoredBranch,
+  ScoredLeaf,
+  ScoredRow,
+} from './types'
+export { DEAL_FRAMEWORK } from './framework'
+export { scoreDeal, findRow, isBranch, projectedCategoryLift, projectedMoveLift } from './score'
+export { buildDealReportFromApi } from './api-adapter'
+export { novatechCase } from './cases/novatech'
+export {
+  DEAL_BAND_CUT,
+  LEAF_SCORE,
+  bandFromScore,
+  dealBandFromScore,
+  nextDealBand,
+} from './bands'
+export {
+  ancestorsOf,
+  beatsForLeaf,
+  categoryLine,
+  collectLeaves,
+  contradictionSource,
+  findMove,
+  flagHeading,
+  flaggedIds,
+  formatMeasured,
+  formatMoveLift,
+  formatScore,
+  formatWeight,
+  judgmentLine,
+  lookParts,
+  lookSentence,
+  lookWord,
+  advancementTarget,
+  nextMoves,
+  printBandStep,
+  printLook,
+  printMoveAction,
+  printMoveButton,
+  printName,
+  printSentence,
+  printSourceLine,
+  profileSuggestions,
+  scoredCategories,
+  scoreSuggestions,
+  shownFlags,
+  sourceKind,
+  sourceRef,
+  sourceRefs,
+  trailFor,
+  weightLine,
+} from './reading'
+export { replyToScoreAsk } from './ask'
+export { valueDeal } from './valuation/build'
+export { matchInvestors, roleForType } from './investors/build'
+export {
+  beatsForInvestorPointer,
+  findInvestorType,
+  formatCheck,
+  formatRole,
+  investorHeadlineParts,
+  investorSuggestions,
+  parseInvestorPointer,
+} from './investors/reading'
+export {
+  beatsForValuationPointer,
+  formatCr,
+  formatCrRange,
+  formatDiscount,
+  formatMonthRange,
+  formatMultiple,
+  formatPct,
+  formatPctRange,
+  parseValuationPointer,
+  peerJourneyPoints,
+  preferenceAtRaise,
+  raiseHeadlineParts,
+  valuationHoleWord,
+  valuationSuggestions,
+} from './valuation/reading'
+export type {
+  AdvancementTarget,
+  LeafBeats,
+  ProfileLook,
+  ScoreTab,
+  SourceKind,
+  SourceRef,
+} from './reading'
+export type {
+  ValuationMove,
+  ValuationPeer,
+  ValuationPeerRound,
+  ValuationPhase,
+  ValuationPointer,
+  ValuationReport,
+  ValuationSeed,
+} from './valuation/types'
+export type {
+  InvestorFill,
+  InvestorMatchReport,
+  InvestorMatchSeed,
+  InvestorMove,
+  InvestorPointer,
+  InvestorRole,
+  InvestorThesis,
+  InvestorType,
+} from './investors/types'
