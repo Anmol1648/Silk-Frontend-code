@@ -11,7 +11,7 @@ export function AiMark({
       height={size}
       viewBox="0 0 14 14"
       fill="none"
-      className={className}
+      className={`block shrink-0 ${className || ''}`}
       aria-hidden
     >
       <path

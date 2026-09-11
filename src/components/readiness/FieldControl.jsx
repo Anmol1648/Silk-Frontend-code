@@ -17,17 +17,19 @@ import { OptionsCombobox } from '../options-combobox';
 import { DatePicker } from '../date-picker';
 import { Checkbox } from '@/components/ui/checkbox';
 import { StatusTag } from './KnowledgeField';
+import { FileTypeBadge } from '../file-type-badge';
 
 function SubFieldHeader({ fieldId, label, confirmedFields = [], onConfirm, onUnconfirm }) {
   const [hovered, setHovered] = useState(false);
-  const [sectionKey, fieldKey] = fieldId ? fieldId.split('__') : ['', ''];
+  const [sectionKey, fieldKey] = fieldId && fieldId.includes('__') ? fieldId.split('__') : ['', fieldId];
   const isConfirmed = Boolean(
     confirmedFields.length && (
-      confirmedFields.includes(fieldKey) ||
-      confirmedFields.includes(sectionKey) ||
-      confirmedFields.includes('obj') ||
-      confirmedFields.includes('data') ||
-      confirmedFields.includes('array')
+      confirmedFields.includes(fieldId) ||
+      (fieldKey !== undefined && (
+        confirmedFields.includes(fieldKey) ||
+        confirmedFields.includes(Number(fieldKey)) ||
+        confirmedFields.includes(String(fieldKey))
+      ))
     )
   );
 
@@ -37,9 +39,15 @@ function SubFieldHeader({ fieldId, label, confirmedFields = [], onConfirm, onUnc
     }));
   };
 
+  const handleConfirm = () => {
+    const keyToUse = fieldKey !== undefined ? fieldKey : fieldId;
+    if (onConfirm && keyToUse !== undefined) onConfirm(keyToUse);
+  };
+
   const handleUnconfirm = () => {
-    if (onUnconfirm && fieldKey) onUnconfirm(fieldKey);
-    else if (onConfirm && fieldKey) onConfirm(fieldKey);
+    const keyToUse = fieldKey !== undefined ? fieldKey : fieldId;
+    if (onUnconfirm && keyToUse !== undefined) onUnconfirm(keyToUse);
+    else if (onConfirm && keyToUse !== undefined) onConfirm(keyToUse);
   };
 
   return (
@@ -76,7 +84,7 @@ function SubFieldHeader({ fieldId, label, confirmedFields = [], onConfirm, onUnc
             type="button"
             onClick={e => {
               e.preventDefault();
-              if (onConfirm && fieldKey) onConfirm(fieldKey);
+              handleConfirm();
             }}
             className="cp-confirm-btn"
           >
@@ -95,7 +103,7 @@ function SubFieldHeader({ fieldId, label, confirmedFields = [], onConfirm, onUnc
   );
 }
 
-function FoundersEditor({ value, onChange }) {
+function FoundersEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const founders = Array.isArray(value) ? value : [];
 
   const updateFounder = (index, updates) => {
@@ -120,11 +128,22 @@ function FoundersEditor({ value, onChange }) {
     <div className="flex flex-col gap-6 w-full">
       {founders.map((f, i) => (
         <div key={i} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
-          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Person {i + 1}
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <SubFieldHeader
+                label={`Person ${i + 1}`}
+                fieldId={f.id ? `founders__${f.id}` : `founders__${i}`}
+                confirmedFields={confirmedFields}
+                onConfirm={onConfirmField}
+                onUnconfirm={onUnconfirmField}
+              />
+            </div>
             <button
+              type="button"
               onClick={() => removeFounder(i)}
-              className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors"
+              className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors ml-2"
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+              aria-label={`Remove Person ${i + 1}`}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
             </button>
@@ -339,7 +358,7 @@ function BulletListEditor({ value, onChange, placeholder = 'Add item...' }) {
 }
 
 /* ── ProductsEditor — structured editor for products/services ── */
-function ProductsEditor({ value, onChange }) {
+function ProductsEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
 
   const updateItem = (index, updates) => {
@@ -364,11 +383,22 @@ function ProductsEditor({ value, onChange }) {
     <div className="flex flex-col gap-6 w-full">
       {items.map((item, i) => (
         <div key={i} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
-          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Product {i + 1}
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <SubFieldHeader
+                label={`Product / Service ${i + 1}`}
+                fieldId={item.id ? `products_services__${item.id}` : `products_services__${i}`}
+                confirmedFields={confirmedFields}
+                onConfirm={onConfirmField}
+                onUnconfirm={onUnconfirmField}
+              />
+            </div>
             <button
+              type="button"
               onClick={() => removeItem(i)}
-              className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors"
+              className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors ml-2"
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+              aria-label={`Remove Product ${i + 1}`}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
             </button>
@@ -428,7 +458,7 @@ function ProductsEditor({ value, onChange }) {
 }
 
 /* ── MarketsEditor — structured editor for customers & markets ── */
-function MarketsEditor({ value, onChange }) {
+function MarketsEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { market: '', customer_type: '', geography: '' }]);
@@ -439,9 +469,23 @@ function MarketsEditor({ value, onChange }) {
     <div className="flex flex-col gap-6 w-full">
       {items.map((item, i) => (
         <div key={i} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
-          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Market {i + 1}
-            <button onClick={() => removeItem(i)} className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <SubFieldHeader
+                label={`Market ${i + 1}`}
+                fieldId={item.id ? `customers_markets__${item.id}` : `customers_markets__${i}`}
+                confirmedFields={confirmedFields}
+                onConfirm={onConfirmField}
+                onUnconfirm={onUnconfirmField}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => removeItem(i)}
+              className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors ml-2"
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+              aria-label={`Remove Market ${i + 1}`}
+            >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
             </button>
           </div>
@@ -485,7 +529,7 @@ function MarketsEditor({ value, onChange }) {
 }
 
 /* ── AdvantagesEditor — structured editor for competitive advantages ── */
-function AdvantagesEditor({ value, onChange }) {
+function AdvantagesEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { title: '', description: '' }]);
@@ -496,9 +540,23 @@ function AdvantagesEditor({ value, onChange }) {
     <div className="flex flex-col gap-6 w-full">
       {items.map((item, i) => (
         <div key={i} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
-          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground uppercase tracking-wider">
-            Advantage {i + 1}
-            <button onClick={() => removeItem(i)} className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <SubFieldHeader
+                label={`Advantage ${i + 1}`}
+                fieldId={item.id ? `competitive_advantages__${item.id}` : `competitive_advantages__${i}`}
+                confirmedFields={confirmedFields}
+                onConfirm={onConfirmField}
+                onUnconfirm={onUnconfirmField}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => removeItem(i)}
+              className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors ml-2"
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+              aria-label={`Remove Advantage ${i + 1}`}
+            >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
             </button>
           </div>
@@ -645,7 +703,7 @@ function BusinessModelEditor({ value, onChange, confirmedFields = [], onConfirmF
 }
 
 /* ── RevenueModelEditor — stream + share% ── */
-function RevenueModelEditor({ value, onChange }) {
+function RevenueModelEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { stream: '', share_percent: null }]);
@@ -663,28 +721,47 @@ function RevenueModelEditor({ value, onChange }) {
         }
 
         return (
-          <div key={i} className="flex items-center gap-3">
-            <input className={inputCls} placeholder="Revenue Stream" value={item.stream || ''} onChange={e => updateItem(i, { stream: e.target.value })} />
-            <div className="cp-shell-input" style={{ maxWidth: 140, flexShrink: 0 }}>
-              <input
-                type="text"
-                inputMode="decimal"
-                placeholder="Share"
-                value={displayShare}
-                onChange={e => updateItem(i, { share_percent: e.target.value })}
-                onBlur={e => {
-                  const val = e.target.value;
-                  if (val !== '' && !isNaN(Number(val))) {
-                    updateItem(i, { share_percent: Number(Number(val).toFixed(1)) });
-                  }
-                }}
-                style={{ textAlign: 'right' }}
-              />
-              <span className="cp-shell-suffix">%</span>
+          <div key={i} className="flex flex-col gap-2 pb-3 border-b border-border/40 last:border-0 last:pb-0">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <SubFieldHeader
+                  label={`Revenue Stream ${i + 1}`}
+                  fieldId={item.id ? `revenue_model__${item.id}` : `revenue_model__${i}`}
+                  confirmedFields={confirmedFields}
+                  onConfirm={onConfirmField}
+                  onUnconfirm={onUnconfirmField}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => removeItem(i)}
+                className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors ml-2"
+                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                aria-label={`Remove Revenue Stream ${i + 1}`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+              </button>
             </div>
-            <button onClick={() => removeItem(i)} className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors flex-shrink-0" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
-            </button>
+            <div className="flex items-center gap-3">
+              <input className={inputCls} placeholder="Revenue Stream" value={item.stream || ''} onChange={e => updateItem(i, { stream: e.target.value })} />
+              <div className="cp-shell-input" style={{ maxWidth: 140, flexShrink: 0 }}>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  placeholder="Share"
+                  value={displayShare}
+                  onChange={e => updateItem(i, { share_percent: e.target.value })}
+                  onBlur={e => {
+                    const val = e.target.value;
+                    if (val !== '' && !isNaN(Number(val))) {
+                      updateItem(i, { share_percent: Number(Number(val).toFixed(1)) });
+                    }
+                  }}
+                  style={{ textAlign: 'right' }}
+                />
+                <span className="cp-shell-suffix">%</span>
+              </div>
+            </div>
           </div>
         );
       })}
@@ -697,7 +774,7 @@ function RevenueModelEditor({ value, onChange }) {
 }
 
 /* ── MetricsEditor — metric + value + unit ── */
-function MetricsEditor({ value, onChange }) {
+function MetricsEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { metric: '', value: '', unit: '' }]);
@@ -705,14 +782,7 @@ function MetricsEditor({ value, onChange }) {
   const inputCls = "cp-input flex-1 bg-secondary border-0 h-10 px-3 rounded-lg focus:ring-1 focus:ring-foreground/5 shadow-none";
 
   return (
-    <div className="flex flex-col gap-3 w-full">
-      {/* Header */}
-      <div className="flex items-center gap-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider px-1">
-        <span className="flex-1">Metric</span>
-        <span style={{ width: 120 }}>Value</span>
-        <span style={{ width: 100 }}>Unit</span>
-        <span style={{ width: 30 }}></span>
-      </div>
+    <div className="flex flex-col gap-4 w-full">
       {items.map((item, i) => {
         let displayVal = String(item.value || '').trim();
         const unitStr = String(item.unit || '').trim();
@@ -724,40 +794,59 @@ function MetricsEditor({ value, onChange }) {
         }
 
         return (
-          <div key={i} className="flex items-center gap-3">
-            <input className={inputCls} placeholder="Metric name" value={item.metric || ''} onChange={e => updateItem(i, { metric: e.target.value })} />
-            <input
-              className={inputCls}
-              style={{ maxWidth: 120, flexShrink: 0 }}
-              placeholder="Value"
-              value={displayVal}
-              onChange={e => updateItem(i, { value: e.target.value })}
-              onBlur={e => {
-                let val = e.target.value.replace(/%/g, '').trim();
-                const unit = (item.unit || '').trim();
-                if ((unit === '%' || unit.includes('%')) && val && !isNaN(Number(val))) {
-                  val = Number(val).toFixed(1);
-                }
-                updateItem(i, { value: val });
-              }}
-            />
-            <input
-              className={inputCls}
-              style={{ maxWidth: 100, flexShrink: 0 }}
-              placeholder="Unit"
-              value={item.unit || ''}
-              onChange={e => {
-                const unit = e.target.value;
-                let val = String(item.value || '').replace(/%/g, '').trim();
-                if (unit.trim() === '%' && val && !isNaN(Number(val))) {
-                  val = Number(val).toFixed(1);
-                }
-                updateItem(i, { unit, value: val });
-              }}
-            />
-            <button onClick={() => removeItem(i)} className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors flex-shrink-0" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
-            </button>
+          <div key={i} className="flex flex-col gap-2 pb-3 border-b border-border/40 last:border-0 last:pb-0">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <SubFieldHeader
+                  label={`Metric ${i + 1}`}
+                  fieldId={item.id ? `company_metrics__${item.id}` : `company_metrics__${i}`}
+                  confirmedFields={confirmedFields}
+                  onConfirm={onConfirmField}
+                  onUnconfirm={onUnconfirmField}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => removeItem(i)}
+                className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors ml-2"
+                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                aria-label={`Remove Metric ${i + 1}`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="flex items-center gap-3">
+              <input className={inputCls} placeholder="Metric name" value={item.metric || ''} onChange={e => updateItem(i, { metric: e.target.value })} />
+              <input
+                className={inputCls}
+                style={{ maxWidth: 120, flexShrink: 0 }}
+                placeholder="Value"
+                value={displayVal}
+                onChange={e => updateItem(i, { value: e.target.value })}
+                onBlur={e => {
+                  let val = e.target.value.replace(/%/g, '').trim();
+                  const unit = (item.unit || '').trim();
+                  if ((unit === '%' || unit.includes('%')) && val && !isNaN(Number(val))) {
+                    val = Number(val).toFixed(1);
+                  }
+                  updateItem(i, { value: val });
+                }}
+              />
+              <input
+                className={inputCls}
+                style={{ maxWidth: 100, flexShrink: 0 }}
+                placeholder="Unit"
+                value={item.unit || ''}
+                onChange={e => {
+                  const unit = e.target.value;
+                  let val = String(item.value || '').replace(/%/g, '').trim();
+                  if (unit.trim() === '%' && val && !isNaN(Number(val))) {
+                    val = Number(val).toFixed(1);
+                  }
+                  updateItem(i, { unit, value: val });
+                }}
+              />
+            </div>
           </div>
         );
       })}
@@ -770,7 +859,7 @@ function MetricsEditor({ value, onChange }) {
 }
 
 /* ── FinancialSummaryEditor — financials table + observations ── */
-function FinancialSummaryEditor({ value, onChange, confirmedFields = [], onConfirmField }) {
+function FinancialSummaryEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const data = (typeof value === 'object' && value !== null) ? value : {};
   const financials = Array.isArray(data.financials) ? data.financials : [];
   const observations = Array.isArray(data.observations) ? data.observations : [];
@@ -797,7 +886,7 @@ function FinancialSummaryEditor({ value, onChange, confirmedFields = [], onConfi
       <div>
         <div className="flex items-center justify-between mb-2">
           <div className="flex-1">
-            <SubFieldHeader label="Financials" fieldId="financial_summary__financials" confirmedFields={confirmedFields} onConfirm={onConfirmField} />
+            <SubFieldHeader label="Financials" fieldId="financial_summary__financials" confirmedFields={confirmedFields} onConfirm={onConfirmField} onUnconfirm={onUnconfirmField} />
           </div>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground ml-3">
             <span className="text-[11px] font-medium uppercase tracking-wider">Currency:</span>
@@ -919,15 +1008,15 @@ function FinancialSummaryEditor({ value, onChange, confirmedFields = [], onConfi
       </div>
 
       <div>
-        <SubFieldHeader label="Observations" fieldId="financial_summary__observations" confirmedFields={confirmedFields} onConfirm={onConfirmField} />
+        <SubFieldHeader label="Observations" fieldId="financial_summary__observations" confirmedFields={confirmedFields} onConfirm={onConfirmField} onUnconfirm={onUnconfirmField} />
         <TagsInput value={observations} onChange={v => onChange({ ...data, observations: v })} placeholder="Add observation..." />
       </div>
     </div>
   );
 }
 
-/* ── NewsEditor — title, date, description, source, link ── */
-function NewsEditor({ value, onChange }) {
+/* ── NewsEditor — title, date, description, source (with link icon) ── */
+function NewsEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { title: '', date: '', description: '', source: '', link: '' }]);
@@ -938,47 +1027,78 @@ function NewsEditor({ value, onChange }) {
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      {items.map((item, i) => (
-        <div key={i} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
-          <div className="flex items-center justify-between">
-            <div className="text-sm font-medium">{item.title || `News Article ${i + 1}`}</div>
-            <button onClick={() => removeItem(i)} className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
-            </button>
-          </div>
-
-          <div>
-            <div className={labelCls}>Title</div>
-            <input className={inputCls + " w-full"} placeholder="Article Title" value={item.title || ''} onChange={e => updateItem(i, { title: e.target.value })} />
-          </div>
-
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <div className={labelCls}>Date</div>
-              <input className={inputCls + " w-full"} placeholder="YYYY-MM-DD" value={item.date || ''} onChange={e => updateItem(i, { date: e.target.value })} />
+      {items.map((item, i) => {
+        const query = `${item.source ? `${item.source} ` : ''}${item.title || ''}`.trim();
+        const googleSearchUrl = query ? `https://www.google.com/search?q=${encodeURIComponent(query)}` : '';
+        return (
+          <div key={i} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <SubFieldHeader
+                  label={`News Article ${i + 1}`}
+                  fieldId={item.id ? `news__${item.id}` : `news__${i}`}
+                  confirmedFields={confirmedFields}
+                  onConfirm={onConfirmField}
+                  onUnconfirm={onUnconfirmField}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => removeItem(i)}
+                className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors ml-2"
+                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                aria-label={`Remove News Article ${i + 1}`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+              </button>
             </div>
-            <div className="flex-1">
-              <div className={labelCls}>Source</div>
-              <input className={inputCls + " w-full"} placeholder="Publication Source" value={item.source || ''} onChange={e => updateItem(i, { source: e.target.value })} />
+
+            <div>
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider leading-none">Title</span>
+                {googleSearchUrl && (
+                  <a
+                    href={googleSearchUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted-foreground hover:text-foreground inline-flex items-center justify-center transition-colors -mt-0.5"
+                    title={`Search Google for "${query}"`}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  </a>
+                )}
+              </div>
+              <input
+                className={inputCls + " w-full"}
+                placeholder="Article Title"
+                value={item.title || ''}
+                onChange={e => updateItem(i, { title: e.target.value })}
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <div className={labelCls}>Date</div>
+                <input className={inputCls + " w-full"} placeholder="YYYY-MM-DD" value={item.date || ''} onChange={e => updateItem(i, { date: e.target.value })} />
+              </div>
+              <div className="flex-1">
+                <div className={labelCls}>Source</div>
+                <input
+                  className={inputCls + " w-full"}
+                  placeholder="Publication Source"
+                  value={item.source || ''}
+                  onChange={e => updateItem(i, { source: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div>
+              <div className={labelCls}>Description</div>
+              <AutoTextarea value={item.description} onChange={v => updateItem(i, { description: v })} placeholder="News description..." />
             </div>
           </div>
-
-          <div>
-            <div className={labelCls}>Link</div>
-            <div className="cp-shell-input">
-              <span className="cp-shell-prefix">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-              </span>
-              <input placeholder="URL" value={item.link || ''} onChange={e => updateItem(i, { link: e.target.value })} />
-            </div>
-          </div>
-
-          <div>
-            <div className={labelCls}>Description</div>
-            <AutoTextarea value={item.description} onChange={v => updateItem(i, { description: v })} placeholder="News description..." />
-          </div>
-        </div>
-      ))}
+        );
+      })}
       <button onClick={addItem} className="w-full bg-secondary hover:bg-secondary/80 text-muted-foreground py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors border-0">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" /></svg>
         Add news article
@@ -988,7 +1108,7 @@ function NewsEditor({ value, onChange }) {
 }
 
 /* ── CompanyStoryEditor — origin, brand, milestones, usp ── */
-function CompanyStoryEditor({ value, onChange, confirmedFields = [], onConfirmField }) {
+function CompanyStoryEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const data = (typeof value === 'object' && value !== null) ? value : {};
   const milestones = Array.isArray(data.milestones) ? data.milestones : [];
 
@@ -1002,23 +1122,23 @@ function CompanyStoryEditor({ value, onChange, confirmedFields = [], onConfirmFi
   return (
     <div className="flex flex-col gap-6 w-full">
       <div>
-        <SubFieldHeader label="Origin Story" fieldId="company_story__origin_story" confirmedFields={confirmedFields} onConfirm={onConfirmField} />
+        <SubFieldHeader label="Origin Story" fieldId="company_story__origin_story" confirmedFields={confirmedFields} onConfirm={onConfirmField} onUnconfirm={onUnconfirmField} />
         <AutoTextarea value={data.origin_story} onChange={v => update({ origin_story: v })} placeholder="Origin story..." />
       </div>
 
       <div>
-        <SubFieldHeader label="Brand Evolution" fieldId="company_story__brand_evolution" confirmedFields={confirmedFields} onConfirm={onConfirmField} />
+        <SubFieldHeader label="Brand Evolution" fieldId="company_story__brand_evolution" confirmedFields={confirmedFields} onConfirm={onConfirmField} onUnconfirm={onUnconfirmField} />
         <AutoTextarea value={data.brand_evolution} onChange={v => update({ brand_evolution: v })} placeholder="Brand evolution..." />
       </div>
 
       <div>
-        <SubFieldHeader label="Unique Selling Proposition (USP)" fieldId="company_story__usp" confirmedFields={confirmedFields} onConfirm={onConfirmField} />
+        <SubFieldHeader label="Unique Selling Proposition (USP)" fieldId="company_story__usp" confirmedFields={confirmedFields} onConfirm={onConfirmField} onUnconfirm={onUnconfirmField} />
         <AutoTextarea value={data.usp} onChange={v => update({ usp: v })} placeholder="USP..." />
       </div>
 
       {/* Milestones */}
       <div>
-        <SubFieldHeader label="Milestones" fieldId="company_story__milestones" confirmedFields={confirmedFields} onConfirm={onConfirmField} />
+        <SubFieldHeader label="Milestones" fieldId="company_story__milestones" confirmedFields={confirmedFields} onConfirm={onConfirmField} onUnconfirm={onUnconfirmField} />
         <div className="flex flex-col gap-4">
           {milestones.map((item, i) => (
             <div key={i} className="flex flex-col gap-2 pb-3 border-b border-border/30 last:border-0 last:pb-0">
@@ -1045,24 +1165,24 @@ function CompanyStoryEditor({ value, onChange, confirmedFields = [], onConfirmFi
 }
 
 /* ── InvestmentThesisEditor — opportunity, leadership, risks ── */
-function InvestmentThesisEditor({ value, onChange, confirmedFields = [], onConfirmField }) {
+function InvestmentThesisEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const data = (typeof value === 'object' && value !== null) ? value : {};
   const update = (patch) => onChange({ ...data, ...patch });
 
   return (
     <div className="flex flex-col gap-5 w-full">
       <div>
-        <SubFieldHeader label="Opportunity Explanation" fieldId="investment_thesis__opportunity_explanation" confirmedFields={confirmedFields} onConfirm={onConfirmField} />
+        <SubFieldHeader label="Opportunity Explanation" fieldId="investment_thesis__opportunity_explanation" confirmedFields={confirmedFields} onConfirm={onConfirmField} onUnconfirm={onUnconfirmField} />
         <AutoTextarea value={data.opportunity_explanation} onChange={v => update({ opportunity_explanation: v })} placeholder="Opportunity explanation..." />
       </div>
 
       <div>
-        <SubFieldHeader label="Leadership Assessment" fieldId="investment_thesis__leadership_assessment" confirmedFields={confirmedFields} onConfirm={onConfirmField} />
+        <SubFieldHeader label="Leadership Assessment" fieldId="investment_thesis__leadership_assessment" confirmedFields={confirmedFields} onConfirm={onConfirmField} onUnconfirm={onUnconfirmField} />
         <AutoTextarea value={data.leadership_assessment} onChange={v => update({ leadership_assessment: v })} placeholder="Leadership assessment..." />
       </div>
 
       <div>
-        <SubFieldHeader label="Risks and Concerns" fieldId="investment_thesis__risks_and_concerns" confirmedFields={confirmedFields} onConfirm={onConfirmField} />
+        <SubFieldHeader label="Risks and Concerns" fieldId="investment_thesis__risks_and_concerns" confirmedFields={confirmedFields} onConfirm={onConfirmField} onUnconfirm={onUnconfirmField} />
         <TagsInput value={data.risks_and_concerns} onChange={v => update({ risks_and_concerns: v })} placeholder="Add risk or concern..." />
       </div>
     </div>
@@ -1070,7 +1190,7 @@ function InvestmentThesisEditor({ value, onChange, confirmedFields = [], onConfi
 }
 
 /* ── FundingHistoryEditor — rounds, amounts, investors ── */
-function FundingHistoryEditor({ value, onChange }) {
+function FundingHistoryEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { date: '', round: '', amount_usd_mn: null, pre_money_usd_mn: null, post_money_usd_mn: null, investors: [], lead_investors: [] }]);
@@ -1084,8 +1204,22 @@ function FundingHistoryEditor({ value, onChange }) {
       {items.map((item, i) => (
         <div key={i} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
           <div className="flex items-center justify-between">
-            <div className="text-sm font-medium">{item.round || `Funding Round ${i + 1}`}</div>
-            <button onClick={() => removeItem(i)} className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+            <div className="flex-1">
+              <SubFieldHeader
+                label={`Funding Round ${i + 1}`}
+                fieldId={item.id ? `funding_history__${item.id}` : `funding_history__${i}`}
+                confirmedFields={confirmedFields}
+                onConfirm={onConfirmField}
+                onUnconfirm={onUnconfirmField}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => removeItem(i)}
+              className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors ml-2"
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+              aria-label={`Remove Funding Round ${i + 1}`}
+            >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
             </button>
           </div>
@@ -1137,7 +1271,7 @@ function FundingHistoryEditor({ value, onChange }) {
 }
 
 /* ── InvestorsCapTableEditor — cap table and investors list ── */
-function InvestorsCapTableEditor({ value, onChange, confirmedFields = [], onConfirmField }) {
+function InvestorsCapTableEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const data = (typeof value === 'object' && value !== null) ? value : {};
   const capTable = data.cap_table_summary || {};
   const ownership = Array.isArray(capTable.ownership) ? capTable.ownership : [];
@@ -1163,7 +1297,7 @@ function InvestorsCapTableEditor({ value, onChange, confirmedFields = [], onConf
       <div>
         <div className="flex items-center justify-between mb-2">
           <div className="flex-1">
-            <SubFieldHeader label="Cap Table Ownership" fieldId="investors_cap_table__cap_table_summary" confirmedFields={confirmedFields} onConfirm={onConfirmField} />
+            <SubFieldHeader label="Cap Table Ownership" fieldId="investors_cap_table__cap_table_summary" confirmedFields={confirmedFields} onConfirm={onConfirmField} onUnconfirm={onUnconfirmField} />
           </div>
           <div className="text-xs text-muted-foreground ml-3">Total: {ownership.reduce((sum, item) => sum + (Number(item.ownership_pct) || 0), 0).toFixed(1)}%</div>
         </div>
@@ -1211,7 +1345,7 @@ function InvestorsCapTableEditor({ value, onChange, confirmedFields = [], onConf
       {/* Investors List */}
       <div>
         <div className="mb-2">
-          <SubFieldHeader label="Investors List" fieldId="investors_cap_table__investors_list" confirmedFields={confirmedFields} onConfirm={onConfirmField} />
+          <SubFieldHeader label="Investors List" fieldId="investors_cap_table__investors_list" confirmedFields={confirmedFields} onConfirm={onConfirmField} onUnconfirm={onUnconfirmField} />
         </div>
         <div className="overflow-x-auto">
           <table className="w-full" style={{ borderCollapse: 'separate', borderSpacing: '8px' }}>
@@ -1337,7 +1471,7 @@ function TagsInput({ value, onChange, placeholder }) {
   );
 }
 
-function CompetitorsEditor({ value, onChange }) {
+function CompetitorsEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { name: '', status: 'Private', revenue: null, funding_usd_mn: null, investors: [], business_model: '', market_positioning: '', key_differentiators: [], strengths: [], weaknesses: [] }]);
@@ -1354,21 +1488,49 @@ function CompetitorsEditor({ value, onChange }) {
         <div key={i} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
           {/* Header */}
           <div className="flex items-center justify-between">
-            <button
-              onClick={() => toggle(i)}
-              className="flex items-center gap-2 text-xs font-medium text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors"
-              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                style={{ transform: expanded[i] ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.15s' }}>
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-              {item.name || `Competitor ${i + 1}`}
-              {item.status && <span className="text-[10px] font-medium normal-case px-1.5 py-0.5 bg-secondary text-muted-foreground rounded">{item.status}</span>}
-            </button>
-            <button onClick={() => removeItem(i)} className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
-            </button>
+            <div className="flex-1">
+              <SubFieldHeader
+                label={`Competitor ${i + 1}`}
+                fieldId={item.id ? `competitors__${item.id}` : `competitors__${i}`}
+                confirmedFields={confirmedFields}
+                onConfirm={onConfirmField}
+                onUnconfirm={onUnconfirmField}
+              />
+            </div>
+            <div className="flex items-center gap-1.5 ml-2">
+              <button
+                type="button"
+                onClick={() => toggle(i)}
+                className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground p-1 rounded transition-colors"
+                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                aria-label={expanded[i] ? "Collapse details" : "Expand details"}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                  style={{ transform: expanded[i] ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.15s' }}>
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+                {expanded[i] ? 'Less' : 'More'}
+              </button>
+              <button
+                type="button"
+                onClick={() => removeItem(i)}
+                className="hover:text-foreground hover:bg-secondary p-1 rounded transition-colors"
+                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                aria-label={`Remove Competitor ${i + 1}`}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div className={labelCls}>Competitor Name</div>
+            <input
+              className={inputCls + " w-full"}
+              placeholder="Competitor Name"
+              value={item.name || ''}
+              onChange={e => updateItem(i, { name: e.target.value })}
+            />
           </div>
 
           {/* Top Row: 3 Financial Metrics (Revenue, Funding, Valuation) */}
@@ -1538,49 +1700,6 @@ function CurrencyScaleSelect({ value, onChange }) {
   );
 }
 
-/* ── FileTypeBadge (ported from silkAnkit/src/components/file-type-badge.tsx) ── */
-const FILE_KIND_META = {
-  pdf:   { label: 'PDF', bg: '#FDECEE', accent: '#E11D48' },
-  doc:   { label: 'DOC', bg: '#E8F1FE', accent: '#2563EB' },
-  xls:   { label: 'XLS', bg: '#E7F8EF', accent: '#059669' },
-  ppt:   { label: 'PPT', bg: '#FFF1E8', accent: '#EA580C' },
-  csv:   { label: 'CSV', bg: '#E8F8F4', accent: '#0D9488' },
-  zip:   { label: 'ZIP', bg: '#F3EEFF', accent: '#7C3AED' },
-  image: { label: 'IMG', bg: '#F3E8FF', accent: '#9333EA' },
-  video: { label: 'VID', bg: '#FFE8F1', accent: '#DB2777' },
-  file:  { label: 'FILE', bg: '#F3F4F6', accent: '#6B7280' },
-};
-
-function resolveFileKind(name) {
-  const ext = (name || '').split('.').pop()?.toLowerCase() || '';
-  if (ext === 'pdf') return 'pdf';
-  if (['doc', 'docx'].includes(ext)) return 'doc';
-  if (['xls', 'xlsx'].includes(ext)) return 'xls';
-  if (['ppt', 'pptx'].includes(ext)) return 'ppt';
-  if (ext === 'csv') return 'csv';
-  if (ext === 'zip') return 'zip';
-  if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(ext)) return 'image';
-  if (['mp4', 'mov', 'webm', 'm4v'].includes(ext)) return 'video';
-  return 'file';
-}
-
-function FileTypeBadge({ name, size = 20 }) {
-  const kind = resolveFileKind(name);
-  const meta = FILE_KIND_META[kind] || FILE_KIND_META.file;
-  return (
-    <span aria-hidden style={{ width: size, height: size, display: 'inline-flex', flexShrink: 0 }} title={meta.label}>
-      <svg width={size} height={size} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4.25 2.5h7.1L15.75 6.9V16.5A1.75 1.75 0 0 1 14 18.25H6A1.75 1.75 0 0 1 4.25 16.5V2.5Z" fill={meta.bg} />
-        <path d="M11.2 2.5v3.15c0 .76.62 1.38 1.38 1.38h3.17" fill={meta.accent} fillOpacity="0.18" />
-        <path d="M11.35 2.65v3c0 .69.56 1.25 1.25 1.25h3" stroke={meta.accent} strokeOpacity="0.55" strokeWidth="0.9" strokeLinejoin="round" />
-        <path d="M11.35 2.65 15.6 6.9h-2.75c-.69 0-1.25-.56-1.25-1.25V2.65Z" fill={meta.accent} />
-        <rect x="3.1" y="10.35" width="13.8" height="5.4" rx="1.2" fill={meta.accent} />
-        <text x="10" y="14.15" textAnchor="middle" fill="#fff" fontSize="4.2" fontWeight="700" fontFamily="ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" letterSpacing="0.04em">{meta.label}</text>
-      </svg>
-    </span>
-  );
-}
-
 /* ── DocumentRow (ported from silkAnkit document-upload-field.tsx) ── */
 function DocumentRow({ doc, onOpen, onRemove }) {
   const [isHovered, setIsHovered] = useState(false);
@@ -1618,7 +1737,7 @@ function DocumentRow({ doc, onOpen, onRemove }) {
     >
       <div style={{ display: 'flex', height: 42, alignItems: 'center', gap: 12, padding: '0 12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0, textAlign: 'left' }}>
-          <FileTypeBadge name={doc.filename || doc.name || ''} size={20} />
+          <FileTypeBadge name={doc.filename || doc.name || ''} size={22} />
           <span style={{ fontSize: 14, color: 'var(--foreground)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {doc.filename || doc.name || 'Document'}
           </span>
@@ -1662,7 +1781,7 @@ function DocumentRow({ doc, onOpen, onRemove }) {
 }
 
 /* ── DocumentCenterEditor (silkAnkit style, 4 categories) ── */
-function DocumentCenterEditor({ value, onChange, onAsk, onOpen }) {
+function DocumentCenterEditor({ value, onChange, onAsk, onOpen, confirmedFields = [], onConfirmField, onUnconfirmField }) {
   const { companyId } = useParams();
   const { toast, error: toastError } = useToast();
   const docs = Array.isArray(value) ? value : [];
@@ -1724,30 +1843,25 @@ function DocumentCenterEditor({ value, onChange, onAsk, onOpen }) {
   return (
     <div className="flex flex-col gap-8 w-full py-2">
       {CATEGORIES.map(cat => {
-        const catDocs = docs.filter(d => d.category === cat.key || d.category === cat.label);
+        const catDocs = docs.filter(d => d.category === cat.key || d.category === cat.label || String(d.category || '').toLowerCase().replace(/[^a-z0-9]/g, '_') === cat.key);
         const busy = catDocs.some(d => d.status === 'uploading' || d.status === 'processing');
         const hasDocs = catDocs.length > 0;
         const isDragging = draggingCat === cat.key;
+        const primaryDoc = catDocs[0];
+        const subfieldId = primaryDoc?.id ? `document_center__${primaryDoc.id}` : `document_center__${cat.key}`;
 
         return (
           <div key={cat.key} className="flex flex-col gap-2">
-            <div className="flex items-center justify-between" style={{ marginBottom: 2 }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--foreground)' }}>{cat.label}</span>
-              {hasDocs && onAsk && (
-                <button
-                  type="button"
-                  style={{
-                    background: '#2D2D2D', color: '#fff', fontSize: 11, fontWeight: 500,
-                    padding: '3px 8px', borderRadius: 4, border: 'none', cursor: 'pointer',
-                    transition: 'background 0.15s',
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#3D3D3D'}
-                  onMouseLeave={e => e.currentTarget.style.background = '#2D2D2D'}
-                  onClick={(e) => { e.preventDefault(); onAsk(); }}
-                >
-                  Ask Silk
-                </button>
-              )}
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex-1">
+                <SubFieldHeader
+                  label={cat.label}
+                  fieldId={subfieldId}
+                  confirmedFields={confirmedFields}
+                  onConfirm={onConfirmField}
+                  onUnconfirm={onUnconfirmField}
+                />
+              </div>
             </div>
 
             <div
@@ -1761,7 +1875,15 @@ function DocumentCenterEditor({ value, onChange, onAsk, onOpen }) {
                 <DocumentRow
                   key={d.id}
                   doc={d}
-                  onOpen={() => onOpen?.()}
+                  onOpen={() => {
+                    window.dispatchEvent(new CustomEvent('open-silk-panel', {
+                      detail: {
+                        fieldId: d.id ? `document_center__${d.id}` : `document_center__${cat.key}`,
+                        mode: 'analysis',
+                        docName: d.filename || d.name || cat.label
+                      }
+                    }));
+                  }}
                   onRemove={() => removeDoc(d.id)}
                 />
               ))}
@@ -1829,23 +1951,23 @@ export default function FieldControl({ kind, value, onChange, placeholder, optio
   const k = kind || 'textarea';
 
   if (k === 'founders_array') {
-    return <FoundersEditor value={value} onChange={onChange} />;
+    return <FoundersEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'products_array') {
-    return <ProductsEditor value={value} onChange={onChange} />;
+    return <ProductsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'markets_array') {
-    return <MarketsEditor value={value} onChange={onChange} />;
+    return <MarketsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'advantages_array') {
-    return <AdvantagesEditor value={value} onChange={onChange} />;
+    return <AdvantagesEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'competitors_array') {
-    return <CompetitorsEditor value={value} onChange={onChange} />;
+    return <CompetitorsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'industry_research_obj') {
@@ -1857,7 +1979,7 @@ export default function FieldControl({ kind, value, onChange, placeholder, optio
   }
 
   if (k === 'funding_history_array') {
-    return <FundingHistoryEditor value={value} onChange={onChange} />;
+    return <FundingHistoryEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'investors_cap_table_obj') {
@@ -1865,7 +1987,7 @@ export default function FieldControl({ kind, value, onChange, placeholder, optio
   }
 
   if (k === 'news_array') {
-    return <NewsEditor value={value} onChange={onChange} />;
+    return <NewsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'company_story_obj') {
@@ -1877,15 +1999,15 @@ export default function FieldControl({ kind, value, onChange, placeholder, optio
   }
 
   if (k === 'document_center_obj') {
-    return <DocumentCenterEditor value={value} onChange={onChange} onAsk={onAsk} onOpen={onOpenAnalysis} />;
+    return <DocumentCenterEditor value={value} onChange={onChange} onAsk={onAsk} onOpen={onOpenAnalysis} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'revenue_model_array') {
-    return <RevenueModelEditor value={value} onChange={onChange} />;
+    return <RevenueModelEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'company_metrics_array') {
-    return <MetricsEditor value={value} onChange={onChange} />;
+    return <MetricsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'financial_summary_obj') {

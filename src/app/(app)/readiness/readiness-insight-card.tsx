@@ -70,7 +70,7 @@ function ScoreGauge({
   total: number
   ladder: string
 }) {
-  const shown = Math.max(12, Math.min(100, score))
+  const shown = typeof score === 'number' ? Math.max(0, Math.min(100, Math.round(score))) : 0
   const pct = shown / 100
   return (
     <div aria-label={`Readiness ${shown} of 100, ${ladder}`}>

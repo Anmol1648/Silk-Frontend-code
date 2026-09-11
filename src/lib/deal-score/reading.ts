@@ -20,6 +20,7 @@ export type SourceRef = {
   kindLabel: string
   name: string
   locator: string | null
+  quote: string | null
   href: string | null
   external: boolean
 }
@@ -128,15 +129,27 @@ export function printLook(score: number) {
   return 'Incomplete'
 }
 
-export function formatScore(score: number) {
-  return score.toFixed(1)
+export function formatScore(score: number | string | null | undefined): string {
+  if (score === null || score === undefined || score === '') {
+    return '—'
+  }
+
+  const numericScore = Number(score)
+  if (isNaN(numericScore)) {
+    return '—'
+  }
+
+  const rounded2 = Math.round(numericScore * 100) / 100
+  if (Math.abs(rounded2 * 10 - Math.round(rounded2 * 10)) > 1e-4) {
+    return rounded2.toFixed(2)
+  }
+  return numericScore.toFixed(1)
 }
 
 export function formatMoveLift(lift: number) {
-  if (lift == null || isNaN(lift)) return '0.0'
-  const rounded = Math.round(lift * 100) / 100
-  if (rounded < 0.1 && rounded > 0) return rounded.toFixed(2)
-  return rounded % 1 === 0 ? rounded.toFixed(1) : rounded.toString()
+  if (lift == null || isNaN(lift)) return '0.00'
+  const numeric = Number(lift)
+  return numeric.toFixed(2)
 }
 
 export function formatWeight(val: number) {
@@ -148,6 +161,7 @@ export function formatWeight(val: number) {
 export function formatMeasured(fact: MeasuredFact) {
   if (!fact || fact.value == null) return ''
   const valStr = String(fact.value).trim()
+  if (!valStr || valStr === 'undefined' || valStr === 'null') return ''
   const unitStr = String(fact.unit || '').trim()
 
   // Clean any duplicated units e.g. "1.0% %" -> "1.0%", "9 years Years" -> "9 years"
@@ -198,7 +212,7 @@ function trimNumber(value: number) {
 }
 
 export function printSentence(sentence: string | null, rows: ScoredRow[]) {
-  if (!sentence) return null
+  if (!sentence || typeof sentence !== 'string') return null
   const named = collectNamed(rows).sort((a, b) => b.name.length - a.name.length)
   let next = sentence
   for (const row of named) {
@@ -209,8 +223,8 @@ export function printSentence(sentence: string | null, rows: ScoredRow[]) {
 }
 
 export function categoryLine(row: ScoredBranch) {
-  if (row.sentence && row.sentence.trim()) {
-    return asOneLine(row.sentence)
+  if (typeof row.sentence === 'string' && row.sentence.trim()) {
+    return row.sentence.trim()
   }
   const leaves = collectLeaves(row.children)
   const flagged = leaves
@@ -294,7 +308,10 @@ export function judgmentLine(report: DealReport) {
 }
 
 export function nextMoves(report: DealReport) {
-  const owned = report.moves.filter(move => isCompanyOwned(report, move.parameterId))
+  if (report.moves && report.moves.length > 0) {
+    return report.moves
+  }
+  const owned = (report.moves || []).filter(move => isCompanyOwned(report, move.parameterId))
   const written = owned.filter(move => hasWrittenAction(report, move))
   const ranked = written.length ? written : owned
   if (!ranked.length) return []
@@ -313,7 +330,7 @@ export function nextMoves(report: DealReport) {
   const rest = first
     ? ranked.filter(move => move.parameterId !== first.parameterId)
     : ranked
-  return (first ? [first, ...rest] : rest).slice(0, 3)
+  return first ? [first, ...rest] : rest
 }
 
 export function advancementTarget(report: DealReport): AdvancementTarget | null {
@@ -380,15 +397,16 @@ function hasWrittenAction(report: DealReport, move: DealMove) {
   return false
 }
 
-function isRealAsk(ask: string) {
+function isRealAsk(ask: any) {
+  if (typeof ask !== 'string') return false
   return (
     !ask.startsWith('No specific evidence gap') &&
     !ask.startsWith('Already at the top band')
   )
 }
 
-function unwrapDiligenceAsk(ask: string | null) {
-  if (!ask || !isRealAsk(ask)) return null
+function unwrapDiligenceAsk(ask: any) {
+  if (!ask || typeof ask !== 'string' || !isRealAsk(ask)) return null
   const wrapped = ask.match(
     /Confirm the gap noted in diligence\s+[—-]\s+(.+?)\s+[—-]\s+to verify/i,
   )
@@ -403,9 +421,10 @@ function unwrapDiligenceAsk(ask: string | null) {
   return cutDown(ask, 2)
 }
 
-function extractAsk(text: string | null) {
-  if (!text) return null
+function extractAsk(text: any) {
+  if (!text || typeof text !== 'string') return null
   const cleaned = stripJargon(text)
+  if (!cleaned) return null
   const match = cleaned.match(
     /(?:ASK(?:\s+for)?:?\s+|Confirm who |Confirm the |Get the |Sight |Resolve before )[^.]+/i,
   )
@@ -420,7 +439,8 @@ function thresholdCut(leaf: ScoredLeaf | null, move: DealMove) {
   return null
 }
 
-function cleanCut(label: string) {
+function cleanCut(label: any) {
+  if (!label || typeof label !== 'string') return ''
   return label.replace(/^≥\s*/, '').replace(/^>=\s*/, '')
 }
 
@@ -433,7 +453,16 @@ function thresholdLine(action: string, to: string) {
 export function ancestorsOf(rows: ScoredRow[], id: string): string[] {
   const walk = (nodes: ScoredRow[], path: string[]): string[] | null => {
     for (const row of nodes) {
-      if (row.id === id) return path
+      if (
+        row.id === id ||
+        (row as any).ref === id ||
+        (row as any).key === id ||
+        (row as any).inputKey === id ||
+        (row as any).code === id ||
+        (row.name && id && row.name.toLowerCase() === id.toLowerCase())
+      ) {
+        return path
+      }
       if (isBranch(row)) {
         const found = walk(row.children, [...path, row.id])
         if (found) return found
@@ -476,12 +505,20 @@ export function beatsForLeaf(leaf: ScoredLeaf, move?: DealMove | null): LeafBeat
 }
 
 function whyBeat(leaf: ScoredLeaf) {
-  if (leaf.reasoning) return cutDown(leaf.reasoning, 2)
-  if (leaf.measured) {
-    const band = leaf.band ? leaf.band.toLowerCase() : 'unscored'
-    return `${formatMeasured(leaf.measured)}. That lands ${band}.`
+  if (leaf.reasoning && leaf.reasoning.trim()) return cutDown(leaf.reasoning, 2)
+  if (
+    leaf.measured &&
+    leaf.measured.value != null &&
+    String(leaf.measured.value).trim() !== '' &&
+    leaf.band &&
+    leaf.band.toLowerCase() !== 'unscored'
+  ) {
+    const formatted = formatMeasured(leaf.measured)
+    if (formatted && formatted.trim() && !/^\s*(months?|years?|days?|%)\.?\s*$/i.test(formatted)) {
+      return `${formatted}. That lands ${leaf.band.toLowerCase()}.`
+    }
   }
-  return 'Not enough is in the profile to score this yet.'
+  return null
 }
 
 function wrongBeat(leaf: ScoredLeaf) {
@@ -498,11 +535,11 @@ function raiseBeat(leaf: ScoredLeaf, move?: DealMove | null) {
   if (move?.action && !/ is ≥ | is >= |^confirm the gap|^no specific|^already at/i.test(move.action)) {
     return cutDown(move.action, 2)
   }
-  if (leaf.nextBand) return `To clear ${leaf.nextBand}, this has to move.`
   return null
 }
 
-function spokenCut(label: string) {
+function spokenCut(label: any) {
+  if (!label || typeof label !== 'string') return ''
   return cleanCut(label)
     .replace(/\bMonths\b/g, 'months')
     .replace(/\bYears\b/g, 'years')
@@ -510,7 +547,8 @@ function spokenCut(label: string) {
     .replace(/\s+%/g, '%')
 }
 
-function stripJargon(text: string) {
+function stripJargon(text: any) {
+  if (!text || typeof text !== 'string') return ''
   let next = text
   for (const pattern of JARGON) next = next.replace(pattern, '')
   next = next.replace(/\s*—\s*/g, '. ').replace(/\s+/g, ' ').trim()
@@ -519,8 +557,10 @@ function stripJargon(text: string) {
   return next
 }
 
-function cutDown(text: string, maxSentences: number) {
+function cutDown(text: any, maxSentences: number) {
+  if (!text || typeof text !== 'string') return ''
   const next = stripJargon(text)
+  if (!next) return ''
   const sentences = next
     .split(/(?<=[A-Za-z]{2,}[.!?])\s+(?=[A-Z])/)
     .map(part => part.trim())
@@ -699,15 +739,18 @@ function citationToRef(citation: Citation): SourceRef {
     kindLabel: printSourceKind(kind),
     name: shortSourceName(citation.source),
     locator: citation.locator?.trim() || null,
+    quote: citation.quote?.trim() || null,
     href: link?.href ?? null,
     external: link?.external ?? false,
   }
 }
 
 /** All citations on the leaf, in order. Empty when none. */
-export function sourceRefs(leaf: ScoredLeaf): SourceRef[] {
+export function sourceRefs(reportOrLeaf?: any, maybeLeaf?: any): SourceRef[] {
+  const leaf = maybeLeaf || reportOrLeaf
+  if (!leaf || !Array.isArray(leaf.citations)) return []
   return leaf.citations
-    .filter(citation => citation.source.trim())
+    .filter((citation: any) => Boolean(citation?.source && typeof citation.source === 'string' && citation.source.trim()))
     .map(citationToRef)
 }
 

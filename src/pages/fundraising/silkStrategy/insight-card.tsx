@@ -18,6 +18,7 @@ import {
   type DealMove,
   type DealReport,
 } from '@/lib/deal-score'
+import { BAND_COLORS } from './score-tree'
 
 function PillButton({
   label,
@@ -133,10 +134,10 @@ function useGaugeFill(target: number) {
   return shown
 }
 
-function ScoreGauge({ score }: { score: number }) {
+function ScoreGauge({ score, band }: { score: number; band?: string }) {
   const shown = useGaugeFill(score)
   const pct = Math.max(0, Math.min(1, shown / 10))
-  const look = printLook(score)
+  const look = band || printLook(score)
   return (
     <div aria-label={`${formatScore(score)} out of 10, ${look}`}>
       <div className="relative mx-auto w-[72%]">
@@ -189,6 +190,10 @@ export function ScoreInsightCard({
   open?: boolean
   className?: string
 }) {
+  const [expanded, setExpanded] = useState(false)
+  const displayedMoves = expanded ? moves : moves.slice(0, 3)
+  const hasMore = moves.length > 3
+
   return (
     <aside
       className={cn(
@@ -201,20 +206,31 @@ export function ScoreInsightCard({
       aria-hidden={!open}
     >
       <div className="rounded-xl bg-background p-6 ring-1 ring-foreground/6">
-        <ScoreGauge score={score} />
+        <ScoreGauge score={score} band={report?.band} />
 
         {moves.length > 0 ? (
           <div className="mt-6 flex flex-col">
-            <p className="text-[11px] font-medium tracking-[0.04em] text-foreground-subtle">
-              Next
-            </p>
-            {moves.map((move, index) => {
+            <div className="flex items-center justify-between">
+              <p className="text-[11px] font-medium tracking-[0.04em] text-foreground-subtle">
+                Next
+              </p>
+              {hasMore && (
+                <button
+                  type="button"
+                  onClick={() => setExpanded(prev => !prev)}
+                  className="text-[11.5px] font-medium text-primary hover:underline focus:outline-none"
+                >
+                  {expanded ? 'Show less' : 'See more'}
+                </button>
+              )}
+            </div>
+            {displayedMoves.map((move, index) => {
               const lift = move.lift != null && move.lift > 0 ? move.lift : projectedCategoryLift(report, move)
               const categoryId = ancestorsOf(report.tree, move.parameterId)[0]
               const category = categoryId ? findRow(report.tree, categoryId) : null
               return (
               <div
-                key={move.parameterId}
+                key={`${move.parameterId || move.name}-${index}`}
                 className={cn(index === 0 ? 'mt-3' : 'mt-5 border-t border-foreground/4 pt-5')}
               >
                 <div className="flex items-baseline justify-between gap-3">
@@ -233,8 +249,37 @@ export function ScoreInsightCard({
                     <HugeiconsIcon icon={ArrowUp02Icon} size={12} strokeWidth={2} />
                   </mark>
                 </div>
-                <p className="mt-1 text-[13px] leading-relaxed text-foreground/55">
-                  {printMoveAction(move, report)}
+
+                {(move.currentBand || move.from || move.targetBand || move.to) && (() => {
+                  const fromBand = (move.currentBand || move.from || '') as string
+                  const toBand = (move.targetBand || move.to || '') as string
+                  const fromColor = BAND_COLORS[fromBand]
+                  const toColor = BAND_COLORS[toBand]
+
+                  return (
+                    <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[11.5px]">
+                      <span
+                        className="rounded px-1.5 py-0.5 font-medium"
+                        style={fromColor ? { backgroundColor: fromColor.bg, color: fromColor.text } : undefined}
+                      >
+                        {fromBand}
+                        {move.displayValue && move.displayValue !== fromBand && (
+                          <span className="ml-1 font-normal opacity-90">({move.displayValue})</span>
+                        )}
+                      </span>
+                      <span className="text-muted-foreground/60 text-[11px]">→</span>
+                      <span
+                        className="rounded px-1.5 py-0.5 font-medium"
+                        style={toColor ? { backgroundColor: toColor.bg, color: toColor.text } : undefined}
+                      >
+                        {toBand}
+                      </span>
+                    </div>
+                  )
+                })()}
+
+                <p className="mt-1.5 text-[12.5px] leading-relaxed text-foreground/70">
+                  {move.target || move.action || printMoveAction(move, report)}
                 </p>
                 <div className="mt-3">
                   <PillButton
@@ -245,6 +290,25 @@ export function ScoreInsightCard({
               </div>
               )
             })}
+
+            {hasMore && !expanded && (
+              <button
+                type="button"
+                onClick={() => setExpanded(true)}
+                className="mt-4 self-start text-[12px] font-medium text-primary hover:underline focus:outline-none"
+              >
+                See more ({moves.length - 3} more)
+              </button>
+            )}
+            {hasMore && expanded && (
+              <button
+                type="button"
+                onClick={() => setExpanded(false)}
+                className="mt-4 self-start text-[12px] font-medium text-primary hover:underline focus:outline-none"
+              >
+                Show less
+              </button>
+            )}
           </div>
         ) : (
           <p className="mt-6 text-[13px] leading-relaxed text-popover-foreground">

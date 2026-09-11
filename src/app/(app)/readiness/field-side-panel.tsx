@@ -13,6 +13,7 @@ import {
   Tick02Icon,
 } from '@hugeicons/core-free-icons'
 import { cn } from '@/lib/utils'
+import { FormattedMarkdown } from '@/components/formatted-markdown'
 import {
   replyToSilkAi,
   thinkingDurationMs,
@@ -94,7 +95,7 @@ function ThinkingBlock({ steps }: { steps: string[] }) {
       aria-label={label}
     >
       <AiMark size={14} className="silk-think-mark shrink-0" />
-      <p key={label} className="silk-think-text text-[13px] leading-snug">
+      <p key={label} className="silk-think-text text-[13px] leading-none">
         {label}
       </p>
     </div>
@@ -369,9 +370,7 @@ export function FieldSidePanel({
                       </div>
                     ) : (
                       <div>
-                        <p className="text-[13px] text-popover-foreground leading-relaxed whitespace-pre-wrap">
-                          {message.content}
-                        </p>
+                        <FormattedMarkdown content={message.content} />
                         <ProposalList message={message} onApply={applyFromMessage} />
                         {message.followUps && message.followUps.length > 0 && (
                           <div className="mt-3">

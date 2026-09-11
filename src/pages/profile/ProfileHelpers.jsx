@@ -95,10 +95,10 @@ export function ProfileThinkingBlock({ steps = THINK_STEPS }) {
   return (
     <div className="flex h-[calc(100vh-120px)] w-full items-center justify-center bg-white">
       <div className="flex items-center gap-2.5 px-1">
-        <div className="w-[20px] h-[20px] rounded-[5px] bg-[#030712]/[0.08] flex items-center justify-center text-[11px] font-semibold text-[#030712] silk-think-mark shrink-0 leading-none">
+        <div className="w-[18px] h-[18px] rounded-[4px] bg-[#030712]/[0.08] flex items-center justify-center text-[10px] font-semibold text-[#030712] silk-think-mark shrink-0 leading-none">
           ✳
         </div>
-        <p key={label} className="silk-think-text text-[13.5px] font-normal leading-none flex items-center">
+        <p key={label} className="silk-think-text text-[13px] font-normal leading-none">
           {label}
         </p>
       </div>

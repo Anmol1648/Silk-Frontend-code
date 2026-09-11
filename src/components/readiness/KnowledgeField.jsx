@@ -202,7 +202,7 @@ export default function KnowledgeField({
   const sourcesActive = panelMode === 'sources';
   const analysisActive = panelMode === 'analysis';
   const edgeOpen = Boolean(panelMode);
-  const isObjectSection = [
+  const isMultiFieldSection = [
     'business_model_obj',
     'company_story_obj',
     'industry_research_obj',
@@ -210,6 +210,15 @@ export default function KnowledgeField({
     'investors_cap_table_obj',
     'investment_thesis_obj',
     'document_center_obj',
+    'founders_array',
+    'products_array',
+    'markets_array',
+    'advantages_array',
+    'competitors_array',
+    'revenue_model_array',
+    'company_metrics_array',
+    'funding_history_array',
+    'news_array',
   ].includes(item.kind);
 
   const edgeActions = (
@@ -227,7 +236,7 @@ export default function KnowledgeField({
           Conflict
         </button>
       )}
-      {!showConflict && showAiDraft && !isObjectSection && (
+      {!showConflict && showAiDraft && !isMultiFieldSection && (
         <button
           type="button"
           aria-label={`Confirm ${item.name}`}
@@ -281,7 +290,7 @@ export default function KnowledgeField({
         <label htmlFor={fieldId} className="cp-field-label">
           {item.name}
         </label>
-        {isObjectSection ? (
+        {isMultiFieldSection ? (
           showConfirmed && (
             <StatusTag
               label="Confirmed"
@@ -301,7 +310,7 @@ export default function KnowledgeField({
             )}
           </>
         )}
-        {edgeActions}
+        {!isMultiFieldSection && edgeActions}
       </div>
       {item.kind === 'founders' && leadershipPeople && onLeadershipChange ? (
         <LeadershipEditor

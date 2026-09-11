@@ -35,12 +35,21 @@ export type ThresholdRubric = {
   labels: Record<LeafBand, string>
 }
 
-export type QualitativeRubric = {
-  kind: 'qualitative'
-  labels: Record<LeafBand, string>
+export type ParameterRubric = {
+  key?: string
+  kind?: string
+  metric?: string
+  unit?: string
+  direction?: string
+  parameter?: string
+  stages?: Record<string, { excellent?: number; good?: number; fair?: number; ideal_min?: number; ideal_max?: number }>
+  good_tolerance?: number
+  fair_tolerance?: number
+  rationale?: string
+  labels?: Record<string, string>
 }
 
-export type Rubric = ThresholdRubric | QualitativeRubric
+export type Rubric = ThresholdRubric | QualitativeRubric | ParameterRubric
 
 export type ScoreNode = {
   id: string
@@ -94,6 +103,38 @@ export type DealInput = {
   investors?: InvestorMatchSeed
 }
 
+export type ParameterDictionary = {
+  definition?: string | null
+  where_to_find?: string | null
+  measured_on?: string | null
+}
+
+export type ParameterAnchor = {
+  bands?: Record<string, string>
+  evidence_required?: string | null
+  scoring_basis?: string | null
+}
+
+export type ParameterWeights = {
+  weightWithinParent?: number
+  effectiveOfTotalPct?: number
+  declaredWeight?: number
+  appliedWeight?: number
+}
+
+export type ParameterTrace = {
+  method?: string
+  explanation?: string | null
+  stage?: string | null
+  unit?: string | null
+  direction?: string | null
+  matched_band?: string | null
+  score?: number | null
+  thresholds?: Record<string, number> | null
+  rationale?: string | null
+  inputs?: Record<string, any> | null
+}
+
 export type ScoredLeaf = {
   id: string
   name: string
@@ -116,6 +157,17 @@ export type ScoredLeaf = {
   rubric: Rubric | undefined
   shareOfParent: number
   shareOfDeal: number
+  reportedValue?: string | null
+  effectiveBand?: string | null
+  asOf?: string | null
+  periodBasis?: string | null
+  insight?: string | null
+  dictionary?: ParameterDictionary | null
+  anchor?: ParameterAnchor | null
+  weightsData?: ParameterWeights | null
+  contribution?: number | string | null
+  trace?: ParameterTrace | null
+  isReference?: boolean
 }
 
 export type ScoredBranch = {
@@ -140,6 +192,18 @@ export type DealFlag = {
   name: string
   kind: FlagKind
   summary: string
+  headline?: string | null
+  ask?: string | null
+  finding?: string | null
+  findingType?: string | null
+  severity?: string | null
+  whyItMatters?: string | null
+  action?: string | null
+  evidence?: string | null
+  materialityPct?: number | null
+  couldChangeRating?: boolean
+  ref?: string | null
+  inputKey?: string | null
 }
 
 export type DealMove = {

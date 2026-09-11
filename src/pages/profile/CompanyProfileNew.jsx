@@ -54,6 +54,7 @@ export default function CompanyProfileNew() {
   // panel state
   const [panelFieldId, setPanelFieldId] = useState(null);
   const [panelMode, setPanelMode] = useState('ask');
+  const [panelDocName, setPanelDocName] = useState('Uploaded Material');
   const [panelOpen, setPanelOpen] = useState(false);
   const [drawerShown, setDrawerShown] = useState(false);
 
@@ -147,25 +148,34 @@ export default function CompanyProfileNew() {
     });
   };
 
-  // Save subsection changes via backend API
-  const handleSaveSection = async (sub) => {
-    const sectionKey = sub.id;
-    setSavingSubId(sectionKey);
-
+  // Save subsection to API
+  const handleSaveSection = async (sub, secKey) => {
+    setSavingSubId(sub.id);
     try {
-      let payload = {};
+      const section = data?.sections?.[secKey];
+      const sectionData = section?.data;
 
-      if (sub.items.length === 1 && (sub.items[0].kind.endsWith('_array') || sub.items[0].kind.endsWith('_obj'))) {
-        payload = values[sub.items[0].id];
+      let payloadData;
+      if (Array.isArray(sectionData) || secKey === 'founders' || secKey === 'products_services' || secKey === 'customers_markets' || secKey === 'competitive_advantages' || secKey === 'competitors' || secKey === 'revenue_model' || secKey === 'company_metrics' || secKey === 'funding_history' || secKey === 'news') {
+        payloadData = values[`${secKey}__array`] || [];
+      } else if (secKey === 'document_center') {
+        payloadData = { documents: values[`${secKey}__documents`] || [] };
+      } else if (typeof sectionData === 'object' && sectionData !== null) {
+        payloadData = values[`${secKey}__obj`] || {};
       } else {
-        sub.items.forEach(i => {
-          const key = i.id.includes('__') ? i.id.split('__')[1] : i.id;
-          payload[key] = values[i.id];
+        const obj = {};
+        sub.items.forEach(item => {
+          const [, fKey] = item.id.split('__');
+          if (fKey) obj[fKey] = values[item.id];
         });
+        payloadData = obj;
       }
 
-      await profileApi.saveSection(companyId, sectionKey, { data: payload });
-      if (toast) toast(`${sub.label} saved successfully.`);
+      const confirmedFieldKeys = section?.confirmed_fields || [];
+      await profileApi.saveSection(companyId, secKey, {
+        data: payloadData,
+        confirmed_fields: confirmedFieldKeys,
+      });
 
       setSavedValues(prev => {
         const next = { ...prev };
@@ -174,8 +184,11 @@ export default function CompanyProfileNew() {
         });
         return next;
       });
-    } catch (e) {
-      toastError(e);
+
+      if (toast) toast('Saved section successfully.');
+      await load(true);
+    } catch (err) {
+      toastError(err);
     } finally {
       setSavingSubId(null);
     }
@@ -243,12 +256,19 @@ export default function CompanyProfileNew() {
     };
   }, [categories, phase, loading]);
 
-  // 4. Stats logic — use readinessBreakdown for accurate field-level verified counts
+  // 4. Stats logic — prioritize readinessTotals from API response
   const stats = useMemo(() => {
+    const totals = data?.readinessTotals || data?.readiness_totals;
+    if (totals) {
+      const done = Number(totals.confirmed) || 0;
+      const total = Number(totals.fields !== undefined ? totals.fields : totals.populated) || 0;
+      return { done, total, score: backendScore, completenessPct };
+    }
+
     const breakdown = data?.readinessBreakdown || data?.readiness_breakdown;
     if (breakdown && Array.isArray(breakdown) && breakdown.length > 0) {
       const done = breakdown.reduce((sum, b) => sum + (Number(b.confirmed) || 0), 0);
-      const total = breakdown.reduce((sum, b) => sum + (Number(b.populated !== undefined ? Math.max(b.populated, b.confirmed) : b.fields) || 0), 0);
+      const total = breakdown.reduce((sum, b) => sum + (Number(b.fields !== undefined ? b.fields : (b.populated !== undefined ? Math.max(b.populated, b.confirmed) : 0)) || 0), 0);
       return { done, total, score: backendScore, completenessPct };
     }
 
@@ -266,7 +286,7 @@ export default function CompanyProfileNew() {
     return { done, total, score: backendScore, completenessPct };
   }, [data, categories, values, confirmed, backendScore, completenessPct]);
 
-  const ladderPos = readinessStage || READINESS_LADDER[ladderIndex(stats.score)];
+  const ladderPos = readinessStage || data?.readiness_stage || data?.readinessStage || READINESS_LADDER[ladderIndex(stats.score)] || 'just getting started';
 
   // 5. Actions
   const openPanel = (id, mode) => {
@@ -330,35 +350,39 @@ export default function CompanyProfileNew() {
     const currentConfirmed = section.confirmed_fields || [];
     const next = [...new Set([...currentConfirmed, ...candidates])];
 
+    // Optimistically update data and totals
+    setData(prev => {
+      if (!prev) return prev;
+      const breakdown = prev.readinessBreakdown || prev.readiness_breakdown;
+      const updatedBreakdown = breakdown ? breakdown.map(b => {
+        if (b.sectionKey === sectionKey) {
+          return { ...b, confirmed: next.length };
+        }
+        return b;
+      }) : breakdown;
+
+      const totalConfirmed = updatedBreakdown ? updatedBreakdown.reduce((sum, b) => sum + (Number(b.confirmed) || 0), 0) : next.length;
+      const updatedTotals = prev.readinessTotals ? {
+        ...prev.readinessTotals,
+        confirmed: totalConfirmed,
+      } : prev.readinessTotals;
+
+      return {
+        ...prev,
+        readinessTotals: updatedTotals,
+        readinessBreakdown: updatedBreakdown,
+        sections: {
+          ...prev.sections,
+          [sectionKey]: { ...prev.sections?.[sectionKey], confirmed_fields: next },
+        },
+      };
+    });
+
     try {
       const res = await profileApi.saveSection(companyId, sectionKey, { confirmed_fields: next });
-      // Update backend score from response (Req 4)
       if (res?.score !== undefined) setBackendScore(res.score);
       if (res?.readiness_stage) setReadinessStage(res.readiness_stage);
-      // Reconcile confirmed_fields from response
-      if (res?.confirmed_fields) {
-        // Update the data.sections in-place for future operations
-        setData(prev => {
-          const breakdown = res.readinessBreakdown || res.readiness_breakdown || prev?.readinessBreakdown || prev?.readiness_breakdown;
-          const updatedBreakdown = breakdown ? breakdown.map(b => {
-            if (b.sectionKey === sectionKey) {
-              return { ...b, confirmed: res.confirmed_fields.length };
-            }
-            return b;
-          }) : prev?.readinessBreakdown || prev?.readiness_breakdown;
-
-          return {
-            ...prev,
-            score: res.score ?? prev?.score,
-            readiness_stage: res.readiness_stage || prev?.readiness_stage,
-            readinessBreakdown: updatedBreakdown,
-            sections: {
-              ...prev?.sections,
-              [sectionKey]: { ...prev?.sections?.[sectionKey], confirmed_fields: res.confirmed_fields },
-            },
-          };
-        });
-      }
+      await load(true);
     } catch (e) {
       // Rollback on failure
       setConfirmed(prev => {
@@ -367,6 +391,7 @@ export default function CompanyProfileNew() {
         return reverted;
       });
       toastError(e);
+      await load(true);
     }
   };
 
@@ -384,27 +409,46 @@ export default function CompanyProfileNew() {
     if (!section) return;
 
     const candidatesSet = new Set(getSectionCandidateKeys(sectionKey, fieldKey));
-    const next = (section.confirmed_fields || []).filter(k => !candidatesSet.has(k) && k !== fieldKey);
+    const next = (section.confirmed_fields || []).filter(k => !candidatesSet.has(k) && k !== fieldKey && k !== String(fieldKey) && k !== Number(fieldKey));
+
+    // Optimistically update data and totals
+    setData(prev => {
+      if (!prev) return prev;
+      const breakdown = prev.readinessBreakdown || prev.readiness_breakdown;
+      const updatedBreakdown = breakdown ? breakdown.map(b => {
+        if (b.sectionKey === sectionKey) {
+          return { ...b, confirmed: next.length };
+        }
+        return b;
+      }) : breakdown;
+
+      const totalConfirmed = updatedBreakdown ? updatedBreakdown.reduce((sum, b) => sum + (Number(b.confirmed) || 0), 0) : next.length;
+      const updatedTotals = prev.readinessTotals ? {
+        ...prev.readinessTotals,
+        confirmed: totalConfirmed,
+      } : prev.readinessTotals;
+
+      return {
+        ...prev,
+        readinessTotals: updatedTotals,
+        readinessBreakdown: updatedBreakdown,
+        sections: {
+          ...prev.sections,
+          [sectionKey]: { ...prev.sections?.[sectionKey], confirmed_fields: next },
+        },
+      };
+    });
 
     try {
       const res = await profileApi.saveSection(companyId, sectionKey, { confirmed_fields: next });
       if (res?.score !== undefined) setBackendScore(res.score);
       if (res?.readiness_stage) setReadinessStage(res.readiness_stage);
-      if (res?.confirmed_fields) {
-        setData(prev => ({
-          ...prev,
-          score: res.score ?? prev?.score,
-          readiness_stage: res.readiness_stage || prev?.readiness_stage,
-          sections: {
-            ...prev?.sections,
-            [sectionKey]: { ...prev?.sections?.[sectionKey], confirmed_fields: res.confirmed_fields },
-          },
-        }));
-      }
+      await load(true);
     } catch (e) {
       // Rollback
       setConfirmed(prevConfirmed);
       toastError(e);
+      await load(true);
     }
   };
 
@@ -499,6 +543,10 @@ export default function CompanyProfileNew() {
 
   let activeItemName = '';
   if (panelFieldId) {
+    const isUuid = (s) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(s).trim());
+    const [secKey, rawFieldKey] = panelFieldId.includes('__') ? panelFieldId.split('__') : ['', panelFieldId];
+
+    // 1. Direct item match in subsections
     for (const cat of categories) {
       for (const sub of cat.subsections) {
         for (const item of sub.items) {
@@ -508,8 +556,24 @@ export default function CompanyProfileNew() {
         }
       }
     }
+
+    // 2. If not found and section key exists, look inside array data (e.g. founders, products, markets, advantages, documents, etc.)
+    if (!activeItemName && secKey) {
+      const arr = values[`${secKey}__array`] || values[`${secKey}__documents`] || values[`${secKey}__obj`] || data?.sections?.[secKey]?.data?.documents || data?.sections?.[secKey]?.data;
+      if (Array.isArray(arr)) {
+        const found = arr.find((elem, idx) => elem?.id === rawFieldKey || String(idx) === rawFieldKey);
+        if (found) {
+          activeItemName = found.filename || found.name || found.title || found.metric || found.market || found.stream || found.round || '';
+        }
+      }
+    }
+
+    // 3. If still not found and rawFieldKey is not a UUID, humanize it
+    if (!activeItemName && rawFieldKey && !isUuid(rawFieldKey)) {
+      activeItemName = rawFieldKey.replace(/_/g, ' ');
+    }
   }
-  const panelItemName = activeItemName || (panelFieldId ? panelFieldId.split('__')[1].replace(/_/g, ' ') : '');
+  const panelItemName = activeItemName || (panelDocName !== 'Uploaded Material' ? panelDocName : '');
   const maxCls = 'mx-auto w-full max-w-[1100px]';
 
   if (loading || phase === 'thinking') {
@@ -631,6 +695,7 @@ export default function CompanyProfileNew() {
           fieldName={panelItemName}
           mode={panelMode}
           leaving={!panelOpen}
+          analysisDocName={panelDocName}
           onClose={closePanel}
           onApplyValue={async (targetFieldId, proposedVal) => {
             if (!targetFieldId) return;
@@ -653,6 +718,7 @@ export default function CompanyProfileNew() {
                   confirmed_fields: confirmedFields,
                 });
                 if (toast) toast('Applied & confirmed AI draft!');
+                await load(true);
               } catch (e) {
                 toastError(e);
               }

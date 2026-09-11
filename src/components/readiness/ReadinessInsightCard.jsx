@@ -29,7 +29,7 @@ const GAUGE_TICKS = Array.from({ length: GAUGE.ticks }, (_, i) => {
 });
 
 function ScoreGauge({ score, done, total, ladder }) {
-  const shown = Math.max(12, Math.min(100, score || 0));
+  const shown = typeof score === 'number' ? Math.max(0, Math.min(100, Math.round(score))) : 0;
   const pct = shown / 100;
   return (
     <div>

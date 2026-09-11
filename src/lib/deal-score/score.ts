@@ -277,7 +277,16 @@ export function scoreDeal(
 
 export function findRow(rows: ScoredRow[], id: string): ScoredRow | null {
   for (const row of rows) {
-    if (row.id === id) return row
+    if (
+      row.id === id ||
+      (row as any).ref === id ||
+      (row as any).key === id ||
+      (row as any).inputKey === id ||
+      (row as any).code === id ||
+      (row.name && id && row.name.toLowerCase() === id.toLowerCase())
+    ) {
+      return row
+    }
     if (isBranch(row)) {
       const found = findRow(row.children, id)
       if (found) return found

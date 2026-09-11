@@ -109,8 +109,8 @@ export default function ProfileSectionCard({
                       value={values[item.id] || ''}
                       confirmed={!!confirmed[item.id]}
                       confirmedFields={sectionConfirmedFields}
-                      onConfirmField={(fKey) => onConfirmField(`${sectionKey}__${fKey}`)}
-                      onUnconfirmField={(fKey) => onUnconfirmField(`${sectionKey}__${fKey}`)}
+                      onConfirmField={(fKey) => onConfirmField(String(fKey).startsWith(`${sectionKey}__`) ? fKey : `${sectionKey}__${fKey}`)}
+                      onUnconfirmField={(fKey) => onUnconfirmField(String(fKey).startsWith(`${sectionKey}__`) ? fKey : `${sectionKey}__${fKey}`)}
                       onChange={v => onSetValue(item.id, v)}
                       panelMode={panelFieldId === item.id ? panelMode : null}
                       onAsk={() => onOpenPanel(item.id, 'ask')}

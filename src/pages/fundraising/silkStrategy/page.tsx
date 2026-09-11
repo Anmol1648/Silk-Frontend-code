@@ -40,7 +40,7 @@ import { InvestorsAside } from './investors-aside'
 import { InvestorsInsightCard } from './investors-insight'
 import { InvestorsLetter } from './investors-letter'
 import { ScoreAside } from './score-aside'
-import { FlagsBlock, ScoreTree, ViewToggle } from './score-tree'
+import { FlagsBlock, NarrativeBlock, ScoreTree, ViewToggle } from './score-tree'
 import { ValuationAside } from './valuation-aside'
 import { ValuationInsightCard } from './valuation-insight'
 import { ValuationLetter } from './valuation-letter'
@@ -327,6 +327,21 @@ export default function Page({ companyId }: { companyId?: string }) {
     }, 1200)
   }
 
+  if (phase === 'thinking') {
+    return (
+      <div className="flex h-[calc(100vh-120px)] w-full items-center justify-center bg-white">
+        <div className="flex items-center gap-2.5 px-1">
+          <div className="w-[18px] h-[18px] rounded-[4px] bg-[#030712]/[0.08] flex items-center justify-center text-[10px] font-semibold text-[#030712] silk-think-mark shrink-0 leading-none">
+            ✳
+          </div>
+          <p className="silk-think-text text-[13px] font-normal leading-none">
+            {THINK_STEPS[thinkStep]}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="relative flex h-full min-h-0 w-full items-stretch overflow-hidden">
       <div
@@ -346,7 +361,7 @@ export default function Page({ companyId }: { companyId?: string }) {
           <header className="mb-8">
             {(tab === 'score' || tab === 'valuation' || tab === 'investors') &&
               phase === 'ready' && (
-                <p className="font-heading text-[32px] font-normal leading-[1.2] tracking-[-0.03em] text-foreground-subtle">
+                <p className="font-heading text-[32px] font-normal leading-[1.2] tracking-[-0.03em] text-[#9ca3af]">
                   We&apos;ve understood your company details.
                 </p>
               )}
@@ -382,12 +397,14 @@ export default function Page({ companyId }: { companyId?: string }) {
                   </span>
                   {investorsHeadline.after}
                 </>
+              ) : tab === 'score' ? (
+                'Profile Scorecard'
               ) : tab === 'valuation' ? (
-                'The range is not ready.'
+                'Raise and Valuation'
               ) : tab === 'investors' ? (
-                'The book is not ready.'
+                'Investor Match'
               ) : (
-                'The score is not ready.'
+                'Profile Scorecard'
               )}
             </h1>
           </header>
@@ -401,7 +418,7 @@ export default function Page({ companyId }: { companyId?: string }) {
           )}
         >
           <div className={shellMax}>
-            <div className="flex w-full max-w-[760px] flex-nowrap items-center gap-1 overflow-x-auto no-scrollbar py-2">
+            <div className="flex w-full max-w-[760px] flex-nowrap items-center gap-1 overflow-x-auto no-scrollbar py-1.5">
               {TABS.map(item => {
                 const active = item.id === tab
                 return (
@@ -411,14 +428,14 @@ export default function Page({ companyId }: { companyId?: string }) {
                     onMouseDown={e => e.preventDefault()}
                     onClick={() => changeTab(item.id)}
                     className={cn(
-                      'inline-flex h-8 items-center rounded-lg px-3 text-[14px] transition-colors',
+                      'inline-flex h-7 items-center rounded-md px-2.5 text-[13px] transition-colors',
                       active
                         ? 'gap-1.5 bg-muted font-medium text-foreground'
                         : 'text-foreground-subtle hover:bg-surface-hover hover:text-foreground',
                     )}
                   >
                     {active && (
-                      <HugeiconsIcon icon={item.icon} size={15} strokeWidth={1.7} />
+                      <HugeiconsIcon icon={item.icon} size={14} strokeWidth={1.7} />
                     )}
                     {item.label}
                   </button>
@@ -428,17 +445,8 @@ export default function Page({ companyId }: { companyId?: string }) {
           </div>
         </div>
 
-        <div className={cn('mt-8 flex w-full items-start gap-12', shellMax)}>
+        <div className={cn('mt-4 flex w-full items-start gap-8', shellMax)}>
           <div className="flex min-w-0 w-full max-w-[760px] shrink-0 flex-col">
-            {phase === 'thinking' && (
-              <div className="flex items-center gap-2.5 pt-2">
-                <AiMark size={14} className="silk-think-mark shrink-0" />
-                <p className="silk-think-text text-[13px] leading-snug">
-                  {THINK_STEPS[thinkStep]}
-                </p>
-              </div>
-            )}
-
             {phase === 'failed' && (
               <div className="pt-2">
                 <p className="text-[14px] text-popover-foreground">
@@ -459,7 +467,8 @@ export default function Page({ companyId }: { companyId?: string }) {
             )}
 
             {phase === 'ready' && report && tab === 'score' && (
-              <div className="silk-enter flex flex-col gap-5">
+              <div className="silk-enter flex flex-col gap-3">
+                <NarrativeBlock memo={report.memo} />
                 <FlagsBlock
                   report={report}
                   advanced={advanced}
@@ -495,8 +504,8 @@ export default function Page({ companyId }: { companyId?: string }) {
 
             {phase === 'ready' && tab === 'valuation' && !valuation && (
               <div className="silk-enter max-w-[52ch]">
-                <p className="text-[14px] leading-relaxed text-popover-foreground">
-                  The range is not ready.
+                <p className="text-[14px] leading-relaxed text-muted-foreground">
+                  Evaluating valuation data…
                 </p>
               </div>
             )}
@@ -511,8 +520,8 @@ export default function Page({ companyId }: { companyId?: string }) {
 
             {phase === 'ready' && tab === 'investors' && !investors && (
               <div className="silk-enter max-w-[52ch]">
-                <p className="text-[14px] leading-relaxed text-popover-foreground">
-                  The book is not ready.
+                <p className="text-[14px] leading-relaxed text-muted-foreground">
+                  Matching investors for your profile…
                 </p>
               </div>
             )}

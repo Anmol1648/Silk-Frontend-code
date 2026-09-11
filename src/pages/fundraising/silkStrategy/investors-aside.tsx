@@ -5,6 +5,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { ArrowUp02Icon, ArrowUpRight01Icon, Cancel01Icon } from '@hugeicons/core-free-icons'
 import { cn } from '@/lib/utils'
 import { AiMark } from '@/components/ai-mark'
+import { FormattedMarkdown } from '@/components/formatted-markdown'
 import {
   beatsForInvestorPointer,
   investorSuggestions,
@@ -68,8 +69,10 @@ function ThinkingBlock({ steps }: { steps: string[]; key?: Key }) {
   }, [steps.length])
   return (
     <div className="flex items-center gap-2.5">
-      <AiMark size={14} className="silk-think-mark shrink-0" />
-      <p className="silk-think-text text-[13px] leading-snug">{steps[index]}</p>
+      <div className="w-[18px] h-[18px] rounded-[4px] bg-[#030712]/[0.08] flex items-center justify-center text-[10px] font-semibold text-[#030712] silk-think-mark shrink-0 leading-none">
+        ✳
+      </div>
+      <p className="silk-think-text text-[13px] font-normal leading-none">{steps[index]}</p>
     </div>
   )
 }
@@ -172,7 +175,12 @@ export function InvestorsAside({
   useLayoutEffect(() => {
     let inner = 0
     const outer = window.requestAnimationFrame(() => {
-      inner = window.requestAnimationFrame(() => setEntered(true))
+      inner = window.requestAnimationFrame(() => {
+        setEntered(true)
+        if (scrollerRef.current) {
+          scrollerRef.current.scrollTop = 0
+        }
+      })
     })
     return () => {
       window.cancelAnimationFrame(outer)
@@ -185,6 +193,9 @@ export function InvestorsAside({
     setMessages([])
     setThinking(null)
     setPending(null)
+    if (scrollerRef.current) {
+      scrollerRef.current.scrollTop = 0
+    }
   }, [pointerId])
 
   useEffect(() => {
@@ -278,9 +289,7 @@ export function InvestorsAside({
                     </div>
                   ) : (
                     <div>
-                      <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-popover-foreground">
-                        {message.content}
-                      </p>
+                      <FormattedMarkdown content={message.content} />
                       {message.followUps && message.followUps.length > 0 && (
                         <div className="mt-3">
                           <span className="px-1 text-[11px] font-medium tracking-[0.04em] text-foreground-subtle">

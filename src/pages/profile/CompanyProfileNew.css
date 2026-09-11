@@ -95,6 +95,11 @@
   background-clip: text;
   color: transparent;
   animation: silk-think-gleam 1.35s linear infinite;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
+  margin: 0;
+  transform: translateY(1px);
 }
 
 .silk-think-mark {

@@ -20,79 +20,90 @@ import { get, post } from '../../api/client';
 function mapCategories(cats) {
   if (!cats || !Array.isArray(cats)) return undefined;
   return cats.map((cat) => {
-    const baseWeight = cat.declaredWeight ?? cat.declared_weight ?? cat.weight ?? cat.weights?.declaredWeight;
-    const isUnscored = (cat.score == null && cat.systemScore == null) || (cat.children && cat.children.length > 0 && cat.children.every(c => c.score == null && c.systemScore == null));
+    const rawChildren = cat.children || cat.subitems || cat.parameters;
+    const hasChildren = Array.isArray(rawChildren) && rawChildren.length > 0;
+
+    const baseWeight = cat.declaredWeight ?? cat.declared_weight ?? (typeof cat.weight === 'object' ? cat.weight?.declared : cat.weight) ?? cat.weights?.declaredWeight ?? 20;
+    const isUnscored = (cat.score == null && cat.systemScore == null) || (hasChildren && rawChildren.every(c => c.score == null && c.systemScore == null));
 
     let appliedPct;
     if (isUnscored) {
       appliedPct = 0;
     } else {
-      const rawApplied = cat.appliedWeightPct ?? cat.applied_weight_pct ?? cat.appliedWeight ?? cat.applied_weight;
+      const rawApplied = cat.appliedWeightPct ?? cat.applied_weight_pct ?? cat.appliedWeight ?? cat.applied_weight ?? (typeof cat.weight === 'object' ? cat.weight?.applied : undefined);
       appliedPct = rawApplied != null ? Number(rawApplied) : baseWeight;
     }
 
     const mapped = {
       ...cat,
-      code: cat.code || cat.ref,
+      code: cat.code || cat.ref || cat.key,
+      ref: cat.ref || cat.code || cat.key,
+      key: cat.key || cat.input_key || cat.code || cat.ref,
       declaredWeight: baseWeight,
       appliedWeightPct: appliedPct,
       appliedWeight: appliedPct > 1 ? appliedPct / 100 : appliedPct,
       weight: baseWeight,
     };
-    if (cat.children && cat.children.length > 0) {
-      mapped.children = mapCategories(cat.children);
+
+    if (hasChildren) {
+      mapped.children = mapCategories(rawChildren);
     } else {
       delete mapped.children;
-      if (cat.weights) {
-        if (mapped.declaredWeight === undefined || mapped.declaredWeight === null) {
-          mapped.declaredWeight = cat.weights.declaredWeight ?? cat.weights.declared_weight;
-        }
-      }
     }
     return mapped;
   });
 }
 
-// ── Phase 1: Deal Evaluation ────────────────────────────────────
-// Returns data in the EXACT shape the real API will return.
+// ── Assessment: Deal Evaluation ────────────────────────────────────
+// Connects to GET /api/v1/companies/{companyId}/assessment
 
 export async function fetchDealEvaluation(companyId) {
   const data = await get(`/companies/${companyId}/assessment`);
-  console.log("Phase1 API response:", data);
 
-  const scorecardData = data.dealScorecardData || {};
+  const summaryObj = data.summary || {};
+  const execSummary = summaryObj.executive_summary || {};
+  const analysisObj = data.analysis || {};
 
   return {
     // ── Company metadata (header banner) ──
-    company: data.company,
-    sector: data.sector,
-    subSector: data.sub_sector,
-    dealStage: data.deal_stage,
-    askAmount: data.ask_amount,
-    capitalRaised: data.capital_raised,
-    assessmentDate: data.assessment_date,
-    overallScore: data.overall_score ?? scorecardData.system_score,
-    dealRating: data.deal_rating || scorecardData.system_rating,
-    inputCoverage: data.input_coverage ?? scorecardData.coveragePct,
-    strongestCategory: data.strongest_category,
-    weakestCategory: data.weakest_category,
-    bandLegend: data.band_legend,
+    company_name: data.company_name,
+    company: data.company_name,
+    sector: data.inputs?.sectors?.[0] || 'Healthcare',
+    subSector: data.inputs?.sub_sector,
+    dealStage: summaryObj.stage || data.inputs?.stage,
+    askAmount: data.inputs?.raise_amount_usd_mn,
+    capitalRaised: null,
+    assessmentDate: data.created_at,
+    overallScore: analysisObj.band_recommendations?.baseline?.overall ?? summaryObj.displayScore ?? summaryObj.overall_score,
+    dealRating: analysisObj.band_recommendations?.baseline?.rating ?? summaryObj.displayRating ?? summaryObj.deal_rating,
+    inputCoverage: summaryObj.coverage?.coverage_pct,
+    strongestCategory: summaryObj.strongest_category,
+    weakestCategory: summaryObj.weakest_category,
+    bandLegend: null,
 
-    // ── Phase 1 sections (exact API contract) ──
-    dealScorecardData: scorecardData,
-    categories: mapCategories(scorecardData.categories || data.categories || []),
-    executiveSummary: data.executiveSummaryData || data.executiveSummary,
-    diligenceFindings: data.diligenceFindingsData || data.diligenceFindings || [],
-    bandRecommendations: data.recommendedMoves || data.bandRecommendationsData || data.bandRecommendations || [],
+    // ── Top-level raw fields for api-adapter ──
+    summary: summaryObj,
+    inputs: data.inputs,
+    created_at: data.created_at,
+    analysis: analysisObj,
+
+    // ── Categories tree ──
+    categories: mapCategories(data.categories || []),
+
+    // ── Executive summary ──
+    executiveSummary: execSummary,
+
+    // ── Diligence findings & recommendations ──
+    diligenceFindings: analysisObj.diligence_findings || data.diligenceFindings || data.diligenceFindingsData || [],
+    bandRecommendations: analysisObj.recommendations || data.recommendedMoves || data.bandRecommendationsData || data.bandRecommendations || [],
   };
 }
 
-// ── Phase 1: Override ───────────────────────────────────────────
-// POST /api/v1/companies/{companyId}/fundraising/phase1/override
-// When real API is ready, replace with actual fetch POST.
+// ── Assessment: Override ───────────────────────────────────────────
+// POST /api/v1/companies/{companyId}/assessment/override
 
 export async function submitOverride(companyId, parameterRef, overrideScore, reason) {
-  return await post(`/companies/${companyId}/fundraising/phase1/override`, {
+  return await post(`/companies/${companyId}/assessment/override`, {
     parameter_ref: parameterRef,
     override_score: overrideScore,
     reason,

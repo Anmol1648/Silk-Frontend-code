@@ -98,7 +98,7 @@ export function getSectionCandidateKeys(sectionKey, fieldKey) {
 export function isItemConfirmed(confirmedFields, fieldKey, sectionKey) {
   if (!confirmedFields || !confirmedFields.length) return false;
   const candidates = getSectionCandidateKeys(sectionKey, fieldKey);
-  return confirmedFields.some(k => candidates.includes(k) || k === fieldKey || k === sectionKey);
+  return confirmedFields.some(k => candidates.includes(k) || k === fieldKey || k === String(fieldKey) || k === Number(fieldKey) || k === sectionKey);
 }
 
 /* ── Main builder ── */
@@ -130,11 +130,13 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
       let valArray = [];
       if (Array.isArray(sectionData)) {
         valArray = sectionData.map(p => ({
+          id: p.id,
           name: p.name || '',
           role: p.role || '',
           background: p.background || p.description || '',
           linkedin_url: p.linkedin_url || '',
           is_full_time: p.is_full_time ?? false,
+          is_founder: p.is_founder ?? true,
         }));
       }
 
@@ -155,6 +157,7 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
       let valArray = [];
       if (Array.isArray(sectionData)) {
         valArray = sectionData.map(p => ({
+          id: p.id,
           name: p.name || '',
           category: p.category || '',
           description: p.description || '',
@@ -178,6 +181,7 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
       let valArray = [];
       if (Array.isArray(sectionData)) {
         valArray = sectionData.map(p => ({
+          id: p.id,
           market: p.market || '',
           customer_type: p.customer_type || '',
           geography: p.geography || '',
@@ -195,6 +199,7 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
       let valArray = [];
       if (Array.isArray(sectionData)) {
         valArray = sectionData.map(p => ({
+          id: p.id,
           title: p.title || p.name || '',
           description: p.description || '',
         }));
@@ -257,6 +262,7 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
             sp = Number(Number(sp).toFixed(1));
           }
           return {
+            id: p.id,
             stream: p.stream || '',
             share_percent: sp,
           };
@@ -287,6 +293,7 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
           }
 
           return {
+            id: p.id,
             metric: p.metric || '',
             value: rawVal,
             unit: p.unit || rawUnit || '',
