@@ -337,7 +337,7 @@ function Reading({
                               key={stageName}
                               className={cn(
                                 'transition-colors',
-                                isCompanyStage ? 'bg-neutral-100/90 font-normal dark:bg-neutral-800/80' : 'hover:bg-neutral-50/50',
+                                isCompanyStage ? 'bg-neutral-100/90 font-normal' : 'hover:bg-neutral-50/50',
                               )}
                             >
                               <td className={cn('py-1 pl-1 text-foreground', isCompanyStage && 'first:rounded-l-md')}>
@@ -389,7 +389,7 @@ function Reading({
                               key={stageName}
                               className={cn(
                                 'transition-colors',
-                                isCompanyStage ? 'bg-neutral-100/90 font-normal dark:bg-neutral-800/80' : 'hover:bg-neutral-50/50',
+                                isCompanyStage ? 'bg-neutral-100/90 font-normal' : 'hover:bg-neutral-50/50',
                               )}
                             >
                               <td className={cn('py-1 pl-1 text-foreground', isCompanyStage && 'first:rounded-l-md')}>
@@ -407,7 +407,7 @@ function Reading({
                                 className={cn(
                                   'py-1 px-1 text-right',
                                   isCompanyStage && currentBand === 'excellent'
-                                    ? 'bg-blue-50/90 font-medium text-blue-600 dark:bg-blue-950/60 dark:text-blue-400'
+                                    ? 'bg-blue-50/90 font-medium text-blue-600'
                                     : 'text-foreground',
                                 )}
                               >
@@ -417,7 +417,7 @@ function Reading({
                                 className={cn(
                                   'py-1 px-1 text-right',
                                   isCompanyStage && currentBand === 'good'
-                                    ? 'bg-blue-50/90 font-medium text-blue-600 dark:bg-blue-950/60 dark:text-blue-400'
+                                    ? 'bg-blue-50/90 font-medium text-blue-600'
                                     : 'text-foreground',
                                 )}
                               >
@@ -427,7 +427,7 @@ function Reading({
                                 className={cn(
                                   'py-1 px-1 text-right',
                                   isCompanyStage && currentBand === 'fair'
-                                    ? 'bg-blue-50/90 font-medium text-blue-600 dark:bg-blue-950/60 dark:text-blue-400'
+                                    ? 'bg-blue-50/90 font-medium text-blue-600'
                                     : 'text-foreground',
                                 )}
                               >
@@ -438,7 +438,7 @@ function Reading({
                                   'py-1 pr-1 text-right',
                                   isCompanyStage && 'last:rounded-r-md',
                                   isCompanyStage && currentBand === 'poor'
-                                    ? 'bg-blue-50/90 font-medium text-blue-600 dark:bg-blue-950/60 dark:text-blue-400'
+                                    ? 'bg-blue-50/90 font-medium text-blue-600'
                                     : 'text-foreground',
                                 )}
                               >

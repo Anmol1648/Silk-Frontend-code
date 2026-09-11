@@ -17,8 +17,8 @@ import {
 } from '@/lib/deal-score'
 
 const FLAG_TONE: Record<FlagKind, string> = {
-  contradiction: 'bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-200',
-  gap: 'bg-[#DDE5F7] text-[#1E3A8A] dark:bg-[#1E293B] dark:text-[#93C5FD]',
+  contradiction: 'bg-amber-50 text-amber-900',
+  gap: 'bg-[#DDE5F7] text-[#1E3A8A]',
   inferred: 'bg-[var(--status-ai)] text-[var(--status-ai-foreground)]',
 }
 
@@ -79,7 +79,7 @@ export function FlagMark({ size = 14 }: { size?: number }) {
       viewBox="0 0 14 14"
       width={size}
       height={size}
-      className="shrink-0 text-amber-800 dark:text-amber-500"
+      className="shrink-0 text-amber-800"
       aria-hidden
     >
       <rect x="2.4" y="1.4" width="1.5" height="11.2" rx="0.35" fill="currentColor" />

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ============================================================================
    FundOS design system — "the fundraising journey, mapped."
    Palette   : deep forest ink, emerald, mint, warm paper, capital gold.
