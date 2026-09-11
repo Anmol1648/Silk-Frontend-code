@@ -13,6 +13,11 @@ import CkbPage from './pages/Ckb';
 import Members from './pages/Members';
 import CompanyProfile from './pages/profile/CompanyProfileNew';
 import InvestorDiscovery from './pages/investor_discovery/DiscoveryLayout';
+import Outreach from './pages/Outreach';
+import TermSheets from './pages/TermSheets';
+import DueDiligence from './pages/DueDiligence';
+import DefinitiveDocuments from './pages/DefinitiveDocuments';
+import Closing from './pages/Closing';
 import StageOneRedirect from './pages/StageOneRedirect';
 
 function RequireAuth({ children }) {
@@ -43,6 +48,11 @@ export default function App() {
                       <Route path="profile" element={<CompanyProfile />} />
                       <Route path="strategy" element={<CompanyStrategy />} />
                       <Route path="investors" element={<InvestorDiscovery />} />
+                      <Route path="outreach" element={<Outreach />} />
+                      <Route path="term-sheets" element={<TermSheets />} />
+                      <Route path="diligence" element={<DueDiligence />} />
+                      <Route path="documents" element={<DefinitiveDocuments />} />
+                      <Route path="closing" element={<Closing />} />
                     </Route>
 
                     {/* Deal-scoped workspace. */}

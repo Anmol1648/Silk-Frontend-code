@@ -204,8 +204,8 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
     <>
       <Dialog open={submitPhase !== 'idle'}>
         <DialogContent
-          className="sm:max-w-[425px]"
-          style={{ background: '#fff', color: '#000', border: '1px solid #e5e7eb', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}
+          className="acm-progress-dialog sm:max-w-[425px]"
+          style={{ zIndex: 320, background: '#fff', color: '#000', border: '1px solid #e5e7eb', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}
           showCloseButton={false}
         >
           <DialogHeader>
@@ -251,250 +251,272 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
         >
           {/* ---- Header ---- */}
           <div className="acm-header">
-            <h2 className="acm-title">Add Company</h2>
+            <div className="acm-header-copy">
+              <div className="acm-kicker-row">
+                <span className="acm-kicker">New Workspace</span>
+                <span className="acm-kicker-badge">AI Powered</span>
+              </div>
+              <h2 className="acm-title">Create Company Workspace</h2>
+              <p className="acm-subtitle">
+                Enter company essentials — Silk AI will automatically extract insights & build an investor-ready workspace.
+              </p>
+            </div>
             <button
               type="button"
               className="acm-close"
               onClick={onCancel}
               aria-label="Close"
+              title="Close modal (Esc)"
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="12" x2="18" y2="12" style={{ display: 'none' }} />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
           </div>
 
-          <p className="acm-subtitle">
-            Tell us about the company so we can build a comprehensive profile.
-          </p>
-
           {/* ---- Form ---- */}
           <form onSubmit={submit} className="acm-form">
-            {/* Logo & Company name */}
-            <div className="acm-field acm-field-full">
-              <span className="acm-label">Company name <span className="acm-req">*</span></span>
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                <label style={{ cursor: 'pointer', flexShrink: 0 }} title="Click to upload company logo">
+            {/* Top Card: Company Essentials */}
+            <section className="acm-essentials-card">
+              {/* Row 1: Logo & Company Name */}
+              <div className="acm-essentials-top">
+                <label className="acm-logo-upload" title="Upload company logo (PNG/JPG)">
                   <input type="file" accept="image/*" onChange={onLogoPick} style={{ display: 'none' }} />
-                  <div style={{
-                    width: 42, height: 42, borderRadius: '10px', border: '1.5px dashed #d1d5db',
-                    overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: '#f9fafb', position: 'relative', transition: 'all 0.15s ease'
-                  }}
-                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#030712'; e.currentTarget.style.background = '#f3f4f6'; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#d1d5db'; e.currentTarget.style.background = '#f9fafb'; }}
-                  >
+                  <div className="acm-logo-frame">
                     {logoUrl && !logoError ? (
                       <img
                         src={logoUrl}
                         alt="Logo"
-                        style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#fff' }}
+                        className="acm-logo-image"
                         onError={() => setLogoError(true)}
                       />
                     ) : (
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7280' }}>
+                      <div className="acm-logo-placeholder">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                           <circle cx="12" cy="13" r="4" />
                         </svg>
+                        <span className="acm-logo-badge">+</span>
                       </div>
                     )}
                   </div>
                 </label>
-                <Input
-                  type="text"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  placeholder="Enter company name"
-                  autoFocus
-                  style={{ flex: 1 }}
-                />
-              </div>
-              {errs.companyName && <span className="acm-error">{errs.companyName}</span>}
-            </div>
 
-            {/* Website + Country row */}
-            <div className="acm-row-2">
-              <label className="acm-field">
-                <span className="acm-label">Company website <span className="acm-req">*</span></span>
-                <div className="acm-input-icon">
-                  <span className="acm-input-icon-left">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <line x1="2" y1="12" x2="22" y2="12" />
-                      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                    </svg>
-                  </span>
-                  <Input
-                    type="text"
-                    className="pl-9"
-                    value={website}
-                    onChange={(e) => setWebsite(e.target.value)}
-                    placeholder="https://acme.com"
-                  />
-                </div>
-                {errs.website && <span className="acm-error">{errs.website}</span>}
-              </label>
-              <div className="acm-field">
-                <span className="acm-label">Headquarters country <span className="acm-req">*</span></span>
-                <OptionsCombobox
-                  value={country}
-                  onChange={(val) => setCountry(val)}
-                  options={countries.map((c) => ({ label: c.name, value: c.iso2 }))}
-                  placeholder="Select a country…"
-                  searchPlaceholder="Search country…"
-                  triggerClassName="h-9 py-1 bg-secondary border-0 text-sm font-normal rounded-lg shadow-none"
-                />
-                {errs.hqCountry && <span className="acm-error">{errs.hqCountry}</span>}
-              </div>
-            </div>
-
-            {/* ---- Founders ---- */}
-            <div className="acm-section">
-              <div className="acm-section-header">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
-                <h3 className="acm-section-title">Founders</h3>
-              </div>
-              <p className="acm-section-desc">
-                LinkedIn is optional. If you add a profile URL we'll use the public
-                information on it to pre-fill the founder details, which you can then edit.
-              </p>
-
-              {founders.map((f, i) => (
-                <div key={i} className="acm-founder-card">
-                  <div className="acm-founder-fields">
-                    <label className="acm-field acm-founder-name">
-                      <span className="acm-label">Name</span>
-                      <Input
-                        type="text"
-                        value={f.name}
-                        placeholder="Full name"
-                        onChange={(e) => setFounder(i, { name: e.target.value })}
-                      />
-                    </label>
-                    <label className="acm-field acm-founder-linkedin">
-                      <span className="acm-label">LinkedIn profile <span className="acm-optional">(optional)</span></span>
-                      <div className="acm-input-icon">
-                        <span className="acm-input-icon-left acm-linkedin-icon">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                          </svg>
-                        </span>
-                        <Input
-                          type="text"
-                          className="pl-9"
-                          value={f.linkedinUrl}
-                          placeholder="https://linkedin.com/in/…"
-                          onChange={(e) => setFounder(i, { linkedinUrl: e.target.value })}
-                        />
-                      </div>
-                    </label>
-                    {founders.length > 1 && (
-                      <button
-                        type="button"
-                        className="acm-remove-btn"
-                        onClick={() => removeFounder(i)}
-                        aria-label="Remove founder"
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <line x1="18" y1="6" x2="6" y2="18" />
-                          <line x1="6" y1="6" x2="18" y2="18" />
-                        </svg>
-                      </button>
+                <div className="acm-field acm-field-name">
+                  <div className="acm-label-row">
+                    <span className="acm-label">Company Name <span className="acm-req">*</span></span>
+                    {logoUrl && !logoError && (
+                      <span className="acm-logo-detected">Logo auto-detected</span>
                     )}
                   </div>
-                  <label className="acm-check flex items-center gap-2 mt-2 cursor-pointer select-none">
-                    <Checkbox
-                      checked={f.isFullTime}
-                      onCheckedChange={(checked) => setFounder(i, { isFullTime: Boolean(checked) })}
-                    />
-                    <span className="text-xs text-[#374151] font-medium">Working on this full-time</span>
-                  </label>
+                  <Input
+                    type="text"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    placeholder="e.g. Acme Corporation"
+                    autoFocus
+                    className="acm-input-main"
+                  />
+                  {errs.companyName && <span className="acm-error">{errs.companyName}</span>}
                 </div>
-              ))}
-
-              <button type="button" className="acm-add-founder" onClick={addFounder}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-                Add Founder
-              </button>
-            </div>
-
-            {/* ---- Documents ---- */}
-            <div className="acm-section">
-              <div className="acm-section-header">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                </svg>
-                <h3 className="acm-section-title">Existing documents</h3>
               </div>
-              <p className="acm-section-desc">
-                Anything you already have helps — a deck, your model, financial
-                statements. PDF, Word, PowerPoint, Excel, CSV, images or ZIP.
-              </p>
 
-              <div className="acm-upload-grid">
-                {UPLOAD_CATEGORIES.map((cat) => (
-                  <label key={cat.key} className="acm-upload-tile">
-                    <input
-                      type="file"
-                      multiple
-                      accept={ACCEPTED}
-                      onChange={(e) => onPick(e, cat.key)}
-                      style={{ display: 'none' }}
-                    />
-                    <span className="acm-upload-label">{cat.label}</span>
-                    <span className="acm-upload-count">
+              {/* Row 2: Website + HQ Country */}
+              <div className="acm-row-2">
+                <div className="acm-field">
+                  <span className="acm-label">Company Website <span className="acm-req">*</span></span>
+                  <div className="acm-input-icon">
+                    <span className="acm-input-icon-left">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="17 8 12 3 7 8" />
-                        <line x1="12" y1="3" x2="12" y2="15" />
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="2" y1="12" x2="22" y2="12" />
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                       </svg>
-                      {files.filter((f) => f.category === cat.key).length
-                        ? `${files.filter((f) => f.category === cat.key).length} file(s)`
-                        : 'No file(s)'}
                     </span>
-                  </label>
-                ))}
-              </div>
+                    <Input
+                      type="text"
+                      className="pl-9 acm-input-main"
+                      value={website}
+                      onChange={(e) => setWebsite(e.target.value)}
+                      placeholder="https://acme.com"
+                    />
+                  </div>
+                  {errs.website && <span className="acm-error">{errs.website}</span>}
+                </div>
 
-              {files.length > 0 && (
-                <ul className="acm-file-list">
-                  {files.map((f, i) => (
-                    <li key={i}>
-                      <span>{f.file.name}</span>
-                      <button
-                        type="button"
-                        className="acm-remove-file"
-                        onClick={() => setFiles((l) => l.filter((_, idx) => idx !== i))}
-                      >
-                        Remove
-                      </button>
-                    </li>
+                <div className="acm-field">
+                  <span className="acm-label">Headquarters Country <span className="acm-req">*</span></span>
+                  <OptionsCombobox
+                    value={country}
+                    onChange={(val) => setCountry(val)}
+                    options={countries.map((c) => ({ label: c.name, value: c.iso2 }))}
+                    placeholder="Select country…"
+                    searchPlaceholder="Search country…"
+                    triggerClassName="h-9 py-1 bg-[#fafafa] border border-[#e5e7eb] text-sm font-normal rounded-lg shadow-none"
+                  />
+                  {errs.hqCountry && <span className="acm-error">{errs.hqCountry}</span>}
+                </div>
+              </div>
+            </section>
+
+            {/* Middle Grid: Founders (Left) + Pitch & Documents (Right) */}
+            <div className="acm-details-grid">
+              {/* ---- Founders Panel ---- */}
+              <section className="acm-panel acm-founders-panel">
+                <div className="acm-panel-head">
+                  <div className="acm-panel-title-wrap">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="text-[#6366f1]">
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    <h3 className="acm-panel-title">Founders & Leadership</h3>
+                    <span className="acm-badge-count">{founders.length}</span>
+                  </div>
+                  <button type="button" className="acm-btn-add-inline" onClick={addFounder}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Add Founder
+                  </button>
+                </div>
+
+                {/* Scrollable container for founder cards (only this area scrolls when >1-2 founders) */}
+                <div className="acm-founders-scrollable">
+                  {founders.map((f, i) => (
+                    <div key={i} className="acm-founder-card">
+                      <div className="acm-founder-fields">
+                        <div className="acm-founder-field-item flex-1">
+                          <Input
+                            type="text"
+                            value={f.name}
+                            placeholder="Full name"
+                            className="acm-input-compact"
+                            onChange={(e) => setFounder(i, { name: e.target.value })}
+                          />
+                        </div>
+                        <div className="acm-founder-field-item flex-1">
+                          <div className="acm-input-icon">
+                            <span className="acm-input-icon-left acm-linkedin-icon">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                              </svg>
+                            </span>
+                            <Input
+                              type="text"
+                              className="pl-8 acm-input-compact"
+                              value={f.linkedinUrl}
+                              placeholder="LinkedIn profile URL"
+                              onChange={(e) => setFounder(i, { linkedinUrl: e.target.value })}
+                            />
+                          </div>
+                        </div>
+                        {founders.length > 1 && (
+                          <button
+                            type="button"
+                            className="acm-remove-founder-btn"
+                            onClick={() => removeFounder(i)}
+                            title="Remove founder"
+                          >
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="18" y1="6" x2="6" y2="18" />
+                              <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                      <div className="acm-founder-subrow">
+                        <label className="acm-check flex items-center gap-1.5 cursor-pointer select-none">
+                          <Checkbox
+                            checked={f.isFullTime}
+                            onCheckedChange={(checked) => setFounder(i, { isFullTime: Boolean(checked) })}
+                          />
+                          <span className="text-[11px] text-[#475569] font-normal">Working full-time</span>
+                        </label>
+                      </div>
+                    </div>
                   ))}
-                </ul>
-              )}
+                </div>
+              </section>
+
+              {/* ---- Documents Panel ---- */}
+              <section className="acm-panel acm-docs-panel">
+                <div className="acm-panel-head">
+                  <div className="acm-panel-title-wrap">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="text-[#f59e0b]">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    <h3 className="acm-panel-title">Pitch & Documents</h3>
+                  </div>
+                  <span className="acm-optional-badge">Optional</span>
+                </div>
+
+                <div className="acm-upload-grid">
+                  {UPLOAD_CATEGORIES.map((cat) => {
+                    const catFileCount = files.filter((f) => f.category === cat.key).length;
+                    return (
+                      <label key={cat.key} className={`acm-upload-tile ${catFileCount > 0 ? 'acm-upload-tile--active' : ''}`}>
+                        <input
+                          type="file"
+                          multiple
+                          accept={ACCEPTED}
+                          onChange={(e) => onPick(e, cat.key)}
+                          style={{ display: 'none' }}
+                        />
+                        <div className="acm-tile-icon-wrap">
+                          {cat.key === 'company_presentation' && (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                          )}
+                          {cat.key === 'financial_model' && (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                          )}
+                          {cat.key === 'annual_report' && (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                          )}
+                          {cat.key === 'other' && (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                          )}
+                        </div>
+                        <span className="acm-upload-label">{cat.label}</span>
+                        <span className="acm-upload-count">
+                          {catFileCount > 0 ? `${catFileCount} file(s)` : '+ Upload'}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+
+                {files.length > 0 && (
+                  <div className="acm-attached-chips">
+                    {files.map((f, i) => (
+                      <span key={i} className="acm-file-chip" title={f.file.name}>
+                        <span className="acm-file-chip-name">{f.file.name}</span>
+                        <button
+                          type="button"
+                          className="acm-file-chip-remove"
+                          onClick={() => setFiles((l) => l.filter((_, idx) => idx !== i))}
+                          title="Remove file"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </section>
             </div>
 
             {/* ---- Footer ---- */}
             <div className="acm-footer">
-              <span className="acm-footer-hint">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="16" x2="12" y2="12" />
-                  <line x1="12" y1="8" x2="12.01" y2="8" />
-                </svg>
-                You can add or change anything after the profile is generated.
-              </span>
+              <div className="acm-footer-hint">
+                <span className="acm-hint-sparkle">✦</span>
+                <span>Silk AI automatically synthesizes public data and uploaded files.</span>
+              </div>
               <div className="acm-footer-actions">
                 <button type="button" className="acm-btn-cancel" onClick={onCancel}>
                   Cancel

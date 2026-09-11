@@ -57,7 +57,7 @@ function mapCategories(cats) {
 // Returns data in the EXACT shape the real API will return.
 
 export async function fetchDealEvaluation(companyId) {
-  const data = await get(`/companies/${companyId}/fundraising/phase1`);
+  const data = await get(`/companies/${companyId}/assessment`);
   console.log("Phase1 API response:", data);
 
   const scorecardData = data.dealScorecardData || {};

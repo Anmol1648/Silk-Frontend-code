@@ -449,31 +449,75 @@ export default function Login() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [resent, setResent] = useState(false);
+  const [flowStatus, setFlowStatus] = useState('idle');
   const otpInputsRef = useRef([]);
+  const signupTransitionTimerRef = useRef(null);
+  const attemptedCodeRef = useRef('');
 
   const code = otpDigits.join('');
 
   useEffect(() => {
     if (step === 2) {
+      attemptedCodeRef.current = '';
       setTimeout(() => otpInputsRef.current[0]?.focus(), 100);
     }
   }, [step]);
+
+  useEffect(() => () => {
+    if (signupTransitionTimerRef.current) clearTimeout(signupTransitionTimerRef.current);
+  }, []);
 
   const maskedEmail = email
     ? email.replace(/^(.{2})(.*)(@.*)$/, (_, a, b, c) => a + '*'.repeat(Math.max(2, b.length)) + c)
     : '';
 
+  function moveToSignup() {
+    setMode('signup');
+    setStep(1);
+    setOtpDigits(['', '', '', '', '', '']);
+    setErr('');
+    attemptedCodeRef.current = '';
+    setFlowStatus('moving-to-signup');
+    if (signupTransitionTimerRef.current) clearTimeout(signupTransitionTimerRef.current);
+    signupTransitionTimerRef.current = setTimeout(() => {
+      setFlowStatus('idle');
+      signupTransitionTimerRef.current = null;
+    }, 800);
+  }
+
   async function sendCode(e) {
     e?.preventDefault();
     setErr('');
-    if (!/^\S+@\S+\.\S+$/.test(email)) { setErr('Enter a valid email address.'); return; }
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!/^\S+@\S+\.\S+$/.test(normalizedEmail)) { setErr('Enter a valid email address.'); return; }
+    setEmail(normalizedEmail);
     setBusy(true);
+    setFlowStatus(mode === 'signup' ? 'sending-code' : 'checking-email');
     try {
-      if (mode === 'signup') await auth.signup({ email, name, companyName });
-      else await auth.requestOtp(email);
+      if (mode === 'signup') {
+        // The email is carried over from the login check and is locked on the
+        // signup form, so only the remaining account details are entered.
+        await auth.signup({
+          email: normalizedEmail,
+          name: name.trim(),
+          companyName: companyName.trim(),
+        });
+      } else {
+        // /auth/otp/request also tells us whether this email belongs to an
+        // existing user. Unknown emails must complete signup first.
+        const result = await auth.requestOtp(normalizedEmail);
+        if (result?.user_exists !== true) return moveToSignup();
+      }
       setStep(2);
       setOtpDigits(['', '', '', '', '', '']);
+      attemptedCodeRef.current = '';
+      setFlowStatus('idle');
     } catch (ex) {
+      const response = ex?.body || ex;
+      const userDoesNotExist = response?.user_exists === false
+        || (response?.user_exists == null && response?.is_registered === false);
+      if (mode === 'signin' && userDoesNotExist) return moveToSignup();
+      setFlowStatus('idle');
       setErr(ex.status === 429 ? 'Too many requests — wait a moment and try again.' : (ex.detail || ex.message));
     } finally { setBusy(false); }
   }
@@ -481,6 +525,7 @@ export default function Login() {
   async function handleResend() {
     setOtpDigits(['', '', '', '', '', '']);
     setErr('');
+    attemptedCodeRef.current = '';
     setResent(true);
     try {
       await auth.requestOtp(email);
@@ -490,6 +535,9 @@ export default function Login() {
 
   function handleOtpChange(index, val) {
     const cleanVal = val.replace(/[^0-9]/g, '');
+    setErr('');
+    attemptedCodeRef.current = '';
+
     if (!cleanVal) {
       const next = [...otpDigits];
       next[index] = '';
@@ -525,29 +573,34 @@ export default function Login() {
   async function verify(e) {
     e?.preventDefault();
     setErr('');
-    if (code.trim().length < 6) { setErr('Please enter all 6 digits.'); return; }
+    const fullCode = otpDigits.join('').trim();
+    if (fullCode.length < 6) { setErr('Please enter all 6 digits.'); return; }
+    if (busy) return;
+
+    attemptedCodeRef.current = fullCode;
     setBusy(true);
     try {
-      const res = await auth.verifyOtp(email.trim(), code.trim());
+      const res = await auth.verifyOtp(email.trim(), fullCode);
       login(res);
       navigate('/dashboard', { replace: true });
     } catch (ex) {
-      setErr(ex.detail || ex.message || 'Invalid or expired code. Try requesting a new one.');
+      const errorMsg = ex?.detail || ex?.message || (typeof ex === 'string' ? ex : 'Incorrect code. Please try again.');
+      setErr(errorMsg);
     } finally { setBusy(false); }
   }
 
-  // Auto-verify as soon as 6 digits are filled (1:1 silkAnkit UX)
+  // Auto-verify as soon as 6 digits are filled (only triggers once per unique code)
   useEffect(() => {
-    if (code.length === 6 && !busy && step === 2) {
+    if (step === 2 && code.length === 6 && !busy && attemptedCodeRef.current !== code) {
       verify();
     }
-  }, [code, busy, step]);
+  }, [code, step, busy]);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-white text-[#030712]">
       {/* ── Left Column: Auth Form (1:1 silkAnkit) ──────────────────────────── */}
       <main className="flex-1 flex items-center justify-center px-6 py-16 lg:px-12 xl:px-20 overflow-y-auto">
-        <div className="w-full max-w-[400px]">
+        <div className="w-full max-w-[400px] -translate-y-1">
           {/* Brand Header */}
           <div className="mb-12 lg:hidden">
             <AuthBrand />
@@ -606,11 +659,12 @@ export default function Login() {
                     id="email"
                     type="email"
                     autoComplete="email"
-                    autoFocus
+                    autoFocus={mode !== 'signup'}
+                    disabled={mode === 'signup'}
                     value={email}
                     onChange={e => { setEmail(e.target.value); setErr(''); }}
                     placeholder="you@company.com"
-                    className={`w-full h-11 px-3.5 rounded-lg border-0 bg-secondary text-[14px] text-foreground placeholder:text-foreground-subtle outline-none transition-colors focus:ring-1 focus:ring-foreground/5 ${err ? 'ring-1 ring-destructive/30 focus:ring-destructive/40' : ''
+                    className={`w-full h-11 px-3.5 rounded-lg border-0 bg-secondary text-[14px] text-foreground placeholder:text-foreground-subtle outline-none transition-colors focus:ring-1 focus:ring-foreground/5 disabled:cursor-not-allowed disabled:opacity-70 ${err ? 'ring-1 ring-destructive/30 focus:ring-destructive/40' : ''
                       }`}
                   />
                   {err && <p className="text-sm text-destructive pt-0.5">{err}</p>}
@@ -618,42 +672,24 @@ export default function Login() {
 
                 <button
                   type="submit"
-                  disabled={busy}
-                  className="w-full h-11 rounded-lg text-[14px] font-medium text-primary-foreground bg-primary hover:bg-primary-hover active:bg-primary-active transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground/10 disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer"
+                  disabled={busy || flowStatus === 'moving-to-signup'}
+                  className="w-full h-11 rounded-lg text-[14px] font-medium text-primary-foreground bg-primary hover:bg-primary-hover active:bg-primary-active transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus:ring-foreground/10 disabled:opacity-55 disabled:cursor-not-allowed cursor-pointer"
                 >
-                  {busy ? 'Sending code…' : 'Continue'}
+                  {flowStatus === 'moving-to-signup'
+                    ? 'Moving to signup...'
+                    : busy && mode === 'signin'
+                      ? 'Checking email...'
+                      : busy
+                        ? 'Sending code...'
+                        : 'Continue'}
                 </button>
               </form>
 
-              {/* Switch signin / signup */}
-              <div className="mt-6 text-center text-[13.5px] text-muted-foreground">
-                {mode === 'signin' ? (
-                  <p>
-                    Don't have an account?{' '}
-                    <button
-                      type="button"
-                      onClick={() => { setMode('signup'); setErr(''); }}
-                      className="font-medium text-foreground hover:underline cursor-pointer"
-                    >
-                      Sign up
-                    </button>
-                  </p>
-                ) : (
-                  <p>
-                    Already have an account?{' '}
-                    <button
-                      type="button"
-                      onClick={() => { setMode('signin'); setErr(''); }}
-                      className="font-medium text-foreground hover:underline cursor-pointer"
-                    >
-                      Sign in
-                    </button>
-                  </p>
-                )}
-              </div>
-
               {/* Footer Terms */}
-              <p className="mt-8 text-[12.5px] text-foreground-subtle leading-relaxed">
+              <p
+                className="text-[12.5px] text-foreground-subtle leading-relaxed"
+                style={{ margin: '32px 0 0' }}
+              >
                 By continuing, you agree to our{' '}
                 <a href="#" className="underline underline-offset-2 text-foreground-subtle hover:text-foreground/55 transition-colors cursor-pointer">
                   Terms of Service
