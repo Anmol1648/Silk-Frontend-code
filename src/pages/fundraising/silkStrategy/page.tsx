@@ -93,6 +93,29 @@ function scrollChildInto(
   root.scrollTo({ top: Math.min(Math.max(0, top), max), behavior: 'smooth' })
 }
 
+function isAssessmentCompleted(apiData: any): boolean {
+  if (!apiData) return false
+  const status = (apiData.status || apiData.raw?.status || apiData.summary?.status || '')
+    .toString()
+    .toLowerCase()
+    .trim()
+
+  if (['completed', 'complete', 'ready', 'done', 'succeeded'].includes(status)) {
+    return true
+  }
+
+  if (['draft', 'generating', 'processing', 'pending', 'in_progress', 'drafting'].includes(status)) {
+    return false
+  }
+
+  // If no explicit status was returned, check if categories or score are populated
+  if (!status && (apiData.overallScore != null || (apiData.categories && apiData.categories.length > 0))) {
+    return true
+  }
+
+  return false
+}
+
 export default function Page({ companyId }: { companyId?: string }) {
   const [phase, setPhase] = useState<'thinking' | 'ready' | 'failed'>('thinking')
   const [report, setReport] = useState<DealReport | null>(null)
@@ -100,6 +123,7 @@ export default function Page({ companyId }: { companyId?: string }) {
   const [investors, setInvestors] = useState<InvestorMatchReport | null>(null)
   const [tab, setTab] = useState<ScoreTab>('score')
   const [thinkStep, setThinkStep] = useState(0)
+  const [reloadTrigger, setReloadTrigger] = useState(0)
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const [advanced, setAdvanced] = useState(false)
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -111,37 +135,72 @@ export default function Page({ companyId }: { companyId?: string }) {
 
   useEffect(() => {
     let cancelled = false
-    const step = window.setInterval(() => {
-      setThinkStep(n => Math.min(n + 1, THINK_STEPS.length - 1))
-    }, 420)
+    let pollTimer: ReturnType<typeof setInterval> | null = null
+
+    const stepTimer = window.setInterval(() => {
+      setThinkStep(n => (n + 1) % THINK_STEPS.length)
+    }, 1200)
+
+    function applyData(apiData: any) {
+      const next = buildDealReportFromApi(apiData)
+      const nextValuation = loadValuationReport(next)
+      const nextInvestors = loadInvestorReport(next, nextValuation)
+      if (!cancelled) {
+        setReport(next)
+        setValuation(nextValuation)
+        setInvestors(nextInvestors)
+        setPhase('ready')
+      }
+    }
 
     async function load() {
-      try {
-        const next = companyId
-          ? await loadScoreReportFromApi(companyId)
-          : loadScoreReport()
-        const nextValuation = loadValuationReport(next)
-        const nextInvestors = loadInvestorReport(next, nextValuation)
-        if (!cancelled) {
-          setReport(next)
-          setValuation(nextValuation)
-          setInvestors(nextInvestors)
-          setPhase('ready')
-        }
-      } catch {
-        // Fallback to mock data if API fails
-        if (!cancelled) {
-          try {
-            const next = loadScoreReport()
-            const nextValuation = loadValuationReport(next)
-            const nextInvestors = loadInvestorReport(next, nextValuation)
+      if (!companyId) {
+        try {
+          const next = loadScoreReport()
+          const nextValuation = loadValuationReport(next)
+          const nextInvestors = loadInvestorReport(next, nextValuation)
+          if (!cancelled) {
             setReport(next)
             setValuation(nextValuation)
             setInvestors(nextInvestors)
             setPhase('ready')
-          } catch {
-            setPhase('failed')
           }
+        } catch {
+          if (!cancelled) setPhase('failed')
+        }
+        return
+      }
+
+      setPhase('thinking')
+      try {
+        const apiData = await fetchDealEvaluation(companyId)
+        if (cancelled) return
+
+        if (isAssessmentCompleted(apiData)) {
+          applyData(apiData)
+        } else {
+          // Status is draft or generating, start polling until completed
+          pollTimer = setInterval(async () => {
+            if (cancelled) return
+            try {
+              const polledData = await fetchDealEvaluation(companyId)
+              if (cancelled) return
+              if (isAssessmentCompleted(polledData)) {
+                if (pollTimer) {
+                  clearInterval(pollTimer)
+                  pollTimer = null
+                }
+                applyData(polledData)
+              }
+            } catch (err) {
+              console.error('Polling assessment error:', err)
+            }
+          }, 3000)
+        }
+      } catch (err) {
+        console.error('Failed to load assessment:', err)
+        if (!cancelled) {
+          setPhase('failed')
         }
       }
     }
@@ -150,9 +209,12 @@ export default function Page({ companyId }: { companyId?: string }) {
 
     return () => {
       cancelled = true
-      window.clearInterval(step)
+      window.clearInterval(stepTimer)
+      if (pollTimer) {
+        clearInterval(pollTimer)
+      }
     }
-  }, [companyId])
+  }, [companyId, reloadTrigger])
 
   const openScorePointer = useCallback((id: string) => {
     if (!report) {
@@ -313,18 +375,7 @@ export default function Page({ companyId }: { companyId?: string }) {
     setReport(null)
     setValuation(null)
     setInvestors(null)
-    window.setTimeout(() => {
-      try {
-        const next = loadScoreReport()
-        const nextValuation = loadValuationReport(next)
-        setReport(next)
-        setValuation(nextValuation)
-        setInvestors(loadInvestorReport(next, nextValuation))
-        setPhase('ready')
-      } catch {
-        setPhase('failed')
-      }
-    }, 1200)
+    setReloadTrigger(v => v + 1)
   }
 
   if (phase === 'thinking') {

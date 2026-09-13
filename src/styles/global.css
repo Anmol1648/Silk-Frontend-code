@@ -1257,24 +1257,27 @@ table.data tbody tr:hover td {
 /* -------------------------------- toasts --------------------------------- */
 .toasts {
   position: fixed;
-  top: 22px;
-  right: 22px;
+  bottom: 24px;
+  right: 24px;
   display: flex;
-  flex-direction: column;
-  gap: 9px;
+  flex-direction: column-reverse;
+  gap: 10px;
   z-index: 9999;
+  pointer-events: none;
 }
 
 .toast {
-  background: var(--green-950);
+  pointer-events: auto;
+  background: var(--green-950, #030712);
   color: #fff;
   font-size: 13px;
-  border-radius: 12px;
-  padding: 11px 17px;
+  font-weight: 500;
+  border-radius: 10px;
+  padding: 10px 16px;
   max-width: 380px;
   box-shadow: var(--shadow-2);
   animation: rise .25s ease both;
-  border-left: 3px solid var(--mint);
+  border-left: 3px solid var(--mint, #10b981);
 }
 
 .toast.error {

@@ -60,20 +60,21 @@ function mapCategories(cats) {
 export async function fetchDealEvaluation(companyId) {
   const data = await get(`/companies/${companyId}/assessment`);
 
-  const summaryObj = data.summary || {};
+  const summaryObj = data?.summary || {};
   const execSummary = summaryObj.executive_summary || {};
-  const analysisObj = data.analysis || {};
+  const analysisObj = data?.analysis || {};
 
   return {
+    status: data?.status || summaryObj.status,
     // ── Company metadata (header banner) ──
-    company_name: data.company_name,
-    company: data.company_name,
-    sector: data.inputs?.sectors?.[0] || 'Healthcare',
-    subSector: data.inputs?.sub_sector,
-    dealStage: summaryObj.stage || data.inputs?.stage,
-    askAmount: data.inputs?.raise_amount_usd_mn,
+    company_name: data?.company_name,
+    company: data?.company_name,
+    sector: data?.inputs?.sectors?.[0] || 'Healthcare',
+    subSector: data?.inputs?.sub_sector,
+    dealStage: summaryObj.stage || data?.inputs?.stage,
+    askAmount: data?.inputs?.raise_amount_usd_mn,
     capitalRaised: null,
-    assessmentDate: data.created_at,
+    assessmentDate: data?.created_at,
     overallScore: analysisObj.band_recommendations?.baseline?.overall ?? summaryObj.displayScore ?? summaryObj.overall_score,
     dealRating: analysisObj.band_recommendations?.baseline?.rating ?? summaryObj.displayRating ?? summaryObj.deal_rating,
     inputCoverage: summaryObj.coverage?.coverage_pct,
@@ -83,19 +84,20 @@ export async function fetchDealEvaluation(companyId) {
 
     // ── Top-level raw fields for api-adapter ──
     summary: summaryObj,
-    inputs: data.inputs,
-    created_at: data.created_at,
+    inputs: data?.inputs,
+    created_at: data?.created_at,
     analysis: analysisObj,
 
     // ── Categories tree ──
-    categories: mapCategories(data.categories || []),
+    categories: mapCategories(data?.categories || []),
 
     // ── Executive summary ──
     executiveSummary: execSummary,
 
     // ── Diligence findings & recommendations ──
-    diligenceFindings: analysisObj.diligence_findings || data.diligenceFindings || data.diligenceFindingsData || [],
-    bandRecommendations: analysisObj.recommendations || data.recommendedMoves || data.bandRecommendationsData || data.bandRecommendations || [],
+    diligenceFindings: analysisObj.diligence_findings || data?.diligenceFindings || data?.diligenceFindingsData || [],
+    bandRecommendations: analysisObj.recommendations || data?.recommendedMoves || data?.bandRecommendationsData || data?.bandRecommendations || [],
+    raw: data,
   };
 }
 
