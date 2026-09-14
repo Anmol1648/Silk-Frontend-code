@@ -136,7 +136,7 @@ export function getSelectOptions(key, lookups = {}) {
 export function detectFieldKind(key) {
   const k = key.toLowerCase();
   if (k.includes('country') || k === 'hq_country' || k === 'geography') return 'country';
-  if (k.includes('currency_id')) return 'select';
+  if (k.includes('currency_id') || k.endsWith('_currency') || k.endsWith('_denomination')) return 'select';
   if (k.includes('funding_status_name') || k.includes('revenue_size_name')) return 'select';
   if (k.includes('macro_sector') || k.includes('sub_sector')) return 'select';
   if (k.includes('customer_type')) return 'select';

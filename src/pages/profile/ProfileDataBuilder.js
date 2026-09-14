@@ -18,6 +18,11 @@ import {
 const SKIP_KEYS = new Set([
   'total_funding_raised_usd_mn', 'latest_pre_money_usd_mn', 'latest_post_money_usd_mn',
   'total_funding_raised_display', 'latest_pre_money_display', 'latest_post_money_display',
+  'latest_pre_money_amount', 'latest_pre_money_currency', 'latest_pre_money_denomination',
+  'latest_post_money_amount', 'latest_post_money_currency', 'latest_post_money_denomination',
+  'total_funding_raised_amount', 'total_funding_raised_currency', 'total_funding_raised_denomination',
+  'total_funding_raised_reported', 'total_funding_raised_gap',
+  'total_funding_raised_reported_usd_mn', 'total_funding_raised_gap_usd_mn',
 ]);
 
 export const SECTION_SUBFIELDS = {
@@ -491,7 +496,12 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
     } else {
       // Handle sections that are objects
       Object.entries(sectionData).forEach(([fieldKey, fieldValue]) => {
-        if (SKIP_KEYS.has(fieldKey)) return;
+        if (
+          SKIP_KEYS.has(fieldKey) ||
+          fieldKey.startsWith('total_funding_raised_') ||
+          fieldKey.startsWith('latest_pre_money_') ||
+          fieldKey.startsWith('latest_post_money_')
+        ) return;
 
         const kind = detectFieldKind(fieldKey);
         const options = getSelectOptions(fieldKey, lookups);
