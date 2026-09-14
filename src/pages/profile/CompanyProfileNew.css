@@ -1462,6 +1462,9 @@
 .cp-source-chip {
   display: flex;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.75rem 0.875rem;
@@ -1469,6 +1472,9 @@
   border-radius: 0.75rem;
   transition: background-color 150ms ease;
   text-decoration: none;
+  overflow: hidden;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .cp-source-chip:hover {
@@ -1480,6 +1486,9 @@
   font-size: 13px;
   color: var(--cp-popover-fg);
   line-height: 1.375;
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .cp-source-chip:hover .cp-source-title {
@@ -1492,6 +1501,10 @@
   font-size: 12px;
   color: var(--cp-fg-subtle);
   line-height: 1.375;
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .cp-status-tag-btn:hover .cp-status-default {

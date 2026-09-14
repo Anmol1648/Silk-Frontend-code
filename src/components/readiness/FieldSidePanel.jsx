@@ -598,30 +598,65 @@ export default function FieldSidePanel({
                               Loading sources…
                             </div>
                           ) : fieldSources.length > 0 ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', minWidth: 0 }}>
                               {fieldSources.map((source, i) => {
                                 const isAttribution = source.type === 'attribution';
                                 return (
                                   <div 
                                     key={i} 
                                     className="cp-source-chip"
-                                    style={{ display: 'flex', gap: '0.625rem', padding: '0.625rem 0.75rem', borderRadius: '0.5rem', background: '#f9fafb', border: '1px solid #f3f4f6' }}
+                                    style={{
+                                      display: 'flex',
+                                      gap: '0.625rem',
+                                      padding: '0.625rem 0.75rem',
+                                      borderRadius: '0.5rem',
+                                      background: '#f9fafb',
+                                      border: '1px solid #f3f4f6',
+                                      width: '100%',
+                                      minWidth: 0,
+                                      maxWidth: '100%',
+                                      overflow: 'hidden',
+                                      boxSizing: 'border-box'
+                                    }}
                                   >
                                     <div style={{ display: 'flex', flexShrink: 0, alignItems: 'center', justifyContent: 'center', color: '#6b7280', marginTop: '0.125rem' }}>
                                       <HugeiconsIcon icon={sourceKindIcon(source.type)} size={15} strokeWidth={2} />
                                     </div>
-                                    <div style={{ minWidth: 0, flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                        <span className="cp-source-title" style={{ fontSize: '13px', fontWeight: 600, color: '#111827' }}>
+                                    <div style={{ minWidth: 0, flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem', minWidth: 0 }}>
+                                        <span
+                                          className="cp-source-title"
+                                          style={{
+                                            fontSize: '13px',
+                                            fontWeight: 600,
+                                            color: '#111827',
+                                            minWidth: 0,
+                                            flex: 1,
+                                            wordBreak: 'break-word',
+                                            overflowWrap: 'anywhere',
+                                            lineHeight: '1.4'
+                                          }}
+                                        >
                                           {source.title || (isAttribution ? 'Founder Entry' : 'Web Source')}
                                         </span>
                                         {source.url && source.url !== '#' && (
-                                          <a href={source.url} target="_blank" rel="noopener noreferrer" style={{ color: '#6b7280' }}>
+                                          <a href={source.url} target="_blank" rel="noopener noreferrer" style={{ color: '#6b7280', flexShrink: 0, marginTop: '0.125rem' }}>
                                             <HugeiconsIcon icon={ArrowUp02Icon} size={14} style={{ transform: 'rotate(45deg)' }} />
                                           </a>
                                         )}
                                       </div>
-                                      <p style={{ marginTop: '0.125rem', fontSize: '12px', color: '#6b7280', lineHeight: '1.375', margin: '0.125rem 0 0 0' }}>
+                                      <p
+                                        style={{
+                                          marginTop: '0.25rem',
+                                          fontSize: '12px',
+                                          color: '#6b7280',
+                                          lineHeight: '1.45',
+                                          margin: '0.25rem 0 0 0',
+                                          wordBreak: 'break-word',
+                                          overflowWrap: 'anywhere',
+                                          whiteSpace: 'pre-wrap'
+                                        }}
+                                      >
                                         {isAttribution ? 'No external source recorded (entered directly by user).' : (source.snippet || source.excerpt || 'Referenced for profile data.')}
                                       </p>
                                     </div>
