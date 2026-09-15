@@ -6593,8 +6593,8 @@ th.num {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  max-width: 1380px;
-  margin: 0 auto 20px;
+  max-width: 100%;
+  margin: 0 0 20px 0;
 }
 
 .ds-dashboard-content .ds-section-kicker {
@@ -6641,8 +6641,8 @@ th.num {
 }
 
 .ds-dashboard-content .ds-cards-grid {
-  max-width: 1380px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0 0 20px 0;
   gap: 18px;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
 }
