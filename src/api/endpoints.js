@@ -84,9 +84,15 @@ export const profile = {
   onboard: (c, body) => post(`/companies/${c}/profile/onboard`, body, { idempotent: true }),
   confirmReview: (c) => post(`/companies/${c}/profile/review`, {}),
   deepGenerate: (c) => post(`/companies/${c}/profile/deep-generate`, {}, { idempotent: true }),
-  // Req 5+6: full QA body — field_id, question, chat_history, document_id.
+  // Req 5+6: full QA body — field_id, question, chat_history, document_id, conversation_id.
   // A field_id alone (no question) requests a grounded draft.
   ask: (c, body) => post(`/companies/${c}/profile/qa`, body),
+  // Chat Panel — apply a single AI proposal (conversation_id, proposal_index, field_id, section_key).
+  applyProposal: (c, body) => post(`/companies/${c}/profile/proposals/apply`, body),
+  // Chat Panel — batch-apply multiple proposals at once.
+  applyProposalBatch: (c, body) => post(`/companies/${c}/profile/proposals/apply-batch`, body),
+  // Chat Panel — list editable fields (for autocomplete / validation).
+  editableFields: (c) => get(`/companies/${c}/profile/editable-fields`),
   // Req 5: field-level source citations.
   fieldSources: (c, fieldId, opts) => get(`/companies/${c}/profile/fields/${encodeURIComponent(fieldId)}/sources`, opts),
   saveSection: (c, key, body) =>

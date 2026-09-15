@@ -274,32 +274,58 @@ export function FlagsBlock({
   onOpenFlag: (parameterId: string) => void
   key?: Key
 }) {
-  const { flags, preview, total, rest } = shownFlags(report)
-  const [open, setOpen] = useState(false)
-  if (!total) return null
-  const listed = open ? flags : preview
+  const redFlags = report.flags.filter(f => f.kind !== 'gap')
+  const dataGaps = report.flags.filter(f => f.kind === 'gap')
+  const redFlagsCount = redFlags.length
+  const dataGapsCount = dataGaps.length
+  const total = report.flags.length
 
-  const redFlagsCount = report.flags.filter(f => f.kind === 'contradiction').length
-  const dataGapsCount = report.flags.filter(f => f.kind === 'gap').length
+  const [activeTab, setActiveTab] = useState<'flags' | 'gaps'>(redFlagsCount > 0 ? 'flags' : 'gaps')
+  const [open, setOpen] = useState(false)
+
+  if (!total) return null
+
+  const activeList = activeTab === 'flags' ? redFlags : dataGaps
+  const PREVIEW_LIMIT = 3
+  const listed = open ? activeList : activeList.slice(0, PREVIEW_LIMIT)
+  const rest = Math.max(0, activeList.length - PREVIEW_LIMIT)
 
   return (
     <section className="overflow-hidden rounded-lg bg-background ring-1 ring-foreground/6">
       <div className="flex items-center justify-between gap-4 border-b border-foreground/4 bg-secondary/80 px-4 py-2">
         <div className="flex items-center gap-3 text-[13px] font-medium text-muted-foreground">
           {redFlagsCount > 0 && (
-            <span className="flex items-center gap-1.5 text-foreground">
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('flags')
+              }}
+              className={cn(
+                'flex items-center gap-1.5 transition-colors cursor-pointer focus:outline-none',
+                activeTab === 'flags' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
               <FlagMark size={14} />
               <span>{redFlagsCount} {redFlagsCount === 1 ? 'flag' : 'flags'}</span>
-            </span>
+            </button>
           )}
           {redFlagsCount > 0 && dataGapsCount > 0 && (
             <span className="text-foreground/30">·</span>
           )}
           {dataGapsCount > 0 && (
-            <span className="flex items-center gap-1.5 text-foreground">
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('gaps')
+              }}
+              className={cn(
+                'flex items-center gap-1.5 transition-colors cursor-pointer focus:outline-none',
+                activeTab === 'gaps' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
               <DataGapMark size={14} />
               <span>{dataGapsCount} data {dataGapsCount === 1 ? 'gap' : 'gaps'}</span>
-            </span>
+            </button>
           )}
           {redFlagsCount === 0 && dataGapsCount === 0 && (
             <span className="flex items-center gap-1.5 text-foreground">

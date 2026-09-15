@@ -150,40 +150,88 @@ export default function CompanyProfileNew() {
 
   // Save subsection to API
   const handleSaveSection = async (sub, secKey) => {
-    setSavingSubId(sub.id);
+    const sectionKey = secKey || sub?.id || sub?.sectionKey || sub?.key;
+    if (!sectionKey) return;
+    setSavingSubId(sub.id || sectionKey);
     try {
-      const section = data?.sections?.[secKey];
+      const section = data?.sections?.[sectionKey];
       const sectionData = section?.data;
 
       let payloadData;
-      if (Array.isArray(sectionData) || secKey === 'founders' || secKey === 'products_services' || secKey === 'customers_markets' || secKey === 'competitive_advantages' || secKey === 'competitors' || secKey === 'revenue_model' || secKey === 'company_metrics' || secKey === 'funding_history' || secKey === 'news') {
-        payloadData = values[`${secKey}__array`] || [];
-      } else if (secKey === 'document_center') {
-        payloadData = { documents: values[`${secKey}__documents`] || [] };
-      } else if (typeof sectionData === 'object' && sectionData !== null) {
-        payloadData = values[`${secKey}__obj`] || {};
+      const arraySections = new Set([
+        'founders', 'products_services', 'customers_markets', 'competitive_advantages',
+        'competitors', 'revenue_model', 'company_metrics', 'funding_history', 'news',
+      ]);
+      const objSections = new Set([
+        'business_model', 'industry_research', 'company_story', 'investment_thesis',
+        'financial_summary', 'investors_cap_table',
+      ]);
+
+      if (arraySections.has(sectionKey) || Array.isArray(sectionData)) {
+        payloadData = values[`${sectionKey}__array`] ?? (Array.isArray(sectionData) ? sectionData : []);
+      } else if (sectionKey === 'document_center') {
+        payloadData = { documents: values[`${sectionKey}__documents`] || [] };
+      } else if (objSections.has(sectionKey)) {
+        payloadData = values[`${sectionKey}__obj`] || (typeof sectionData === 'object' && sectionData !== null ? sectionData : {});
       } else {
-        const obj = {};
-        sub.items.forEach(item => {
-          const [, fKey] = item.id.split('__');
-          if (fKey) obj[fKey] = values[item.id];
-        });
-        payloadData = obj;
+        const currentData = (typeof sectionData === 'object' && sectionData !== null && !Array.isArray(sectionData))
+          ? { ...sectionData }
+          : {};
+
+        if (sub?.items && Array.isArray(sub.items)) {
+          sub.items.forEach(item => {
+            const [, fKey] = item.id.split('__');
+            if (fKey && values[item.id] !== undefined) {
+              currentData[fKey] = values[item.id];
+            }
+          });
+        } else {
+          Object.keys(values).forEach(k => {
+            if (k.startsWith(`${sectionKey}__`)) {
+              const fKey = k.replace(`${sectionKey}__`, '');
+              currentData[fKey] = values[k];
+            }
+          });
+        }
+        payloadData = currentData;
       }
 
-      const confirmedFieldKeys = section?.confirmed_fields || [];
-      await profileApi.saveSection(companyId, secKey, {
+      const existingConfirmed = section?.confirmed_fields || [];
+      const newConfirmed = new Set(existingConfirmed);
+      if (sub?.items && Array.isArray(sub.items)) {
+        sub.items.forEach(item => {
+          if (values[item.id] !== undefined && values[item.id] !== '') {
+            const [, fKey] = item.id.split('__');
+            if (fKey) newConfirmed.add(fKey);
+            newConfirmed.add(item.id);
+          }
+        });
+      }
+
+      await profileApi.saveSection(companyId, sectionKey, {
         data: payloadData,
-        confirmed_fields: confirmedFieldKeys,
+        confirmed_fields: Array.from(newConfirmed),
       });
 
-      setSavedValues(prev => {
-        const next = { ...prev };
-        sub.items.forEach(i => {
-          next[i.id] = values[i.id];
+      if (sub?.items && Array.isArray(sub.items)) {
+        setSavedValues(prev => {
+          const next = { ...prev };
+          sub.items.forEach(i => {
+            next[i.id] = values[i.id];
+          });
+          return next;
         });
-        return next;
-      });
+
+        setConfirmed(prev => {
+          const next = { ...prev };
+          sub.items.forEach(i => {
+            if (values[i.id]) {
+              next[i.id] = true;
+            }
+          });
+          return next;
+        });
+      }
 
       if (toast) toast('Saved section successfully.');
       await load(true);
@@ -693,35 +741,148 @@ export default function CompanyProfileNew() {
           companyId={companyId}
           fieldId={panelFieldId}
           fieldName={panelItemName}
+          readinessBreakdown={data?.readinessBreakdown || data?.readiness_breakdown || []}
           mode={panelMode}
           leaving={!panelOpen}
           analysisDocName={panelDocName}
           onClose={closePanel}
+          onRefresh={() => load(true)}
           onApplyValue={async (targetFieldId, proposedVal) => {
-            if (!targetFieldId) return;
-            setValue(targetFieldId, proposedVal);
-            confirmField(targetFieldId);
+            const rawPatches = (typeof targetFieldId === 'string' && targetFieldId)
+              ? { [targetFieldId]: proposedVal }
+              : (typeof proposedVal === 'object' && proposedVal ? proposedVal : (typeof targetFieldId === 'object' && targetFieldId ? targetFieldId : null));
 
-            // Also trigger section save with updated value
-            const [sectionKey, fieldKey] = targetFieldId.split('__');
-            const section = data?.sections?.[sectionKey];
-            if (sectionKey && fieldKey) {
-              try {
-                const sectionData = section?.data || {};
-                const updatedData = typeof sectionData === 'object' && !Array.isArray(sectionData)
-                  ? { ...sectionData, [fieldKey]: proposedVal }
-                  : sectionData;
-                
-                const confirmedFields = [...new Set([...(section?.confirmed_fields || []), fieldKey])];
-                await profileApi.saveSection(companyId, sectionKey, {
-                  data: updatedData,
-                  confirmed_fields: confirmedFields,
-                });
-                if (toast) toast('Applied & confirmed AI draft!');
-                await load(true);
-              } catch (e) {
-                toastError(e);
+            if (!rawPatches || Object.keys(rawPatches).length === 0) return;
+
+            // Helper to resolve the exact field ID in `values` and its correct sectionKey + fieldKey
+            const resolveFieldKeyAndSection = (rawFId) => {
+              if (!rawFId) {
+                if (panelFieldId) return resolveFieldKeyAndSection(panelFieldId);
+                return { fullFieldId: '', sectionKey: 'company_profile', fieldKey: '' };
               }
+
+              const cleanRaw = String(rawFId).trim();
+              const normalizedRaw = cleanRaw.toLowerCase();
+
+              // 1. If rawFId matches an exact key in values
+              if (cleanRaw in values) {
+                const [sec, f] = cleanRaw.includes('__') ? cleanRaw.split('__') : ['', cleanRaw];
+                return { fullFieldId: cleanRaw, sectionKey: sec || 'company_profile', fieldKey: f || cleanRaw };
+              }
+
+              // 2. If rawFId already has '__' (e.g. "company_profile__description_of_business")
+              if (cleanRaw.includes('__')) {
+                const [sec, f] = cleanRaw.split('__');
+                return { fullFieldId: cleanRaw, sectionKey: sec, fieldKey: f };
+              }
+
+              // 3. If panelFieldId ends with or matches normalizedRaw
+              if (panelFieldId) {
+                const [pSec, pF] = panelFieldId.split('__');
+                if (pF && (pF.toLowerCase() === normalizedRaw || pF.toLowerCase() === normalizedRaw.replace(/_/g, ' '))) {
+                  return { fullFieldId: panelFieldId, sectionKey: pSec, fieldKey: pF };
+                }
+              }
+
+              // 4. Search in values keys for one that ends with `__${normalizedRaw}`
+              const matchedKey = Object.keys(values).find(k => {
+                const [kSec, kF] = k.includes('__') ? k.split('__') : ['', k];
+                return k.toLowerCase() === normalizedRaw || (kF && kF.toLowerCase() === normalizedRaw);
+              });
+              if (matchedKey) {
+                const [sec, f] = matchedKey.includes('__') ? matchedKey.split('__') : ['', matchedKey];
+                return { fullFieldId: matchedKey, sectionKey: sec || 'company_profile', fieldKey: f || cleanRaw };
+              }
+
+              // 5. Search in categories / subsections items
+              for (const c of categories) {
+                for (const sub of c.subsections) {
+                  for (const item of sub.items) {
+                    const [iSec, iF] = item.id.includes('__') ? item.id.split('__') : [sub.id, item.id];
+                    if (
+                      item.id.toLowerCase() === normalizedRaw ||
+                      (iF && iF.toLowerCase() === normalizedRaw) ||
+                      (item.name && item.name.toLowerCase() === normalizedRaw.replace(/_/g, ' '))
+                    ) {
+                      return { fullFieldId: item.id, sectionKey: iSec || sub.id, fieldKey: iF || cleanRaw };
+                    }
+                  }
+                }
+              }
+
+              // 6. Check data.sections
+              if (data?.sections) {
+                for (const [secKey, secObj] of Object.entries(data.sections)) {
+                  if (secObj?.data && typeof secObj.data === 'object' && !Array.isArray(secObj.data)) {
+                    for (const dataKey of Object.keys(secObj.data)) {
+                      if (dataKey.toLowerCase() === normalizedRaw) {
+                        return { fullFieldId: `${secKey}__${dataKey}`, sectionKey: secKey, fieldKey: dataKey };
+                      }
+                    }
+                  }
+                }
+              }
+
+              const fallbackSec = panelFieldId ? panelFieldId.split('__')[0] : 'company_profile';
+              return { fullFieldId: `${fallbackSec}__${normalizedRaw}`, sectionKey: fallbackSec, fieldKey: normalizedRaw };
+            };
+
+            // Group patches by sectionKey
+            const sectionUpdates = {};
+            for (const [rawFId, val] of Object.entries(rawPatches)) {
+              if (val === undefined || val === null) continue;
+              const { fullFieldId, sectionKey, fieldKey } = resolveFieldKeyAndSection(rawFId);
+
+              // Update both fullFieldId and rawFId in React form state
+              if (fullFieldId) {
+                setValue(fullFieldId, val);
+                setConfirmed(prev => ({ ...prev, [fullFieldId]: true }));
+              }
+              if (rawFId && rawFId !== fullFieldId) {
+                setValue(rawFId, val);
+                setConfirmed(prev => ({ ...prev, [rawFId]: true }));
+              }
+
+              if (sectionKey && fieldKey) {
+                if (!sectionUpdates[sectionKey]) {
+                  sectionUpdates[sectionKey] = {};
+                }
+                sectionUpdates[sectionKey][fieldKey] = val;
+              }
+            }
+
+            // Persist all updated sections
+            try {
+              const arraySections = new Set([
+                'founders', 'products_services', 'customers_markets', 'competitive_advantages',
+                'competitors', 'revenue_model', 'company_metrics', 'funding_history', 'news',
+              ]);
+
+              for (const [secKey, fieldMap] of Object.entries(sectionUpdates)) {
+                const section = data?.sections?.[secKey];
+                const sectionData = section?.data;
+                let updatedData;
+
+                if (arraySections.has(secKey) || Array.isArray(sectionData)) {
+                  // Array sections: use the array from form state (values[secKey__array])
+                  updatedData = values[`${secKey}__array`] ?? (Array.isArray(sectionData) ? sectionData : []);
+                } else {
+                  // Object sections: merge fieldMap into existing data
+                  const currentData = typeof sectionData === 'object' && !Array.isArray(sectionData) ? (sectionData || {}) : {};
+                  updatedData = { ...currentData, ...fieldMap };
+                }
+
+                const newConfirmed = [...new Set([...(section?.confirmed_fields || []), ...Object.keys(fieldMap)])];
+
+                await profileApi.saveSection(companyId, secKey, {
+                  data: updatedData,
+                  confirmed_fields: newConfirmed,
+                });
+              }
+              if (toast) toast('Applied & confirmed AI draft!');
+              await load(true);
+            } catch (e) {
+              toastError(e);
             }
           }}
         />
