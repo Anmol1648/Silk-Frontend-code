@@ -19,6 +19,7 @@ export function OptionsCombobox({
   triggerClassName,
   contentClassName,
   searchable = true,
+  leftIcon,
 }: {
   value: string
   onChange: (v: string) => void
@@ -32,6 +33,7 @@ export function OptionsCombobox({
   contentClassName?: string
   /** When false, hides the search row (short fixed lists). */
   searchable?: boolean
+  leftIcon?: React.ReactNode
 }) {
   const [open, setOpen] = useState(false)
 
@@ -54,14 +56,17 @@ export function OptionsCombobox({
             className,
           )}
         >
-          <span className="truncate">
-            {value
-              ? (options.find((o: any) => (typeof o === 'object' && o !== null ? o.value : o) === value) as any)?.label || 
-                 (options.find((o: any) => (typeof o === 'object' && o !== null ? o.value : o) === value) as any)?.value ||
-                 options.find((o: any) => o === value) || 
-                 value
-              : placeholder}
-          </span>
+          <div className="flex items-center gap-2 truncate min-w-0">
+            {leftIcon}
+            <span className="truncate">
+              {value
+                ? (options.find((o: any) => (typeof o === 'object' && o !== null ? o.value : o) === value) as any)?.label || 
+                   (options.find((o: any) => (typeof o === 'object' && o !== null ? o.value : o) === value) as any)?.value ||
+                   options.find((o: any) => o === value) || 
+                   value
+                : placeholder}
+            </span>
+          </div>
           <HugeiconsIcon
             icon={UnfoldMoreIcon}
             size={16}

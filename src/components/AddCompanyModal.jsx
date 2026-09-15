@@ -253,8 +253,13 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
           <div className="acm-header">
             <div className="acm-header-copy">
               <div className="acm-kicker-row">
-                <span className="acm-kicker">New Workspace</span>
-                <span className="acm-kicker-badge">AI Powered</span>
+                <span className="acm-kicker">NEW WORKSPACE</span>
+                <span className="acm-kicker-badge">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" className="acm-kicker-icon">
+                    <path d="M12 2L14.4 7.6L20 10L14.4 12.4L12 18L9.6 12.4L4 10L9.6 7.6L12 2Z" />
+                  </svg>
+                  AI Powered
+                </span>
               </div>
               <h2 className="acm-title">Create Company Workspace</h2>
               <p className="acm-subtitle">
@@ -270,7 +275,6 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="12" x2="18" y2="12" style={{ display: 'none' }} />
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
@@ -278,39 +282,61 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
 
           {/* ---- Form ---- */}
           <form onSubmit={submit} className="acm-form">
-            {/* Top Card: Company Essentials */}
-            <section className="acm-essentials-card">
-              {/* Row 1: Logo & Company Name */}
-              <div className="acm-essentials-top">
-                <label className="acm-logo-upload" title="Upload company logo (PNG/JPG)">
+            {/* Top: Logo & Essentials */}
+            <div className="acm-top-section">
+              {/* Logo Row */}
+              <div className="acm-logo-row">
+                <label className="acm-logo-box" title="Upload company logo">
                   <input type="file" accept="image/*" onChange={onLogoPick} style={{ display: 'none' }} />
-                  <div className="acm-logo-frame">
-                    {logoUrl && !logoError ? (
-                      <img
-                        src={logoUrl}
-                        alt="Logo"
-                        className="acm-logo-image"
-                        onError={() => setLogoError(true)}
-                      />
-                    ) : (
-                      <div className="acm-logo-placeholder">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                          <circle cx="12" cy="13" r="4" />
-                        </svg>
-                        <span className="acm-logo-badge">+</span>
-                      </div>
-                    )}
-                  </div>
+                  {logoUrl && !logoError ? (
+                    <img
+                      src={logoUrl}
+                      alt="Logo"
+                      className="acm-logo-img"
+                      onError={() => setLogoError(true)}
+                    />
+                  ) : (
+                    <div className="acm-logo-placeholder">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64748b" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
+                        <line x1="9" y1="6" x2="9" y2="6.01" />
+                        <line x1="15" y1="6" x2="15" y2="6.01" />
+                        <line x1="9" y1="10" x2="9" y2="10.01" />
+                        <line x1="15" y1="10" x2="15" y2="10.01" />
+                        <line x1="9" y1="14" x2="9" y2="14.01" />
+                        <line x1="15" y1="14" x2="15" y2="14.01" />
+                        <line x1="9" y1="18" x2="15" y2="18" />
+                      </svg>
+                      <span className="acm-logo-badge">+</span>
+                    </div>
+                  )}
                 </label>
 
-                <div className="acm-field acm-field-name">
-                  <div className="acm-label-row">
-                    <span className="acm-label">Company Name <span className="acm-req">*</span></span>
-                    {logoUrl && !logoError && (
-                      <span className="acm-logo-detected">Logo auto-detected</span>
-                    )}
-                  </div>
+                <div className="acm-logo-info">
+                  <div className="acm-logo-title">Company Logo</div>
+                  <div className="acm-logo-desc">Upload company logo</div>
+                  <div className="acm-logo-format">PNG, JPG or SVG (max 5MB)</div>
+                </div>
+              </div>
+
+              {/* Company Name */}
+              <div className="acm-field">
+                <label className="acm-label">
+                  Company Name <span className="acm-req">*</span>
+                </label>
+                <div className="acm-input-icon-wrap">
+                  <span className="acm-input-left-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
+                      <line x1="9" y1="6" x2="9" y2="6.01" />
+                      <line x1="15" y1="6" x2="15" y2="6.01" />
+                      <line x1="9" y1="10" x2="9" y2="10.01" />
+                      <line x1="15" y1="10" x2="15" y2="10.01" />
+                      <line x1="9" y1="14" x2="9" y2="14.01" />
+                      <line x1="15" y1="14" x2="15" y2="14.01" />
+                      <line x1="9" y1="18" x2="15" y2="18" />
+                    </svg>
+                  </span>
                   <Input
                     type="text"
                     value={companyName}
@@ -319,25 +345,26 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
                     autoFocus
                     className="acm-input-main"
                   />
-                  {errs.companyName && <span className="acm-error">{errs.companyName}</span>}
                 </div>
+                {errs.companyName && <span className="acm-error">{errs.companyName}</span>}
               </div>
 
-              {/* Row 2: Website + HQ Country */}
+              {/* Row: Website & Country */}
               <div className="acm-row-2">
                 <div className="acm-field">
-                  <span className="acm-label">Company Website <span className="acm-req">*</span></span>
-                  <div className="acm-input-icon">
-                    <span className="acm-input-icon-left">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="2" y1="12" x2="22" y2="12" />
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                  <label className="acm-label">
+                    Company Website <span className="acm-req">*</span>
+                  </label>
+                  <div className="acm-input-icon-wrap">
+                    <span className="acm-input-left-icon">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                       </svg>
                     </span>
                     <Input
                       type="text"
-                      className="pl-9 acm-input-main"
+                      className="acm-input-main"
                       value={website}
                       onChange={(e) => setWebsite(e.target.value)}
                       placeholder="https://acme.com"
@@ -347,33 +374,42 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
                 </div>
 
                 <div className="acm-field">
-                  <span className="acm-label">Headquarters Country <span className="acm-req">*</span></span>
+                  <label className="acm-label">
+                    Headquarters Country <span className="acm-req">*</span>
+                  </label>
                   <OptionsCombobox
                     value={country}
                     onChange={(val) => setCountry(val)}
                     options={countries.map((c) => ({ label: c.name, value: c.iso2 }))}
                     placeholder="Select country…"
                     searchPlaceholder="Search country…"
-                    triggerClassName="h-9 py-1 bg-[#fafafa] border border-[#e5e7eb] text-sm font-normal rounded-lg shadow-none"
+                    leftIcon={
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 shrink-0">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="2" y1="12" x2="22" y2="12" />
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                      </svg>
+                    }
+                    triggerClassName="acm-combobox-btn"
                   />
                   {errs.hqCountry && <span className="acm-error">{errs.hqCountry}</span>}
                 </div>
               </div>
-            </section>
+            </div>
 
             {/* Middle Grid: Founders (Left) + Pitch & Documents (Right) */}
             <div className="acm-details-grid">
               {/* ---- Founders Panel ---- */}
-              <section className="acm-panel acm-founders-panel">
-                <div className="acm-panel-head">
-                  <div className="acm-panel-title-wrap">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="text-[#6366f1]">
+              <section className="acm-card acm-founders-card">
+                <div className="acm-card-head">
+                  <div className="acm-card-title-wrap">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#4f46e5]">
                       <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                       <circle cx="9" cy="7" r="4" />
                       <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
                       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
-                    <h3 className="acm-panel-title">Founders & Leadership</h3>
+                    <h3 className="acm-card-title">Founders & Leadership</h3>
                     <span className="acm-badge-count">{founders.length}</span>
                   </div>
                   <button type="button" className="acm-btn-add-inline" onClick={addFounder}>
@@ -385,12 +421,18 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
                   </button>
                 </div>
 
-                {/* Scrollable container for founder cards (only this area scrolls when >1-2 founders) */}
-                <div className="acm-founders-scrollable">
+                {/* Scrollable container for founder cards */}
+                <div className="acm-founders-list">
                   {founders.map((f, i) => (
-                    <div key={i} className="acm-founder-card">
-                      <div className="acm-founder-fields">
-                        <div className="acm-founder-field-item flex-1">
+                    <div key={i} className="acm-founder-item">
+                      <div className="acm-founder-inputs">
+                        <div className="acm-input-icon-wrap flex-1">
+                          <span className="acm-input-left-icon">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                              <circle cx="12" cy="7" r="4" />
+                            </svg>
+                          </span>
                           <Input
                             type="text"
                             value={f.name}
@@ -399,22 +441,22 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
                             onChange={(e) => setFounder(i, { name: e.target.value })}
                           />
                         </div>
-                        <div className="acm-founder-field-item flex-1">
-                          <div className="acm-input-icon">
-                            <span className="acm-input-icon-left acm-linkedin-icon">
-                              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                              </svg>
-                            </span>
-                            <Input
-                              type="text"
-                              className="pl-8 acm-input-compact"
-                              value={f.linkedinUrl}
-                              placeholder="LinkedIn profile URL"
-                              onChange={(e) => setFounder(i, { linkedinUrl: e.target.value })}
-                            />
-                          </div>
+
+                        <div className="acm-input-icon-wrap flex-1">
+                          <span className="acm-input-left-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="#0077b5">
+                              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                            </svg>
+                          </span>
+                          <Input
+                            type="text"
+                            className="acm-input-compact"
+                            value={f.linkedinUrl}
+                            placeholder="LinkedIn profile URL"
+                            onChange={(e) => setFounder(i, { linkedinUrl: e.target.value })}
+                          />
                         </div>
+
                         {founders.length > 1 && (
                           <button
                             type="button"
@@ -429,13 +471,14 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
                           </button>
                         )}
                       </div>
-                      <div className="acm-founder-subrow">
-                        <label className="acm-check flex items-center gap-1.5 cursor-pointer select-none">
+
+                      <div className="acm-founder-checkbox-row">
+                        <label className="acm-check flex items-center gap-2 cursor-pointer select-none">
                           <Checkbox
                             checked={f.isFullTime}
                             onCheckedChange={(checked) => setFounder(i, { isFullTime: Boolean(checked) })}
                           />
-                          <span className="text-[11px] text-[#475569] font-normal">Working full-time</span>
+                          <span className="text-xs text-slate-600 font-normal">Working full-time</span>
                         </label>
                       </div>
                     </div>
@@ -444,14 +487,16 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
               </section>
 
               {/* ---- Documents Panel ---- */}
-              <section className="acm-panel acm-docs-panel">
-                <div className="acm-panel-head">
-                  <div className="acm-panel-title-wrap">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="text-[#f59e0b]">
+              <section className="acm-card acm-docs-card">
+                <div className="acm-card-head">
+                  <div className="acm-card-title-wrap">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#f59e0b]">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                       <polyline points="14 2 14 8 20 8" />
+                      <line x1="16" y1="13" x2="8" y2="13" />
+                      <line x1="16" y1="17" x2="8" y2="17" />
                     </svg>
-                    <h3 className="acm-panel-title">Pitch & Documents</h3>
+                    <h3 className="acm-card-title">Pitch & Documents</h3>
                   </div>
                   <span className="acm-optional-badge">Optional</span>
                 </div>
@@ -470,16 +515,32 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
                         />
                         <div className="acm-tile-icon-wrap">
                           {cat.key === 'company_presentation' && (
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="12" y1="19" x2="12" y2="5" />
+                              <polyline points="5 12 12 5 19 12" />
+                            </svg>
                           )}
                           {cat.key === 'financial_model' && (
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="12" y1="19" x2="12" y2="5" />
+                              <polyline points="5 12 12 5 19 12" />
+                            </svg>
                           )}
                           {cat.key === 'annual_report' && (
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                              <polyline points="14 2 14 8 20 8" />
+                              <line x1="16" y1="13" x2="8" y2="13" />
+                              <line x1="16" y1="17" x2="8" y2="17" />
+                            </svg>
                           )}
                           {cat.key === 'other' && (
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                              <polyline points="14 2 14 8 20 8" />
+                              <line x1="16" y1="13" x2="8" y2="13" />
+                              <line x1="16" y1="17" x2="8" y2="17" />
+                            </svg>
                           )}
                         </div>
                         <span className="acm-upload-label">{cat.label}</span>
@@ -521,15 +582,13 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
                 <button type="button" className="acm-btn-cancel" onClick={onCancel}>
                   Cancel
                 </button>
-                <button type="submit" className="silk-ai-btn" disabled={busy}>
-                  <span className="silk-ai-btn__inner">
-                    {busy ? (
-                      <span className="spin" style={{ borderTopColor: '#fff', width: 14, height: 14 }} />
-                    ) : (
-                      <AiMark size={14} className="silk-ai-btn__mark" />
-                    )}
-                    Generate Company Profile
-                  </span>
+                <button type="submit" className="acm-btn-generate" disabled={busy}>
+                  {busy ? (
+                    <span className="spin" style={{ borderTopColor: '#fff', width: 14, height: 14 }} />
+                  ) : (
+                    <span className="acm-btn-sparkle">✦</span>
+                  )}
+                  <span>Generate Company Profile</span>
                 </button>
               </div>
             </div>
