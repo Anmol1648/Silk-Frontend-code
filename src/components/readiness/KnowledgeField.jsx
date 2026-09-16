@@ -290,15 +290,7 @@ export default function KnowledgeField({
         <label htmlFor={fieldId} className="cp-field-label">
           {item.name}
         </label>
-        {isMultiFieldSection ? (
-          showConfirmed && (
-            <StatusTag
-              label="Confirmed"
-              hoverLabel="Unconfirm"
-              onClick={onUnconfirm}
-            />
-          )
-        ) : (
+        {!isMultiFieldSection && (
           <>
             {showAiDraft && <StatusTag label="AI Draft" tone="ai" />}
             {showConfirmed && (
@@ -328,6 +320,7 @@ export default function KnowledgeField({
           scaled={item.scaled}
           fieldId={fieldId}
           confirmedFields={confirmedFields}
+          confirmedCount={item.confirmedCount}
           onConfirmField={onConfirmField}
           onUnconfirmField={onUnconfirmField}
           onAsk={onAsk}

@@ -66,27 +66,17 @@ export const SECTION_SUBFIELDS = {
 
 /* ── Helpers ── */
 
-export function getSectionCandidateKeys(sectionKey, fieldKey) {
+export function getSectionCandidateKeys(sectionKey, fieldKey, arrVal, itemIndex) {
   if (!fieldKey || fieldKey === 'array' || fieldKey === 'obj') {
     const keysMap = {
-      founders: ['founders'],
-      products_services: ['products_services'],
-      customers_markets: ['customers_markets'],
-      competitive_advantages: ['competitive_advantages'],
-      competitors: ['competitors'],
       industry_research: ['industry_evolution', 'market_sizing_narrative', 'methodology', 'market_sizing', 'performance_trends', 'regulatory_developments'],
       business_model: ['business_model_types', 'customer_type', 'value_proposition', 'delivery_model', 'pricing_model', 'sales_model', 'distribution_channels'],
-      revenue_model: ['revenue_model'],
-      company_metrics: ['company_metrics'],
       financial_summary: ['financials', 'observations'],
-      funding_history: ['funding_history'],
       investors_cap_table: ['cap_table_summary', 'investors_list'],
-      news: ['news'],
       company_story: ['origin_story', 'brand_evolution', 'milestones', 'usp'],
-      investment_thesis: ['opportunity_explanation', 'leadership_assessment', 'risks_and_concerns'],
       document_center: ['documents'],
     };
-    return keysMap[sectionKey] || [fieldKey, sectionKey];
+    return keysMap[sectionKey] || [fieldKey];
   }
   if (fieldKey.includes('total_funding_raised')) {
     return ['total_funding_raised_usd_mn'];
@@ -97,13 +87,42 @@ export function getSectionCandidateKeys(sectionKey, fieldKey) {
   if (fieldKey.includes('latest_post_money')) {
     return ['latest_post_money_usd_mn'];
   }
-  return [fieldKey];
+
+  const result = [fieldKey];
+  if (Array.isArray(arrVal)) {
+    const idx = arrVal.findIndex((elem, i) => (elem?.id && String(elem.id) === String(fieldKey)) || String(i) === String(fieldKey));
+    if (idx !== -1) {
+      result.push(String(idx + 1));
+      result.push(String(idx));
+    }
+  } else if (itemIndex !== undefined && itemIndex !== null && !isNaN(Number(itemIndex))) {
+    const idx = Number(itemIndex);
+    result.push(String(idx + 1));
+    result.push(String(idx));
+  }
+  return result;
 }
 
-export function isItemConfirmed(confirmedFields, fieldKey, sectionKey) {
+export function isItemConfirmed(confirmedFields, fieldKey, sectionKey, itemIndex) {
   if (!confirmedFields || !confirmedFields.length) return false;
-  const candidates = getSectionCandidateKeys(sectionKey, fieldKey);
-  return confirmedFields.some(k => candidates.includes(k) || k === fieldKey || k === String(fieldKey) || k === Number(fieldKey) || k === sectionKey);
+  if (sectionKey && (
+    confirmedFields.includes(sectionKey) ||
+    confirmedFields.includes(`${sectionKey}__array`) ||
+    confirmedFields.includes(`${sectionKey}__obj`) ||
+    confirmedFields.includes('array') ||
+    confirmedFields.includes('obj')
+  )) {
+    return true;
+  }
+  const candidates = getSectionCandidateKeys(sectionKey, fieldKey, null, itemIndex);
+  const fullId = `${sectionKey}__${fieldKey}`;
+  const hasZero = confirmedFields.includes('0');
+  const indexMatch = itemIndex !== undefined && itemIndex !== null ? (hasZero ? confirmedFields.includes(String(itemIndex)) : confirmedFields.includes(String(itemIndex + 1))) : false;
+
+  return Boolean(
+    indexMatch ||
+    confirmedFields.some(k => candidates.includes(k) || k === fieldKey || k === fullId || k === String(fieldKey) || k === Number(fieldKey))
+  );
 }
 
 /* ── Main builder ── */
@@ -128,6 +147,7 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
 
     const items = [];
     const sectionData = sectionObj.data || {};
+    const breakdownEntry = (apiData.readinessBreakdown || apiData.readiness_breakdown)?.find(b => (b.sectionKey || b.section_key) === sectionKey);
     const confirmedFields = sectionObj.confirmed_fields || [];
 
     if (sectionKey === 'founders') {
@@ -145,12 +165,17 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
         }));
       }
 
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? valArray.length) : valArray.length;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : (isItemConfirmed(confirmedFields, 'array', sectionKey) ? valArray.length : 0);
+
       items.push({
         id,
         name: 'Founders and Key People',
         kind: 'founders_array',
         status: valArray.length ? 'analyzed' : 'needs_input',
         aiFilled: valArray.length > 0,
+        totalCount,
+        confirmedCount,
       });
 
       nextValues[id] = valArray;
@@ -169,12 +194,17 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
         }));
       }
 
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? valArray.length) : valArray.length;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : (isItemConfirmed(confirmedFields, 'array', sectionKey) ? valArray.length : 0);
+
       items.push({
         id,
         name: 'Products & Services',
         kind: 'products_array',
         status: valArray.length ? 'analyzed' : 'needs_input',
         aiFilled: valArray.length > 0,
+        totalCount,
+        confirmedCount,
       });
 
       nextValues[id] = valArray;
@@ -192,10 +222,14 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
           geography: p.geography || '',
         }));
       }
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? valArray.length) : valArray.length;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : (isItemConfirmed(confirmedFields, 'array', sectionKey) ? valArray.length : 0);
+
       items.push({
         id, name: 'Customers & Markets', kind: 'markets_array',
         status: valArray.length ? 'analyzed' : 'needs_input',
         aiFilled: valArray.length > 0,
+        totalCount, confirmedCount,
       });
       nextValues[id] = valArray;
       if (isItemConfirmed(confirmedFields, 'array', sectionKey) && valArray.length > 0) nextConfirmed[id] = true;
@@ -209,10 +243,14 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
           description: p.description || '',
         }));
       }
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? valArray.length) : valArray.length;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : (isItemConfirmed(confirmedFields, 'array', sectionKey) ? valArray.length : 0);
+
       items.push({
         id, name: 'Competitive Advantages', kind: 'advantages_array',
         status: valArray.length ? 'analyzed' : 'needs_input',
         aiFilled: valArray.length > 0,
+        totalCount, confirmedCount,
       });
       nextValues[id] = valArray;
       if (isItemConfirmed(confirmedFields, 'array', sectionKey) && valArray.length > 0) nextConfirmed[id] = true;
@@ -222,17 +260,23 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
       if (Array.isArray(sectionData)) {
         valArray = sectionData.map(p => ({ ...p }));
       }
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? valArray.length) : valArray.length;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : (isItemConfirmed(confirmedFields, 'array', sectionKey) ? valArray.length : 0);
+
       items.push({
         id, name: 'Competitors', kind: 'competitors_array',
         status: valArray.length ? 'analyzed' : 'needs_input',
         aiFilled: valArray.length > 0,
+        totalCount, confirmedCount,
       });
       nextValues[id] = valArray;
       if (isItemConfirmed(confirmedFields, 'array', sectionKey) && valArray.length > 0) nextConfirmed[id] = true;
     } else if (sectionKey === 'industry_research') {
       const id = `${sectionKey}__obj`;
-      const totalCount = 6;
-      const confirmedCount = ['industry_evolution', 'market_sizing_narrative', 'methodology', 'market_sizing', 'performance_trends', 'regulatory_developments'].filter(k => confirmedFields.includes(k)).length;
+      const calcTotal = 4;
+      const calcConfirmed = ['industry_evolution', 'market_sizing_narrative', 'methodology', 'market_sizing', 'performance_trends', 'regulatory_developments'].filter(k => confirmedFields.includes(k)).length;
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? calcTotal) : calcTotal;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : calcConfirmed;
       const populatedCount = sectionObj.populated ?? (apiData.readinessBreakdown?.find(b => b.sectionKey === sectionKey)?.populated ?? totalCount);
       const isConf = confirmedCount === totalCount || (populatedCount > 0 && confirmedCount >= populatedCount) || confirmedFields.includes('obj') || confirmedFields.includes('industry_research');
       items.push({
@@ -245,9 +289,11 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
       if (isConf && sectionData.industry_evolution) nextConfirmed[id] = true;
     } else if (sectionKey === 'business_model') {
       const id = `${sectionKey}__obj`;
-      const totalCount = 7;
-      const confirmedCount = ['business_model_types', 'customer_type', 'value_proposition', 'delivery_model', 'pricing_model', 'sales_model', 'distribution_channels'].filter(k => confirmedFields.includes(k)).length;
-      const populatedCount = sectionObj.populated ?? (apiData.readinessBreakdown?.find(b => b.sectionKey === sectionKey)?.populated ?? totalCount);
+      const calcTotal = 7;
+      const calcConfirmed = ['business_model_types', 'customer_type', 'value_proposition', 'delivery_model', 'pricing_model', 'sales_model', 'distribution_channels'].filter(k => confirmedFields.includes(k)).length;
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? calcTotal) : calcTotal;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : calcConfirmed;
+      const populatedCount = sectionObj.populated ?? (breakdownEntry?.populated ?? totalCount);
       const isConf = confirmedCount === totalCount || (populatedCount > 0 && confirmedCount >= populatedCount) || confirmedFields.includes('obj') || confirmedFields.includes('business_model');
       items.push({
         id, name: 'Business Model', kind: 'business_model_obj',
@@ -273,10 +319,14 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
           };
         });
       }
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? valArray.length) : valArray.length;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : (isItemConfirmed(confirmedFields, 'array', sectionKey) ? valArray.length : 0);
+
       items.push({
         id, name: 'Revenue Model', kind: 'revenue_model_array',
         status: valArray.length ? 'analyzed' : 'needs_input',
         aiFilled: valArray.length > 0,
+        totalCount, confirmedCount,
       });
       nextValues[id] = valArray;
       if (isItemConfirmed(confirmedFields, 'array', sectionKey) && valArray.length > 0) nextConfirmed[id] = true;
@@ -305,10 +355,14 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
           };
         });
       }
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? valArray.length) : valArray.length;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : (isItemConfirmed(confirmedFields, 'array', sectionKey) ? valArray.length : 0);
+
       items.push({
         id, name: 'Company Metrics', kind: 'company_metrics_array',
         status: valArray.length ? 'analyzed' : 'needs_input',
         aiFilled: valArray.length > 0,
+        totalCount, confirmedCount,
       });
       nextValues[id] = valArray;
       if (isItemConfirmed(confirmedFields, 'array', sectionKey) && valArray.length > 0) nextConfirmed[id] = true;
@@ -329,9 +383,11 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
           };
         });
       }
-      const totalCount = 2;
-      const confirmedCount = ['financials', 'observations'].filter(k => confirmedFields.includes(k)).length;
-      const populatedCount = sectionObj.populated ?? (apiData.readinessBreakdown?.find(b => b.sectionKey === sectionKey)?.populated ?? totalCount);
+      const calcTotal = 2;
+      const calcConfirmed = ['financials', 'observations'].filter(k => confirmedFields.includes(k)).length;
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? calcTotal) : calcTotal;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : calcConfirmed;
+      const populatedCount = sectionObj.populated ?? (breakdownEntry?.populated ?? totalCount);
       const isConf = confirmedCount === totalCount || (populatedCount > 0 && confirmedCount >= populatedCount) || confirmedFields.includes('obj') || confirmedFields.includes('financial_summary');
       items.push({
         id, name: 'Financial Summary', kind: 'financial_summary_obj',
@@ -347,10 +403,14 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
       if (Array.isArray(sectionData)) {
         valArray = sectionData.map(p => ({ ...p }));
       }
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? valArray.length) : valArray.length;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : (isItemConfirmed(confirmedFields, 'array', sectionKey) ? valArray.length : 0);
+
       items.push({
         id, name: 'Funding History', kind: 'funding_history_array',
         status: valArray.length ? 'analyzed' : 'needs_input',
         aiFilled: valArray.length > 0,
+        totalCount, confirmedCount,
       });
       nextValues[id] = valArray;
       if (isItemConfirmed(confirmedFields, 'array', sectionKey) && valArray.length > 0) nextConfirmed[id] = true;
@@ -379,9 +439,11 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
           };
         });
       }
-      const totalCount = 2;
-      const confirmedCount = ['cap_table_summary', 'investors_list'].filter(k => confirmedFields.includes(k)).length;
-      const populatedCount = sectionObj.populated ?? (apiData.readinessBreakdown?.find(b => b.sectionKey === sectionKey)?.populated ?? totalCount);
+      const calcTotal = 2;
+      const calcConfirmed = ['cap_table_summary', 'investors_list'].filter(k => confirmedFields.includes(k)).length;
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? calcTotal) : calcTotal;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : calcConfirmed;
+      const populatedCount = sectionObj.populated ?? (breakdownEntry?.populated ?? totalCount);
       const isConf = confirmedCount === totalCount || (populatedCount > 0 && confirmedCount >= populatedCount) || confirmedFields.includes('obj') || confirmedFields.includes('investors_cap_table');
       items.push({
         id, name: 'Investors & Cap Table', kind: 'investors_cap_table_obj',
@@ -397,18 +459,24 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
       if (Array.isArray(sectionData)) {
         valArray = sectionData.map(p => ({ ...p }));
       }
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? valArray.length) : valArray.length;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : (isItemConfirmed(confirmedFields, 'array', sectionKey) ? valArray.length : 0);
+
       items.push({
         id, name: 'News & Press', kind: 'news_array',
         status: valArray.length ? 'analyzed' : 'needs_input',
         aiFilled: valArray.length > 0,
+        totalCount, confirmedCount,
       });
       nextValues[id] = valArray;
       if (isItemConfirmed(confirmedFields, 'array', sectionKey) && valArray.length > 0) nextConfirmed[id] = true;
     } else if (sectionKey === 'company_story') {
       const id = `${sectionKey}__obj`;
-      const totalCount = 4;
-      const confirmedCount = ['origin_story', 'brand_evolution', 'milestones', 'usp'].filter(k => confirmedFields.includes(k)).length;
-      const populatedCount = sectionObj.populated ?? (apiData.readinessBreakdown?.find(b => b.sectionKey === sectionKey)?.populated ?? totalCount);
+      const calcTotal = 4;
+      const calcConfirmed = ['origin_story', 'brand_evolution', 'milestones', 'usp'].filter(k => confirmedFields.includes(k)).length;
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? calcTotal) : calcTotal;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : calcConfirmed;
+      const populatedCount = sectionObj.populated ?? (breakdownEntry?.populated ?? totalCount);
       const isConf = confirmedCount === totalCount || (populatedCount > 0 && confirmedCount >= populatedCount) || confirmedFields.includes('obj') || confirmedFields.includes('company_story');
       items.push({
         id, name: 'Company Story', kind: 'company_story_obj',
@@ -420,9 +488,11 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
       if (isConf && sectionData.origin_story) nextConfirmed[id] = true;
     } else if (sectionKey === 'investment_thesis') {
       const id = `${sectionKey}__obj`;
-      const totalCount = 3;
-      const confirmedCount = ['opportunity_explanation', 'leadership_assessment', 'risks_and_concerns'].filter(k => confirmedFields.includes(k)).length;
-      const populatedCount = sectionObj.populated ?? (apiData.readinessBreakdown?.find(b => b.sectionKey === sectionKey)?.populated ?? totalCount);
+      const calcTotal = 3;
+      const calcConfirmed = ['opportunity_explanation', 'leadership_assessment', 'risks_and_concerns'].filter(k => confirmedFields.includes(k)).length;
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? calcTotal) : calcTotal;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : calcConfirmed;
+      const populatedCount = sectionObj.populated ?? (breakdownEntry?.populated ?? totalCount);
       const isConf = confirmedCount === totalCount || (populatedCount > 0 && confirmedCount >= populatedCount) || confirmedFields.includes('obj') || confirmedFields.includes('investment_thesis');
       items.push({
         id, name: 'Investment Thesis', kind: 'investment_thesis_obj',
@@ -436,12 +506,16 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
       const id = `${sectionKey}__documents`;
       const docs = sectionData.documents || [];
       const hasVal = docs.length > 0;
+      const calcTotal = 1;
+      const calcConfirmed = (confirmedFields.includes('documents') || confirmedFields.includes('document_center') || confirmedFields.includes('obj')) ? 1 : 0;
+      const totalCount = breakdownEntry ? (breakdownEntry.fields ?? calcTotal) : calcTotal;
+      const confirmedCount = breakdownEntry ? Math.min(breakdownEntry.confirmed ?? 0, totalCount) : calcConfirmed;
       items.push({
         id, name: 'Investment material', kind: 'document_center_obj',
         status: hasVal ? 'analyzed' : 'needs_input',
         aiFilled: hasVal,
-        totalCount: 1,
-        confirmedCount: (confirmedFields.includes('documents') || confirmedFields.includes('document_center') || confirmedFields.includes('obj')) ? 1 : 0,
+        totalCount,
+        confirmedCount,
       });
       nextValues[id] = docs;
       if ((confirmedFields.includes('documents') || confirmedFields.includes('document_center') || confirmedFields.includes('obj')) && hasVal) nextConfirmed[id] = true;
@@ -534,7 +608,7 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
         nextValues[id] = String(val);
         // Req 3: use confirmed_fields from backend
         const confirmedFields = sectionObj.confirmed_fields || [];
-        if (confirmedFields.includes(fieldKey) && val) {
+        if (isItemConfirmed(confirmedFields, fieldKey, sectionKey) && val) {
           nextConfirmed[id] = true;
         }
       });
@@ -559,9 +633,7 @@ export function buildReadinessData(apiData, fetchedCountries, lookups) {
           });
           nextValues[id] = displayVal;
           const confirmedFields = sectionObj.confirmed_fields || [];
-          const baseKey = pair.display.replace('_display', '');
-          const usdKey = baseKey + '_usd_mn';
-          if ((confirmedFields.includes(pair.display) || confirmedFields.includes(baseKey) || confirmedFields.includes(usdKey)) && displayVal) {
+          if (isItemConfirmed(confirmedFields, pair.display, sectionKey) && displayVal) {
             nextConfirmed[id] = true;
           }
         }

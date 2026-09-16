@@ -509,10 +509,13 @@ export default function FieldSidePanel({
             .join(' • ');
         }
 
+        const fId = p.field_id || p.fieldId || p.field || fieldId;
+        const fName = p.field_name || p.fieldName || p.label || (p.field ? p.field.replace(/_/g, ' ') : '') || itemName || '';
+
         return {
-          field_id: p.field_id || p.fieldId || fieldId,
+          field_id: fId,
           section_key: p.section_key || p.sectionKey || sourceSectionKey || '',
-          field_name: p.field_name || p.fieldName || p.label || itemName || '',
+          field_name: fName,
           action,
           item_data: itemData,
           item_name: itemName,
@@ -626,13 +629,18 @@ export default function FieldSidePanel({
     // 2. Mark proposal as applied in messages
     setMessages(prev => prev.map(m => {
       if (m.id !== messageId) return m;
-      const updatedChanges = (m.proposedChanges || []).map(p => {
-        if ((p.field_id || p.fieldId || fieldId) === targetFId) {
+      const updatedChanges = (m.proposedChanges || []).map((p, pIdx) => {
+        const isMatch = (
+          (p.proposal_index !== undefined && changeItem.proposal_index !== undefined)
+            ? p.proposal_index === changeItem.proposal_index
+            : (p === changeItem || pIdx === changeItem.proposal_index)
+        );
+        if (isMatch) {
           return { ...p, applied: true };
         }
         return p;
       });
-      const allApplied = updatedChanges.every(p => p.applied);
+      const allApplied = updatedChanges.length > 0 && updatedChanges.every(p => p.applied);
       return { ...m, proposedChanges: updatedChanges, applied: allApplied };
     }));
 

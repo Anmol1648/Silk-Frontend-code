@@ -96,6 +96,10 @@ export default function ReadinessInsightCard({
               );
             })}
           </div>
+        ) : done < total ? (
+          <p style={{ marginTop: '1.5rem', fontSize: '13px', lineHeight: 1.625, color: 'var(--cp-popover-fg)' }}>
+            {total - done} unconfirmed field{total - done > 1 ? 's' : ''} remaining. Review your profile inputs to reach 100% verification.
+          </p>
         ) : (
           <p style={{ marginTop: '1.5rem', fontSize: '13px', lineHeight: 1.625, color: 'var(--cp-popover-fg)' }}>
             The Company Profile is complete. Submit when you want it in front of investors.

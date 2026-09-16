@@ -198,20 +198,31 @@ export default function CompanyProfileNew() {
 
       const existingConfirmed = section?.confirmed_fields || [];
       const newConfirmed = new Set(existingConfirmed);
+
       if (sub?.items && Array.isArray(sub.items)) {
         sub.items.forEach(item => {
-          if (values[item.id] !== undefined && values[item.id] !== '') {
-            const [, fKey] = item.id.split('__');
-            if (fKey) newConfirmed.add(fKey);
+          const val = values[item.id];
+          const hasVal = Array.isArray(val) ? val.length > 0 : (val !== null && val !== undefined && val !== '');
+          if (hasVal) {
+            const [sKey, fKey] = item.id.split('__');
+            if (fKey) {
+              const candidates = getSectionCandidateKeys(sKey, fKey);
+              candidates.forEach(c => newConfirmed.add(c));
+              newConfirmed.add(fKey);
+            }
             newConfirmed.add(item.id);
           }
         });
       }
 
-      await profileApi.saveSection(companyId, sectionKey, {
+      const finalConfirmed = Array.from(newConfirmed);
+
+      const res = await profileApi.saveSection(companyId, sectionKey, {
         data: payloadData,
-        confirmed_fields: Array.from(newConfirmed),
+        confirmed_fields: finalConfirmed,
       });
+      if (res?.score !== undefined) setBackendScore(res.score);
+      if (res?.readiness_stage) setReadinessStage(res.readiness_stage);
 
       if (sub?.items && Array.isArray(sub.items)) {
         setSavedValues(prev => {
@@ -225,7 +236,9 @@ export default function CompanyProfileNew() {
         setConfirmed(prev => {
           const next = { ...prev };
           sub.items.forEach(i => {
-            if (values[i.id]) {
+            const val = values[i.id];
+            const hasVal = Array.isArray(val) ? val.length > 0 : (val !== null && val !== undefined && val !== '');
+            if (hasVal) {
               next[i.id] = true;
             }
           });
@@ -391,8 +404,8 @@ export default function CompanyProfileNew() {
     const section = data?.sections?.[sectionKey];
     if (!section) return;
 
-    // Build candidate keys to cover all section schema types
-    const candidates = getSectionCandidateKeys(sectionKey, fieldKey);
+    const arrVal = values[`${sectionKey}__array`];
+    const candidates = getSectionCandidateKeys(sectionKey, fieldKey, arrVal);
 
     // Build the full confirmed_fields array
     const currentConfirmed = section.confirmed_fields || [];
@@ -403,21 +416,35 @@ export default function CompanyProfileNew() {
       if (!prev) return prev;
       const breakdown = prev.readinessBreakdown || prev.readiness_breakdown;
       const updatedBreakdown = breakdown ? breakdown.map(b => {
-        if (b.sectionKey === sectionKey) {
-          return { ...b, confirmed: next.length };
+        if (b.sectionKey === sectionKey || b.section_key === sectionKey) {
+          const fieldsCount = Number(b.fields) || 1;
+          // Count confirmed items by matching confirmed_fields keys against actual data item UUIDs
+          const sectionData = prev.sections?.[sectionKey]?.data;
+          if (Array.isArray(sectionData)) {
+            const dataIds = new Set(sectionData.map(item => item.id).filter(Boolean));
+            const matchedCount = next.filter(k => dataIds.has(k)).length;
+            return { ...b, confirmed: Math.min(fieldsCount, matchedCount) };
+          }
+          // For object sections, use the existing sub-field key matching
+          const subFields = {
+            business_model: ['business_model_types', 'customer_type', 'value_proposition', 'delivery_model', 'pricing_model', 'sales_model', 'distribution_channels'],
+            industry_research: ['industry_evolution', 'market_sizing_narrative', 'methodology', 'market_sizing', 'performance_trends', 'regulatory_developments'],
+            financial_summary: ['financials', 'observations'],
+            investors_cap_table: ['cap_table_summary', 'investors_list'],
+            company_story: ['origin_story', 'brand_evolution', 'milestones', 'usp'],
+          };
+          const keys = subFields[sectionKey];
+          if (keys) {
+            const matchedCount = keys.filter(k => next.includes(k)).length;
+            return { ...b, confirmed: Math.min(fieldsCount, matchedCount) };
+          }
+          return { ...b, confirmed: Math.min(fieldsCount, (b.confirmed || 0) + 1) };
         }
         return b;
       }) : breakdown;
 
-      const totalConfirmed = updatedBreakdown ? updatedBreakdown.reduce((sum, b) => sum + (Number(b.confirmed) || 0), 0) : next.length;
-      const updatedTotals = prev.readinessTotals ? {
-        ...prev.readinessTotals,
-        confirmed: totalConfirmed,
-      } : prev.readinessTotals;
-
       return {
         ...prev,
-        readinessTotals: updatedTotals,
         readinessBreakdown: updatedBreakdown,
         sections: {
           ...prev.sections,
@@ -456,29 +483,49 @@ export default function CompanyProfileNew() {
     const section = data?.sections?.[sectionKey];
     if (!section) return;
 
-    const candidatesSet = new Set(getSectionCandidateKeys(sectionKey, fieldKey));
-    const next = (section.confirmed_fields || []).filter(k => !candidatesSet.has(k) && k !== fieldKey && k !== String(fieldKey) && k !== Number(fieldKey));
+    const arrVal = values[`${sectionKey}__array`];
+    const candidates = getSectionCandidateKeys(sectionKey, fieldKey, arrVal);
+    const candidatesSet = new Set([
+      ...candidates,
+      id, fieldKey, String(fieldKey),
+      `${sectionKey}__${fieldKey}`,
+    ]);
+    const next = (section.confirmed_fields || []).filter(k => !candidatesSet.has(k));
 
     // Optimistically update data and totals
     setData(prev => {
       if (!prev) return prev;
       const breakdown = prev.readinessBreakdown || prev.readiness_breakdown;
       const updatedBreakdown = breakdown ? breakdown.map(b => {
-        if (b.sectionKey === sectionKey) {
-          return { ...b, confirmed: next.length };
+        if (b.sectionKey === sectionKey || b.section_key === sectionKey) {
+          const fieldsCount = Number(b.fields) || 1;
+          // Count confirmed items by matching confirmed_fields keys against actual data item UUIDs
+          const sectionData = prev.sections?.[sectionKey]?.data;
+          if (Array.isArray(sectionData)) {
+            const dataIds = new Set(sectionData.map(item => item.id).filter(Boolean));
+            const matchedCount = next.filter(k => dataIds.has(k)).length;
+            return { ...b, confirmed: Math.min(fieldsCount, matchedCount) };
+          }
+          // For object sections, use sub-field key matching
+          const subFields = {
+            business_model: ['business_model_types', 'customer_type', 'value_proposition', 'delivery_model', 'pricing_model', 'sales_model', 'distribution_channels'],
+            industry_research: ['industry_evolution', 'market_sizing_narrative', 'methodology', 'market_sizing', 'performance_trends', 'regulatory_developments'],
+            financial_summary: ['financials', 'observations'],
+            investors_cap_table: ['cap_table_summary', 'investors_list'],
+            company_story: ['origin_story', 'brand_evolution', 'milestones', 'usp'],
+          };
+          const keys = subFields[sectionKey];
+          if (keys) {
+            const matchedCount = keys.filter(k => next.includes(k)).length;
+            return { ...b, confirmed: Math.min(fieldsCount, matchedCount) };
+          }
+          return { ...b, confirmed: Math.max(0, (b.confirmed || 0) - 1) };
         }
         return b;
       }) : breakdown;
 
-      const totalConfirmed = updatedBreakdown ? updatedBreakdown.reduce((sum, b) => sum + (Number(b.confirmed) || 0), 0) : next.length;
-      const updatedTotals = prev.readinessTotals ? {
-        ...prev.readinessTotals,
-        confirmed: totalConfirmed,
-      } : prev.readinessTotals;
-
       return {
         ...prev,
-        readinessTotals: updatedTotals,
         readinessBreakdown: updatedBreakdown,
         sections: {
           ...prev.sections,
@@ -508,6 +555,26 @@ export default function CompanyProfileNew() {
     scrollChildInto(root, el, { offset: tabsH });
   };
 
+  const scrollToField = (fieldId, catId) => {
+    const root = scrollRef.current;
+    if (!root) return;
+
+    let target = null;
+    if (fieldId) {
+      const secKey = fieldId.split('__')[0];
+      target = document.querySelector(`[data-field-id="${fieldId}"]`)
+        || document.querySelector(`[data-field-id="${secKey}__array"]`)
+        || document.querySelector(`[data-field-id="${secKey}__obj"]`);
+    }
+    if (!target && catId) {
+      target = document.getElementById(`cat-${catId}`);
+    }
+    if (!target) return;
+
+    const tabsH = tabsRef.current?.getBoundingClientRect().height || 0;
+    scrollChildInto(root, target, { offset: tabsH + 20 });
+  };
+
   const handleTabSelect = (catId) => {
     ignoreSpy.current = true;
     setSelected(catId);
@@ -525,13 +592,15 @@ export default function CompanyProfileNew() {
           if (actions.length >= 2) break;
 
           const [secKey, fieldKey] = item.id.split('__');
+          const confirmedFields = data?.sections?.[secKey]?.confirmed_fields || [];
+          const isSectionConf = confirmedFields.includes(secKey) || confirmedFields.includes('array') || confirmedFields.includes('obj');
+
           if (fieldKey === 'obj' && SECTION_SUBFIELDS[secKey]) {
-            const confirmedFields = data?.sections?.[secKey]?.confirmed_fields || [];
             const secVal = values[item.id] || {};
             for (const subField of SECTION_SUBFIELDS[secKey]) {
               if (actions.length >= 2) break;
               const subId = `${secKey}__${subField.key}`;
-              const isConf = Boolean(confirmed[subId]) || confirmedFields.includes(subField.key) || confirmedFields.includes(secKey) || confirmedFields.includes('obj');
+              const isConf = Boolean(confirmed[subId]) || confirmedFields.includes(subField.key) || isSectionConf;
               const val = secVal[subField.key];
               const hasVal = Array.isArray(val) ? val.length > 0 : (val !== null && val !== undefined && val !== '');
               if (hasVal && !isConf) {
@@ -546,9 +615,69 @@ export default function CompanyProfileNew() {
                 });
               }
             }
+          } else if (fieldKey === 'array' || item.kind.endsWith('_array')) {
+            const arrVal = Array.isArray(values[item.id]) ? values[item.id] : [];
+            if (arrVal.length === 0 && !isSectionConf) {
+              const noun = item.name.trim();
+              actions.push({
+                id: item.id,
+                fieldId: item.id,
+                catId: cat.id,
+                name: item.name,
+                kind: 'fill',
+                reason: "Silk couldn't infer it reliably.",
+                primaryLabel: noun.length <= 18 ? `Add ${noun.toLowerCase()}` : 'Add',
+              });
+            } else {
+              for (let i = 0; i < arrVal.length; i++) {
+                if (actions.length >= 2) break;
+                const elem = arrVal[i];
+                if (!elem) continue;
+                const elemKey = elem.id ? String(elem.id) : String(i);
+                const elemId = `${secKey}__${elemKey}`;
+
+                const breakdownEntry = (data?.readinessBreakdown || data?.readiness_breakdown)?.find(b => (b.sectionKey || b.section_key) === secKey);
+                const confirmedCount = breakdownEntry?.confirmed !== undefined ? Number(breakdownEntry.confirmed) : 0;
+                const hasZeroIndex = confirmedFields.includes('0');
+                const isIndexConfirmed = hasZeroIndex ? confirmedFields.includes(String(i)) : confirmedFields.includes(String(i + 1));
+                const isItemConf = Boolean(confirmed[elemId]) ||
+                  isSectionConf ||
+                  (confirmedCount > 0 && i < confirmedCount) ||
+                  (confirmedFields && confirmedFields.length > 0 && (
+                    confirmedFields.includes(elemKey) ||
+                    confirmedFields.includes(Number(elemKey)) ||
+                    confirmedFields.includes(String(elemKey)) ||
+                    isIndexConfirmed
+                  ));
+
+                let itemName = '';
+                if (item.kind === 'products_array') itemName = elem.name ? `Product: ${elem.name}` : `Product / Service ${i + 1}`;
+                else if (item.kind === 'founders_array') itemName = elem.name ? `Founder: ${elem.name}` : `Person ${i + 1}`;
+                else if (item.kind === 'markets_array') itemName = elem.market || elem.customer_type ? `Market: ${elem.market || elem.customer_type}` : `Market ${i + 1}`;
+                else if (item.kind === 'advantages_array') itemName = elem.title || elem.name ? `Advantage: ${elem.title || elem.name}` : `Advantage ${i + 1}`;
+                else if (item.kind === 'competitors_array') itemName = elem.name || elem.competitor ? `Competitor: ${elem.name || elem.competitor}` : `Competitor ${i + 1}`;
+                else if (item.kind === 'revenue_model_array') itemName = elem.stream ? `Revenue Stream: ${elem.stream}` : `Revenue Stream ${i + 1}`;
+                else if (item.kind === 'company_metrics_array') itemName = elem.metric ? `Metric: ${elem.metric}` : `Metric ${i + 1}`;
+                else if (item.kind === 'funding_history_array') itemName = elem.round_name || elem.round ? `Round: ${elem.round_name || elem.round}` : `Funding Round ${i + 1}`;
+                else if (item.kind === 'news_array') itemName = elem.title ? `News: ${elem.title}` : `News ${i + 1}`;
+                else itemName = elem.name || elem.title || `${item.name} ${i + 1}`;
+
+                if (!isItemConf) {
+                  actions.push({
+                    id: elemId,
+                    fieldId: elemId,
+                    catId: cat.id,
+                    name: itemName,
+                    kind: 'confirm',
+                    reason: 'Silk drafted this and it\u2019s still waiting on a founder check.',
+                    primaryLabel: 'Confirm',
+                  });
+                }
+              }
+            }
           } else {
             const hasVal = fieldHasValue(item.kind, values[item.id]);
-            const isConf = Boolean(confirmed[item.id]);
+            const isConf = Boolean(confirmed[item.id]) || isSectionConf;
 
             if (hasVal && !isConf && item.aiFilled) {
               actions.push({
@@ -560,7 +689,7 @@ export default function CompanyProfileNew() {
                 reason: 'Silk drafted this and it\u2019s still waiting on a founder check.',
                 primaryLabel: 'Confirm',
               });
-            } else if (!hasVal) {
+            } else if (!hasVal && !isSectionConf) {
               const noun = item.name.trim();
               const label = noun.length <= 18 ? `Add ${noun.toLowerCase()}` : 'Add';
               let hint = item.hint;
@@ -719,7 +848,7 @@ export default function CompanyProfileNew() {
                 if (act.catId) {
                   ignoreSpy.current = true;
                   setSelected(act.catId);
-                  scrollToCategory(act.catId);
+                  scrollToField(act.fieldId, act.catId);
                   setTimeout(() => {
                     ignoreSpy.current = false;
                     if (act.fieldId) {
@@ -728,7 +857,7 @@ export default function CompanyProfileNew() {
                         targetEl.focus();
                       }
                     }
-                  }, 350);
+                  }, 400);
                 }
               }}
             />
@@ -874,10 +1003,12 @@ export default function CompanyProfileNew() {
 
                 const newConfirmed = [...new Set([...(section?.confirmed_fields || []), ...Object.keys(fieldMap)])];
 
-                await profileApi.saveSection(companyId, secKey, {
+                const res = await profileApi.saveSection(companyId, secKey, {
                   data: updatedData,
                   confirmed_fields: newConfirmed,
                 });
+                if (res?.score !== undefined) setBackendScore(res.score);
+                if (res?.readiness_stage) setReadinessStage(res.readiness_stage);
               }
               if (toast) toast('Applied & confirmed AI draft!');
               await load(true);

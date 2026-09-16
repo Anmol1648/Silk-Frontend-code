@@ -33,9 +33,13 @@ export default function ProfileSectionCard({
   readinessBreakdown,
 }) {
   // Use readinessBreakdown from backend for accurate section-level counts
-  const breakdownEntry = readinessBreakdown?.find(b => b.sectionKey === sub.id);
-  const subTotal = breakdownEntry ? (breakdownEntry.fields || 0) : sub.items.reduce((acc, i) => acc + (i.totalCount || 1), 0);
-  const subDone = breakdownEntry ? (breakdownEntry.confirmed || 0) : sub.items.reduce((acc, i) => acc + (i.confirmedCount !== undefined ? i.confirmedCount : (confirmed[i.id] ? 1 : 0)), 0);
+  const breakdownEntry = readinessBreakdown?.find(b => (b.sectionKey || b.section_key) === sub.id);
+  const fallbackTotal = sub.items.reduce((acc, i) => acc + (i.totalCount || 1), 0);
+  const fallbackDone = sub.items.reduce((acc, i) => acc + (i.confirmedCount !== undefined ? i.confirmedCount : (confirmed[i.id] ? 1 : 0)), 0);
+
+  const subTotal = breakdownEntry && breakdownEntry.fields !== undefined ? breakdownEntry.fields : fallbackTotal;
+  const subDoneRaw = breakdownEntry && breakdownEntry.confirmed !== undefined ? breakdownEntry.confirmed : fallbackDone;
+  const subDone = Math.min(Math.max(0, subDoneRaw), subTotal);
 
   return (
     <div className="cp-subsection">

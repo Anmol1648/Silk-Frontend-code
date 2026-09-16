@@ -19,19 +19,35 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { StatusTag } from './KnowledgeField';
 import { FileTypeBadge } from '../file-type-badge';
 
-function SubFieldHeader({ fieldId, label, confirmedFields = [], onConfirm, onUnconfirm }) {
+function SubFieldHeader({ fieldId, label, confirmedFields = [], itemIndex, confirmedCount, onConfirm, onUnconfirm }) {
   const [hovered, setHovered] = useState(false);
   const [sectionKey, fieldKey] = fieldId && fieldId.includes('__') ? fieldId.split('__') : ['', fieldId];
-  const isConfirmed = Boolean(
-    confirmedFields.length && (
-      confirmedFields.includes(fieldId) ||
-      (fieldKey !== undefined && (
-        confirmedFields.includes(fieldKey) ||
-        confirmedFields.includes(Number(fieldKey)) ||
-        confirmedFields.includes(String(fieldKey))
-      ))
-    )
-  );
+
+  // For array items (with itemIndex), confirm ONLY by exact UUID match.
+  // The count-based approach (itemIndex < confirmedCount) is wrong because
+  // the backend tracks confirmation by UUID, not by array position.
+  const isArrayItem = itemIndex !== undefined && itemIndex !== null;
+
+  const isConfirmedByFields = confirmedFields && confirmedFields.length > 0 && (() => {
+    // 1. Exact full fieldId match (e.g. "company_metrics__<uuid>")
+    if (confirmedFields.includes(fieldId)) return true;
+
+    // 2. Exact fieldKey (UUID) match
+    if (fieldKey !== undefined && (
+      confirmedFields.includes(fieldKey) ||
+      confirmedFields.includes(String(fieldKey))
+    )) return true;
+
+    // 3. For non-array items only: also check section-level and generic keys
+    if (!isArrayItem) {
+      if (sectionKey && confirmedFields.includes(sectionKey)) return true;
+      if (confirmedFields.includes('array') || confirmedFields.includes('obj')) return true;
+    }
+
+    return false;
+  })();
+
+  const isConfirmed = isConfirmedByFields;
 
   const handleAsk = () => {
     window.dispatchEvent(new CustomEvent('open-silk-panel', {
@@ -103,7 +119,7 @@ function SubFieldHeader({ fieldId, label, confirmedFields = [], onConfirm, onUnc
   );
 }
 
-function FoundersEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
+function FoundersEditor({ value, onChange, confirmedFields = [], confirmedCount, onConfirmField, onUnconfirmField }) {
   const founders = Array.isArray(value) ? value : [];
 
   const updateFounder = (index, updates) => {
@@ -127,13 +143,15 @@ function FoundersEditor({ value, onChange, confirmedFields = [], onConfirmField,
   return (
     <div className="flex flex-col gap-6 w-full">
       {founders.map((f, i) => (
-        <div key={i} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
+        <div key={i} data-field-id={f.id ? `founders__${f.id}` : `founders__${i}`} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <SubFieldHeader
                 label={`Person ${i + 1}`}
                 fieldId={f.id ? `founders__${f.id}` : `founders__${i}`}
                 confirmedFields={confirmedFields}
+                itemIndex={i}
+                confirmedCount={confirmedCount}
                 onConfirm={onConfirmField}
                 onUnconfirm={onUnconfirmField}
               />
@@ -358,7 +376,7 @@ function BulletListEditor({ value, onChange, placeholder = 'Add item...' }) {
 }
 
 /* ── ProductsEditor — structured editor for products/services ── */
-function ProductsEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
+function ProductsEditor({ value, onChange, confirmedFields = [], confirmedCount, onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
 
   const updateItem = (index, updates) => {
@@ -382,13 +400,15 @@ function ProductsEditor({ value, onChange, confirmedFields = [], onConfirmField,
   return (
     <div className="flex flex-col gap-6 w-full">
       {items.map((item, i) => (
-        <div key={i} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
+        <div key={i} data-field-id={item.id ? `products_services__${item.id}` : `products_services__${i}`} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <SubFieldHeader
                 label={`Product / Service ${i + 1}`}
                 fieldId={item.id ? `products_services__${item.id}` : `products_services__${i}`}
                 confirmedFields={confirmedFields}
+                itemIndex={i}
+                confirmedCount={confirmedCount}
                 onConfirm={onConfirmField}
                 onUnconfirm={onUnconfirmField}
               />
@@ -458,7 +478,7 @@ function ProductsEditor({ value, onChange, confirmedFields = [], onConfirmField,
 }
 
 /* ── MarketsEditor — structured editor for customers & markets ── */
-function MarketsEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
+function MarketsEditor({ value, onChange, confirmedFields = [], confirmedCount, onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { market: '', customer_type: '', geography: '' }]);
@@ -468,13 +488,15 @@ function MarketsEditor({ value, onChange, confirmedFields = [], onConfirmField, 
   return (
     <div className="flex flex-col gap-6 w-full">
       {items.map((item, i) => (
-        <div key={i} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
+        <div key={i} data-field-id={item.id ? `customers_markets__${item.id}` : `customers_markets__${i}`} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <SubFieldHeader
                 label={`Market ${i + 1}`}
                 fieldId={item.id ? `customers_markets__${item.id}` : `customers_markets__${i}`}
                 confirmedFields={confirmedFields}
+                itemIndex={i}
+                confirmedCount={confirmedCount}
                 onConfirm={onConfirmField}
                 onUnconfirm={onUnconfirmField}
               />
@@ -529,7 +551,7 @@ function MarketsEditor({ value, onChange, confirmedFields = [], onConfirmField, 
 }
 
 /* ── AdvantagesEditor — structured editor for competitive advantages ── */
-function AdvantagesEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
+function AdvantagesEditor({ value, onChange, confirmedFields = [], confirmedCount, onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { title: '', description: '' }]);
@@ -539,13 +561,15 @@ function AdvantagesEditor({ value, onChange, confirmedFields = [], onConfirmFiel
   return (
     <div className="flex flex-col gap-6 w-full">
       {items.map((item, i) => (
-        <div key={i} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
+        <div key={i} data-field-id={item.id ? `competitive_advantages__${item.id}` : `competitive_advantages__${i}`} className="flex flex-col gap-3 relative pb-4 border-b border-border/40 last:border-0 last:pb-0">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <SubFieldHeader
                 label={`Advantage ${i + 1}`}
                 fieldId={item.id ? `competitive_advantages__${item.id}` : `competitive_advantages__${i}`}
                 confirmedFields={confirmedFields}
+                itemIndex={i}
+                confirmedCount={confirmedCount}
                 onConfirm={onConfirmField}
                 onUnconfirm={onUnconfirmField}
               />
@@ -703,7 +727,7 @@ function BusinessModelEditor({ value, onChange, confirmedFields = [], onConfirmF
 }
 
 /* ── RevenueModelEditor — stream + share% ── */
-function RevenueModelEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
+function RevenueModelEditor({ value, onChange, confirmedFields = [], confirmedCount, onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { stream: '', share_percent: null }]);
@@ -728,6 +752,8 @@ function RevenueModelEditor({ value, onChange, confirmedFields = [], onConfirmFi
                   label={`Revenue Stream ${i + 1}`}
                   fieldId={item.id ? `revenue_model__${item.id}` : `revenue_model__${i}`}
                   confirmedFields={confirmedFields}
+                  itemIndex={i}
+                  confirmedCount={confirmedCount}
                   onConfirm={onConfirmField}
                   onUnconfirm={onUnconfirmField}
                 />
@@ -774,7 +800,7 @@ function RevenueModelEditor({ value, onChange, confirmedFields = [], onConfirmFi
 }
 
 /* ── MetricsEditor — metric + value + unit ── */
-function MetricsEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
+function MetricsEditor({ value, onChange, confirmedFields = [], confirmedCount, onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { metric: '', value: '', unit: '' }]);
@@ -801,6 +827,8 @@ function MetricsEditor({ value, onChange, confirmedFields = [], onConfirmField, 
                   label={`Metric ${i + 1}`}
                   fieldId={item.id ? `company_metrics__${item.id}` : `company_metrics__${i}`}
                   confirmedFields={confirmedFields}
+                  itemIndex={i}
+                  confirmedCount={confirmedCount}
                   onConfirm={onConfirmField}
                   onUnconfirm={onUnconfirmField}
                 />
@@ -1016,7 +1044,7 @@ function FinancialSummaryEditor({ value, onChange, confirmedFields = [], onConfi
 }
 
 /* ── NewsEditor — title, date, description, source (with link icon) ── */
-function NewsEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
+function NewsEditor({ value, onChange, confirmedFields = [], confirmedCount, onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { title: '', date: '', description: '', source: '', link: '' }]);
@@ -1038,6 +1066,8 @@ function NewsEditor({ value, onChange, confirmedFields = [], onConfirmField, onU
                   label={`News Article ${i + 1}`}
                   fieldId={item.id ? `news__${item.id}` : `news__${i}`}
                   confirmedFields={confirmedFields}
+                  itemIndex={i}
+                  confirmedCount={confirmedCount}
                   onConfirm={onConfirmField}
                   onUnconfirm={onUnconfirmField}
                 />
@@ -1190,7 +1220,7 @@ function InvestmentThesisEditor({ value, onChange, confirmedFields = [], onConfi
 }
 
 /* ── FundingHistoryEditor — rounds, amounts, investors ── */
-function FundingHistoryEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
+function FundingHistoryEditor({ value, onChange, confirmedFields = [], confirmedCount, onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { date: '', round: '', amount_usd_mn: null, pre_money_usd_mn: null, post_money_usd_mn: null, investors: [], lead_investors: [] }]);
@@ -1209,6 +1239,8 @@ function FundingHistoryEditor({ value, onChange, confirmedFields = [], onConfirm
                 label={`Funding Round ${i + 1}`}
                 fieldId={item.id ? `funding_history__${item.id}` : `funding_history__${i}`}
                 confirmedFields={confirmedFields}
+                itemIndex={i}
+                confirmedCount={confirmedCount}
                 onConfirm={onConfirmField}
                 onUnconfirm={onUnconfirmField}
               />
@@ -1471,7 +1503,7 @@ function TagsInput({ value, onChange, placeholder }) {
   );
 }
 
-function CompetitorsEditor({ value, onChange, confirmedFields = [], onConfirmField, onUnconfirmField }) {
+function CompetitorsEditor({ value, onChange, confirmedFields = [], confirmedCount, onConfirmField, onUnconfirmField }) {
   const items = Array.isArray(value) ? value : [];
   const updateItem = (i, u) => { const n = [...items]; n[i] = { ...n[i], ...u }; onChange(n); };
   const addItem = () => onChange([...items, { name: '', status: 'Private', revenue: null, funding_usd_mn: null, investors: [], business_model: '', market_positioning: '', key_differentiators: [], strengths: [], weaknesses: [] }]);
@@ -1493,6 +1525,8 @@ function CompetitorsEditor({ value, onChange, confirmedFields = [], onConfirmFie
                 label={`Competitor ${i + 1}`}
                 fieldId={item.id ? `competitors__${item.id}` : `competitors__${i}`}
                 confirmedFields={confirmedFields}
+                itemIndex={i}
+                confirmedCount={confirmedCount}
                 onConfirm={onConfirmField}
                 onUnconfirm={onUnconfirmField}
               />
@@ -1947,67 +1981,67 @@ function DocumentCenterEditor({ value, onChange, onAsk, onOpen, confirmedFields 
 const comboTriggerCls = "rounded-lg border-0 bg-secondary shadow-none focus:border-0 focus:ring-1 focus:ring-foreground/5 data-[state=open]:border-0 data-[state=open]:ring-1 data-[state=open]:ring-foreground/5";
 
 /* ── Main FieldControl (exact from page.tsx line 384–541) ── */
-export default function FieldControl({ kind, value, onChange, placeholder, options, scaled, fieldId, confirmedFields = [], onConfirmField, onUnconfirmField, onAsk, onOpenAnalysis }) {
+export default function FieldControl({ kind, value, onChange, placeholder, options, scaled, fieldId, confirmedFields = [], confirmedCount, onConfirmField, onUnconfirmField, onAsk, onOpenAnalysis }) {
   const k = kind || 'textarea';
 
   if (k === 'founders_array') {
-    return <FoundersEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <FoundersEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'products_array') {
-    return <ProductsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <ProductsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'markets_array') {
-    return <MarketsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <MarketsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'advantages_array') {
-    return <AdvantagesEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <AdvantagesEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'competitors_array') {
-    return <CompetitorsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <CompetitorsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'industry_research_obj') {
-    return <IndustryResearchEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <IndustryResearchEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'business_model_obj') {
-    return <BusinessModelEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <BusinessModelEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'funding_history_array') {
-    return <FundingHistoryEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <FundingHistoryEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'investors_cap_table_obj') {
-    return <InvestorsCapTableEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <InvestorsCapTableEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'news_array') {
-    return <NewsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <NewsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'company_story_obj') {
-    return <CompanyStoryEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <CompanyStoryEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'investment_thesis_obj') {
-    return <InvestmentThesisEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <InvestmentThesisEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'document_center_obj') {
-    return <DocumentCenterEditor value={value} onChange={onChange} onAsk={onAsk} onOpen={onOpenAnalysis} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <DocumentCenterEditor value={value} onChange={onChange} onAsk={onAsk} onOpen={onOpenAnalysis} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'revenue_model_array') {
-    return <RevenueModelEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <RevenueModelEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'company_metrics_array') {
-    return <MetricsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
+    return <MetricsEditor value={value} onChange={onChange} confirmedFields={confirmedFields} confirmedCount={confirmedCount} onConfirmField={onConfirmField} onUnconfirmField={onUnconfirmField} />;
   }
 
   if (k === 'financial_summary_obj') {
