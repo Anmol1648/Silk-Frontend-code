@@ -276,13 +276,6 @@ export default function KnowledgeField({
         {!isMultiFieldSection && (
           <>
             {showAiDraft && <StatusTag label="AI Draft" tone="ai" />}
-            {showConfirmed && (
-              <StatusTag
-                label="Confirmed"
-                hoverLabel="Unconfirm"
-                onClick={onUnconfirm}
-              />
-            )}
           </>
         )}
         {!isMultiFieldSection && edgeActions}
@@ -302,10 +295,6 @@ export default function KnowledgeField({
           options={item.options}
           scaled={item.scaled}
           fieldId={fieldId}
-          confirmedFields={confirmedFields}
-          confirmedCount={item.confirmedCount}
-          onConfirmField={onConfirmField}
-          onUnconfirmField={onUnconfirmField}
           onAsk={onAsk}
           onOpenAnalysis={onAnalysis}
         />
