@@ -2,13 +2,6 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { config as configApi, companies, profile as profileApi } from '../api/endpoints';
 import { useToast } from '../context/AppContext';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '../components/ui/dialog';
 import { Input } from './ui/input';
 import { OptionsCombobox } from './options-combobox';
 import { Checkbox } from './ui/checkbox';
@@ -32,30 +25,6 @@ const UPLOAD_CATEGORIES = [
 
 const ACCEPTED = '.pdf,.docx,.doc,.ppt,.pptx,.xlsx,.xls,.csv,.png,.jpg,.jpeg,.zip';
 
-function GeneratingStep({ label, detail, status }) {
-  return (
-    <div className="flex items-start gap-4" style={{ marginBottom: 16 }}>
-      <div className="mt-1 flex-shrink-0" style={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {status === 'done' && (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        )}
-        {status === 'active' && (
-          <span style={{ width: 20, height: 20, borderRadius: '50%', border: '2px solid #ccc', borderTopColor: 'black', display: 'inline-block', animation: 'spin 1s linear infinite' }} />
-        )}
-        {status === 'pending' && (
-          <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#e5e7eb' }} />
-        )}
-      </div>
-      <div>
-        <div style={{ fontSize: 14, fontWeight: 600, color: 'black' }}>{label}</div>
-        <div style={{ fontSize: 13, color: '#6b7280' }}>{detail}</div>
-      </div>
-    </div>
-  );
-}
-
 export default function AddCompanyModal({ onCancel, onCreated }) {
   const { toast, error: toastError } = useToast();
 
@@ -69,7 +38,6 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
   ]);
   const [files, setFiles] = useState([]);
   const [busy, setBusy] = useState(false);
-  const [submitPhase, setSubmitPhase] = useState('idle'); // 'idle' | 'creating' | 'uploading' | 'onboarding'
   const [errs, setErrs] = useState({});
 
   const [logoUrl, setLogoUrl] = useState('');
@@ -109,10 +77,10 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
 
   /* Close on Escape */
   useEffect(() => {
-    function onKey(e) { if (e.key === 'Escape') onCancel(); }
+    function onKey(e) { if (e.key === 'Escape' && !busy) onCancel(); }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onCancel]);
+  }, [onCancel, busy]);
 
   /* ---- founder helpers ---- */
   const setFounder = (i, patch) =>
@@ -141,12 +109,18 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
     return Object.keys(next).length === 0;
   }
 
-  /* ---- submit: create company + onboard in one shot ---- */
+  /* ---- submit: create company + onboard then open profile ---- */
   async function submit(e) {
     e.preventDefault();
     if (!validate()) return;
     setBusy(true);
-    setSubmitPhase('creating');
+
+    // Trigger browser notification permission prompt during user click gesture
+    try {
+      if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission().catch(() => {});
+      }
+    } catch (_) {}
     try {
       /* Step 1: create the company */
       const res = await companies.create({ name: companyName.trim() });
@@ -155,7 +129,6 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
 
       /* Step 2: upload documents if any */
       if (files.length) {
-        setSubmitPhase('uploading');
         for (const item of files) {
           try {
             const fd = new FormData();
@@ -163,13 +136,12 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
             fd.append('category', item.category);
             await profileApi.uploadDocument(companyId, fd);
           } catch (ex) {
-            toastError(new Error(`Couldn't upload ${item.file.name} — continuing without it.`));
+            console.warn(`Couldn't upload ${item.file?.name}:`, ex);
           }
         }
       }
 
       /* Step 3: onboard with collected metadata */
-      setSubmitPhase('onboarding');
       const url = website.trim()
         ? (website.trim().startsWith('http') ? website.trim() : `https://${website.trim()}`)
         : undefined;
@@ -180,69 +152,26 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
         ...(logoUrl && !logoBase64 ? { logoUrl } : {}),
         ...(logoBase64 ? { logoBase64 } : {}),
         founders: founders
-          .filter((f) => f.name.trim() || f.linkedinUrl.trim())
+          .filter((f) => f.name?.trim() || f.linkedinUrl?.trim())
           .map((f) => ({
             name: f.name.trim(),
-            linkedinUrl: f.linkedinUrl.trim(),
-            isFullTime: f.isFullTime,
-            selfConfirmed: f.selfConfirmed,
+            linkedinUrl: f.linkedinUrl?.trim() || '',
+            isFullTime: !!f.isFullTime,
+            selfConfirmed: !!f.selfConfirmed,
           })),
       });
 
-      setSubmitPhase('idle');
       onCreated(companyId);
     } catch (ex) {
       setErrs(ex.fields || {});
       toastError(ex);
-      setSubmitPhase('idle');
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <>
-      <Dialog open={submitPhase !== 'idle'}>
-        <DialogContent
-          className="acm-progress-dialog sm:max-w-[425px]"
-          style={{ zIndex: 320, background: '#fff', color: '#000', border: '1px solid #e5e7eb', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}
-          showCloseButton={false}
-        >
-          <DialogHeader>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
-              <div style={{ padding: 8, background: '#f9fafb', borderRadius: 8, border: '1px solid #e5e7eb' }}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                </svg>
-              </div>
-              <DialogTitle style={{ fontSize: 20, color: 'black', margin: 0 }}>Generating company profile…</DialogTitle>
-            </div>
-            <DialogDescription style={{ color: '#6b7280', fontSize: 14, marginTop: 0 }}>
-              We're building a comprehensive profile from your website, uploaded documents, and public sources. This may take a few minutes.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div style={{ marginTop: 24 }}>
-            <GeneratingStep
-              label="Initializing profile"
-              detail="Registering company and founders"
-              status={submitPhase === 'creating' ? 'active' : 'done'}
-            />
-            <GeneratingStep
-              label="Uploading documents"
-              detail={files.length > 0 ? `Securely transferring ${files.length} file(s)` : 'No documents provided'}
-              status={submitPhase === 'creating' ? 'pending' : (submitPhase === 'uploading' ? 'active' : 'done')}
-            />
-            <GeneratingStep
-              label="Starting AI Pipeline"
-              detail="Web research and document extraction"
-              status={submitPhase === 'onboarding' ? 'active' : 'pending'}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <div className="acm-overlay" onClick={onCancel}>
+    <div className="acm-overlay" onClick={onCancel}>
         <div
           className="acm-modal"
           onClick={(e) => e.stopPropagation()}
@@ -595,6 +524,5 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
           </form>
         </div>
       </div>
-    </>
   );
 }

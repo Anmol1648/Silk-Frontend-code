@@ -3,6 +3,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider, ConfirmProvider, ToastProvider, useAuth } from './context/AppContext';
 import { ConfigProvider } from './context/ConfigContext';
 import { LookupsProvider } from './context/LookupsContext';
+import { BackgroundTaskProvider } from './context/BackgroundTaskContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import DealLayout from './pages/DealLayout';
@@ -34,43 +35,45 @@ export default function App() {
             <ToastProvider>
               <ConfirmProvider>
                 <BrowserRouter>
-                  <Routes>
-                    <Route path="/login" element={<Login />} />
+                  <BackgroundTaskProvider>
+                    <Routes>
+                      <Route path="/login" element={<Login />} />
 
-                    {/* Dashboard — the landing page after login (PRD §4). */}
-                    <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+                      {/* Dashboard — the landing page after login (PRD §4). */}
+                      <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
 
-                    {/* Company-scoped routes (C1): a company is independent of any
-                      deal and may hold several concurrent raises, so the profile
-                      and strategy hang off the company. */}
-                    <Route path="/companies/:companyId" element={<RequireAuth><CompanyLayout /></RequireAuth>}>
-                      <Route index element={<Navigate to="profile" replace />} />
-                      <Route path="profile" element={<CompanyProfile />} />
-                      <Route path="strategy" element={<CompanyStrategy />} />
-                      <Route path="investors" element={<InvestorDiscovery />} />
-                      <Route path="outreach" element={<Outreach />} />
-                      <Route path="term-sheets" element={<TermSheets />} />
-                      <Route path="diligence" element={<DueDiligence />} />
-                      <Route path="documents" element={<DefinitiveDocuments />} />
-                      <Route path="closing" element={<Closing />} />
-                    </Route>
+                      {/* Company-scoped routes (C1): a company is independent of any
+                        deal and may hold several concurrent raises, so the profile
+                        and strategy hang off the company. */}
+                      <Route path="/companies/:companyId" element={<RequireAuth><CompanyLayout /></RequireAuth>}>
+                        <Route index element={<Navigate to="profile" replace />} />
+                        <Route path="profile" element={<CompanyProfile />} />
+                        <Route path="strategy" element={<CompanyStrategy />} />
+                        <Route path="investors" element={<InvestorDiscovery />} />
+                        <Route path="outreach" element={<Outreach />} />
+                        <Route path="term-sheets" element={<TermSheets />} />
+                        <Route path="diligence" element={<DueDiligence />} />
+                        <Route path="documents" element={<DefinitiveDocuments />} />
+                        <Route path="closing" element={<Closing />} />
+                      </Route>
 
-                    {/* Deal-scoped workspace. */}
-                    <Route path="/deals/:dealId" element={<RequireAuth><DealLayout /></RequireAuth>}>
-                      <Route index element={<Home />} />
-                      <Route path="ckb" element={<CkbPage />} />
-                      <Route path="members" element={<Members />} />
-                      {/* Stage 1 is now the company-scoped Company Profile —
-                        anyone landing on the old deal path is forwarded. */}
-                      <Route path="stage/1" element={<StageOneRedirect />} />
-                      <Route path="investors" element={<InvestorDiscovery />} />
-                    </Route>
+                      {/* Deal-scoped workspace. */}
+                      <Route path="/deals/:dealId" element={<RequireAuth><DealLayout /></RequireAuth>}>
+                        <Route index element={<Home />} />
+                        <Route path="ckb" element={<CkbPage />} />
+                        <Route path="members" element={<Members />} />
+                        {/* Stage 1 is now the company-scoped Company Profile —
+                          anyone landing on the old deal path is forwarded. */}
+                        <Route path="stage/1" element={<StageOneRedirect />} />
+                        <Route path="investors" element={<InvestorDiscovery />} />
+                      </Route>
 
-                    {/* Legacy paths kept alive for one release so existing
-                      bookmarks and shared links don't break. */}
-                    <Route path="/start" element={<Navigate to="/dashboard" replace />} />
-                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                  </Routes>
+                      {/* Legacy paths kept alive for one release so existing
+                        bookmarks and shared links don't break. */}
+                      <Route path="/start" element={<Navigate to="/dashboard" replace />} />
+                      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                    </Routes>
+                  </BackgroundTaskProvider>
                 </BrowserRouter>
               </ConfirmProvider>
             </ToastProvider>

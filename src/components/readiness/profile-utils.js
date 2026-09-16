@@ -209,7 +209,7 @@ export function fieldHasValue(kind, value) {
 }
 
 export function isCompactKind(kind) {
-  return ['text', 'number', 'percent', 'months', 'select', 'country', 'currency'].includes(kind);
+  return ['text', 'number', 'percent', 'months', 'select', 'country', 'currency', 'date'].includes(kind);
 }
 
 // ── Layout rows (exact from silkAnkit) ──────────────────────

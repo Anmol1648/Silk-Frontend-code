@@ -22,6 +22,7 @@ import { buildReadinessData, getSectionCandidateKeys, SECTION_SUBFIELDS } from '
 import ProfileTabs from './ProfileTabs';
 import ProfileSectionCard from './ProfileSectionCard';
 import GeneratingDialog from './GeneratingDialog';
+import { sendBrowserNotification, isProfileGenerationComplete, createUnthrottledTimer } from '../../utils/notifications';
 
 export default function CompanyProfileNew() {
   const { companyId } = useParams();
@@ -48,7 +49,6 @@ export default function CompanyProfileNew() {
   const [values, setValues] = useState({});
   const [savedValues, setSavedValues] = useState({});
   const [savingSubId, setSavingSubId] = useState(null);
-  const [confirmed, setConfirmed] = useState({});
   const [categories, setCategories] = useState(PROFILE_CATEGORIES.map(c => ({ ...c, subsections: [] })));
 
   // panel state
@@ -97,7 +97,6 @@ export default function CompanyProfileNew() {
         setCategories(result.categories);
         setValues(result.values);
         setSavedValues(result.values);
-        setConfirmed(result.confirmed);
       }
 
       return res;
@@ -114,17 +113,39 @@ export default function CompanyProfileNew() {
 
   // Poll if it's generating or draft
   useEffect(() => {
-    if (data?.status !== 'generating' && data?.status !== 'draft') {
+    if (data && isProfileGenerationComplete(data)) {
       return undefined;
     }
-    const t = setInterval(async () => {
+    if (data && data.status !== 'generating' && data.status !== 'draft') {
+      return undefined;
+    }
+
+    let finished = false;
+    let stopTimer = null;
+
+    const pollFn = async () => {
+      if (finished) return;
       const res = await load(true); // silent load
-      if (res && res.status !== 'generating' && res.status !== 'draft') {
-        clearInterval(t);
+      if (isProfileGenerationComplete(res)) {
+        finished = true;
+        if (stopTimer) stopTimer();
+        const name = res?.companyName || res?.name || 'Company';
+        sendBrowserNotification(`Workspace Ready: ${name}`, {
+          body: `AI profile generation complete for "${name}". Click to open.`,
+          onClickUrl: `/companies/${companyId}/profile`,
+          tag: `silk-company-${companyId}`,
+        });
+        toast(`🎉 "${name}" workspace is ready!`);
       }
-    }, 3000);
-    return () => clearInterval(t);
-  }, [data?.status, load]);
+    };
+
+    stopTimer = createUnthrottledTimer(pollFn, 3000);
+
+    return () => {
+      finished = true;
+      if (stopTimer) stopTimer();
+    };
+  }, [data?.status, load, companyId, toast]);
 
   // Check if a subsection has modified/unsaved changes
   const isSectionDirty = (sub) => {
@@ -232,18 +253,6 @@ export default function CompanyProfileNew() {
           });
           return next;
         });
-
-        setConfirmed(prev => {
-          const next = { ...prev };
-          sub.items.forEach(i => {
-            const val = values[i.id];
-            const hasVal = Array.isArray(val) ? val.length > 0 : (val !== null && val !== undefined && val !== '');
-            if (hasVal) {
-              next[i.id] = true;
-            }
-          });
-          return next;
-        });
       }
 
       if (toast) toast('Saved section successfully.');
@@ -317,35 +326,21 @@ export default function CompanyProfileNew() {
     };
   }, [categories, phase, loading]);
 
-  // 4. Stats logic — prioritize readinessTotals from API response
+  // 4. Stats logic — count filled fields
   const stats = useMemo(() => {
-    const totals = data?.readinessTotals || data?.readiness_totals;
-    if (totals) {
-      const done = Number(totals.confirmed) || 0;
-      const total = Number(totals.fields !== undefined ? totals.fields : totals.populated) || 0;
-      return { done, total, score: backendScore, completenessPct };
-    }
-
-    const breakdown = data?.readinessBreakdown || data?.readiness_breakdown;
-    if (breakdown && Array.isArray(breakdown) && breakdown.length > 0) {
-      const done = breakdown.reduce((sum, b) => sum + (Number(b.confirmed) || 0), 0);
-      const total = breakdown.reduce((sum, b) => sum + (Number(b.fields !== undefined ? b.fields : (b.populated !== undefined ? Math.max(b.populated, b.confirmed) : 0)) || 0), 0);
-      return { done, total, score: backendScore, completenessPct };
-    }
-
     let done = 0, total = 0;
     for (const c of categories) {
       for (const sub of c.subsections) {
         for (const item of sub.items) {
           total++;
-          if (fieldHasValue(item.kind, values[item.id]) && confirmed[item.id]) {
+          if (fieldHasValue(item.kind, values[item.id])) {
             done++;
           }
         }
       }
     }
     return { done, total, score: backendScore, completenessPct };
-  }, [data, categories, values, confirmed, backendScore, completenessPct]);
+  }, [categories, values, backendScore, completenessPct]);
 
   const ladderPos = readinessStage || data?.readiness_stage || data?.readinessStage || READINESS_LADDER[ladderIndex(stats.score)] || 'just getting started';
 
@@ -391,160 +386,6 @@ export default function CompanyProfileNew() {
 
   const setValue = (id, v) => {
     setValues(prev => ({ ...prev, [id]: v }));
-    // Req 3: do NOT auto-confirm on typing — confirmation is explicit click only
-  };
-
-  // Req 3: Auto-PATCH confirmed_fields on confirm/unconfirm click
-  const confirmField = async (id) => {
-    // Optimistic UI
-    setConfirmed(prev => ({ ...prev, [id]: true }));
-
-    // Determine section key and field key
-    const [sectionKey, fieldKey] = id.split('__');
-    const section = data?.sections?.[sectionKey];
-    if (!section) return;
-
-    const arrVal = values[`${sectionKey}__array`];
-    const candidates = getSectionCandidateKeys(sectionKey, fieldKey, arrVal);
-
-    // Build the full confirmed_fields array
-    const currentConfirmed = section.confirmed_fields || [];
-    const next = [...new Set([...currentConfirmed, ...candidates])];
-
-    // Optimistically update data and totals
-    setData(prev => {
-      if (!prev) return prev;
-      const breakdown = prev.readinessBreakdown || prev.readiness_breakdown;
-      const updatedBreakdown = breakdown ? breakdown.map(b => {
-        if (b.sectionKey === sectionKey || b.section_key === sectionKey) {
-          const fieldsCount = Number(b.fields) || 1;
-          // Count confirmed items by matching confirmed_fields keys against actual data item UUIDs
-          const sectionData = prev.sections?.[sectionKey]?.data;
-          if (Array.isArray(sectionData)) {
-            const dataIds = new Set(sectionData.map(item => item.id).filter(Boolean));
-            const matchedCount = next.filter(k => dataIds.has(k)).length;
-            return { ...b, confirmed: Math.min(fieldsCount, matchedCount) };
-          }
-          // For object sections, use the existing sub-field key matching
-          const subFields = {
-            business_model: ['business_model_types', 'customer_type', 'value_proposition', 'delivery_model', 'pricing_model', 'sales_model', 'distribution_channels'],
-            industry_research: ['industry_evolution', 'market_sizing_narrative', 'methodology', 'market_sizing', 'performance_trends', 'regulatory_developments'],
-            financial_summary: ['financials', 'observations'],
-            investors_cap_table: ['cap_table_summary', 'investors_list'],
-            company_story: ['origin_story', 'brand_evolution', 'milestones', 'usp'],
-          };
-          const keys = subFields[sectionKey];
-          if (keys) {
-            const matchedCount = keys.filter(k => next.includes(k)).length;
-            return { ...b, confirmed: Math.min(fieldsCount, matchedCount) };
-          }
-          return { ...b, confirmed: Math.min(fieldsCount, (b.confirmed || 0) + 1) };
-        }
-        return b;
-      }) : breakdown;
-
-      return {
-        ...prev,
-        readinessBreakdown: updatedBreakdown,
-        sections: {
-          ...prev.sections,
-          [sectionKey]: { ...prev.sections?.[sectionKey], confirmed_fields: next },
-        },
-      };
-    });
-
-    try {
-      const res = await profileApi.saveSection(companyId, sectionKey, { confirmed_fields: next });
-      if (res?.score !== undefined) setBackendScore(res.score);
-      if (res?.readiness_stage) setReadinessStage(res.readiness_stage);
-      await load(true);
-    } catch (e) {
-      // Rollback on failure
-      setConfirmed(prev => {
-        const reverted = { ...prev };
-        delete reverted[id];
-        return reverted;
-      });
-      toastError(e);
-      await load(true);
-    }
-  };
-
-  const unconfirmField = async (id) => {
-    // Optimistic UI
-    const prevConfirmed = { ...confirmed };
-    setConfirmed(prev => {
-      const next = { ...prev };
-      delete next[id];
-      return next;
-    });
-
-    const [sectionKey, fieldKey] = id.split('__');
-    const section = data?.sections?.[sectionKey];
-    if (!section) return;
-
-    const arrVal = values[`${sectionKey}__array`];
-    const candidates = getSectionCandidateKeys(sectionKey, fieldKey, arrVal);
-    const candidatesSet = new Set([
-      ...candidates,
-      id, fieldKey, String(fieldKey),
-      `${sectionKey}__${fieldKey}`,
-    ]);
-    const next = (section.confirmed_fields || []).filter(k => !candidatesSet.has(k));
-
-    // Optimistically update data and totals
-    setData(prev => {
-      if (!prev) return prev;
-      const breakdown = prev.readinessBreakdown || prev.readiness_breakdown;
-      const updatedBreakdown = breakdown ? breakdown.map(b => {
-        if (b.sectionKey === sectionKey || b.section_key === sectionKey) {
-          const fieldsCount = Number(b.fields) || 1;
-          // Count confirmed items by matching confirmed_fields keys against actual data item UUIDs
-          const sectionData = prev.sections?.[sectionKey]?.data;
-          if (Array.isArray(sectionData)) {
-            const dataIds = new Set(sectionData.map(item => item.id).filter(Boolean));
-            const matchedCount = next.filter(k => dataIds.has(k)).length;
-            return { ...b, confirmed: Math.min(fieldsCount, matchedCount) };
-          }
-          // For object sections, use sub-field key matching
-          const subFields = {
-            business_model: ['business_model_types', 'customer_type', 'value_proposition', 'delivery_model', 'pricing_model', 'sales_model', 'distribution_channels'],
-            industry_research: ['industry_evolution', 'market_sizing_narrative', 'methodology', 'market_sizing', 'performance_trends', 'regulatory_developments'],
-            financial_summary: ['financials', 'observations'],
-            investors_cap_table: ['cap_table_summary', 'investors_list'],
-            company_story: ['origin_story', 'brand_evolution', 'milestones', 'usp'],
-          };
-          const keys = subFields[sectionKey];
-          if (keys) {
-            const matchedCount = keys.filter(k => next.includes(k)).length;
-            return { ...b, confirmed: Math.min(fieldsCount, matchedCount) };
-          }
-          return { ...b, confirmed: Math.max(0, (b.confirmed || 0) - 1) };
-        }
-        return b;
-      }) : breakdown;
-
-      return {
-        ...prev,
-        readinessBreakdown: updatedBreakdown,
-        sections: {
-          ...prev.sections,
-          [sectionKey]: { ...prev.sections?.[sectionKey], confirmed_fields: next },
-        },
-      };
-    });
-
-    try {
-      const res = await profileApi.saveSection(companyId, sectionKey, { confirmed_fields: next });
-      if (res?.score !== undefined) setBackendScore(res.score);
-      if (res?.readiness_stage) setReadinessStage(res.readiness_stage);
-      await load(true);
-    } catch (e) {
-      // Rollback
-      setConfirmed(prevConfirmed);
-      toastError(e);
-      await load(true);
-    }
   };
 
   const scrollToCategory = (id) => {
@@ -591,130 +432,32 @@ export default function CompanyProfileNew() {
         for (const item of sub.items) {
           if (actions.length >= 2) break;
 
-          const [secKey, fieldKey] = item.id.split('__');
-          const confirmedFields = data?.sections?.[secKey]?.confirmed_fields || [];
-          const isSectionConf = confirmedFields.includes(secKey) || confirmedFields.includes('array') || confirmedFields.includes('obj');
-
-          if (fieldKey === 'obj' && SECTION_SUBFIELDS[secKey]) {
-            const secVal = values[item.id] || {};
-            for (const subField of SECTION_SUBFIELDS[secKey]) {
-              if (actions.length >= 2) break;
-              const subId = `${secKey}__${subField.key}`;
-              const isConf = Boolean(confirmed[subId]) || confirmedFields.includes(subField.key) || isSectionConf;
-              const val = secVal[subField.key];
-              const hasVal = Array.isArray(val) ? val.length > 0 : (val !== null && val !== undefined && val !== '');
-              if (hasVal && !isConf) {
-                actions.push({
-                  id: subId,
-                  fieldId: subId,
-                  catId: cat.id,
-                  name: subField.name,
-                  kind: 'confirm',
-                  reason: 'Silk drafted this and it\u2019s still waiting on a founder check.',
-                  primaryLabel: 'Confirm',
-                });
-              }
+          const hasVal = fieldHasValue(item.kind, values[item.id]);
+          if (!hasVal) {
+            const noun = item.name.trim();
+            const label = noun.length <= 18 ? `Add ${noun.toLowerCase()}` : 'Add';
+            let hint = item.hint;
+            if (!hint) {
+              if (item.name.toLowerCase().includes('vision')) hint = "Investors read this first. Silk couldn't infer it reliably.";
+              else if (item.name.toLowerCase().includes('description')) hint = "Core company summary for investors.";
+              else hint = "Silk couldn't infer it reliably.";
             }
-          } else if (fieldKey === 'array' || item.kind.endsWith('_array')) {
-            const arrVal = Array.isArray(values[item.id]) ? values[item.id] : [];
-            if (arrVal.length === 0 && !isSectionConf) {
-              const noun = item.name.trim();
-              actions.push({
-                id: item.id,
-                fieldId: item.id,
-                catId: cat.id,
-                name: item.name,
-                kind: 'fill',
-                reason: "Silk couldn't infer it reliably.",
-                primaryLabel: noun.length <= 18 ? `Add ${noun.toLowerCase()}` : 'Add',
-              });
-            } else {
-              for (let i = 0; i < arrVal.length; i++) {
-                if (actions.length >= 2) break;
-                const elem = arrVal[i];
-                if (!elem) continue;
-                const elemKey = elem.id ? String(elem.id) : String(i);
-                const elemId = `${secKey}__${elemKey}`;
 
-                const breakdownEntry = (data?.readinessBreakdown || data?.readiness_breakdown)?.find(b => (b.sectionKey || b.section_key) === secKey);
-                const confirmedCount = breakdownEntry?.confirmed !== undefined ? Number(breakdownEntry.confirmed) : 0;
-                const hasZeroIndex = confirmedFields.includes('0');
-                const isIndexConfirmed = hasZeroIndex ? confirmedFields.includes(String(i)) : confirmedFields.includes(String(i + 1));
-                const isItemConf = Boolean(confirmed[elemId]) ||
-                  isSectionConf ||
-                  (confirmedCount > 0 && i < confirmedCount) ||
-                  (confirmedFields && confirmedFields.length > 0 && (
-                    confirmedFields.includes(elemKey) ||
-                    confirmedFields.includes(Number(elemKey)) ||
-                    confirmedFields.includes(String(elemKey)) ||
-                    isIndexConfirmed
-                  ));
-
-                let itemName = '';
-                if (item.kind === 'products_array') itemName = elem.name ? `Product: ${elem.name}` : `Product / Service ${i + 1}`;
-                else if (item.kind === 'founders_array') itemName = elem.name ? `Founder: ${elem.name}` : `Person ${i + 1}`;
-                else if (item.kind === 'markets_array') itemName = elem.market || elem.customer_type ? `Market: ${elem.market || elem.customer_type}` : `Market ${i + 1}`;
-                else if (item.kind === 'advantages_array') itemName = elem.title || elem.name ? `Advantage: ${elem.title || elem.name}` : `Advantage ${i + 1}`;
-                else if (item.kind === 'competitors_array') itemName = elem.name || elem.competitor ? `Competitor: ${elem.name || elem.competitor}` : `Competitor ${i + 1}`;
-                else if (item.kind === 'revenue_model_array') itemName = elem.stream ? `Revenue Stream: ${elem.stream}` : `Revenue Stream ${i + 1}`;
-                else if (item.kind === 'company_metrics_array') itemName = elem.metric ? `Metric: ${elem.metric}` : `Metric ${i + 1}`;
-                else if (item.kind === 'funding_history_array') itemName = elem.round_name || elem.round ? `Round: ${elem.round_name || elem.round}` : `Funding Round ${i + 1}`;
-                else if (item.kind === 'news_array') itemName = elem.title ? `News: ${elem.title}` : `News ${i + 1}`;
-                else itemName = elem.name || elem.title || `${item.name} ${i + 1}`;
-
-                if (!isItemConf) {
-                  actions.push({
-                    id: elemId,
-                    fieldId: elemId,
-                    catId: cat.id,
-                    name: itemName,
-                    kind: 'confirm',
-                    reason: 'Silk drafted this and it\u2019s still waiting on a founder check.',
-                    primaryLabel: 'Confirm',
-                  });
-                }
-              }
-            }
-          } else {
-            const hasVal = fieldHasValue(item.kind, values[item.id]);
-            const isConf = Boolean(confirmed[item.id]) || isSectionConf;
-
-            if (hasVal && !isConf && item.aiFilled) {
-              actions.push({
-                id: item.id,
-                fieldId: item.id,
-                catId: cat.id,
-                name: item.name,
-                kind: 'confirm',
-                reason: 'Silk drafted this and it\u2019s still waiting on a founder check.',
-                primaryLabel: 'Confirm',
-              });
-            } else if (!hasVal && !isSectionConf) {
-              const noun = item.name.trim();
-              const label = noun.length <= 18 ? `Add ${noun.toLowerCase()}` : 'Add';
-              let hint = item.hint;
-              if (!hint) {
-                if (item.name.toLowerCase().includes('vision')) hint = "Investors read this first. Silk couldn't infer it reliably.";
-                else if (item.name.toLowerCase().includes('description')) hint = "Core company summary for investors.";
-                else hint = "Silk couldn't infer it reliably.";
-              }
-
-              actions.push({
-                id: item.id,
-                fieldId: item.id,
-                catId: cat.id,
-                name: item.name,
-                kind: 'fill',
-                reason: hint,
-                primaryLabel: label,
-              });
-            }
+            actions.push({
+              id: item.id,
+              fieldId: item.id,
+              catId: cat.id,
+              name: item.name,
+              kind: 'fill',
+              reason: hint,
+              primaryLabel: label,
+            });
           }
         }
       }
     }
     return actions;
-  }, [categories, values, confirmed, data]);
+  }, [categories, values]);
 
   const insightOpen = !panelOpen;
 
@@ -812,7 +555,6 @@ export default function CompanyProfileNew() {
                           catIdx={catIdx}
                           subIdx={subIdx}
                           values={values}
-                          confirmed={confirmed}
                           data={data}
                           savingSubId={savingSubId}
                           panelFieldId={panelFieldId}
@@ -821,8 +563,6 @@ export default function CompanyProfileNew() {
                           onCancelSection={handleCancelSection}
                           onSaveSection={handleSaveSection}
                           onSetValue={setValue}
-                          onConfirmField={confirmField}
-                          onUnconfirmField={unconfirmField}
                           onOpenPanel={openPanel}
                           readinessBreakdown={data?.readinessBreakdown || data?.readiness_breakdown}
                         />
@@ -842,9 +582,6 @@ export default function CompanyProfileNew() {
               className="sticky top-[calc(var(--readiness-tabs,0px)+12px)]"
               actions={readinessActions}
               onPrimary={(act) => {
-                if (act.kind === 'confirm' && act.fieldId) {
-                  confirmField(act.fieldId);
-                }
                 if (act.catId) {
                   ignoreSpy.current = true;
                   setSelected(act.catId);
@@ -1020,7 +757,11 @@ export default function CompanyProfileNew() {
       )}
 
       {/* Generating Status Dialog */}
-      <GeneratingDialog data={data} />
+      <GeneratingDialog
+        data={data}
+        companyId={companyId}
+        companyName={data?.name || data?.companyName}
+      />
     </div>
   );
 }

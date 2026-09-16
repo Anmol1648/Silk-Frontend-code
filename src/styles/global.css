@@ -6804,3 +6804,187 @@ th.num {
 .ds-dashboard-layout .silk-ai-btn__inner,
 .ds-dashboard-layout .silk-ai-btn:hover .silk-ai-btn__inner { background: #18181b; }
 
+/* ==========================================================================
+   Background Task Manager & Browser Notification Pill
+   ========================================================================== */
+.acm-notify-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #18181b;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.acm-notify-btn:hover {
+  background: #e4e4e7;
+  color: #09090b;
+  border-color: #d4d4d8;
+}
+
+.bg-tasks-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  pointer-events: none;
+}
+
+.bg-task-card {
+  pointer-events: auto;
+  background: #ffffff;
+  color: #18181b;
+  border: 1px solid #e4e4e7;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  animation: bg-task-slide-in 0.25s ease-out;
+}
+
+@keyframes bg-task-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.bg-task-completed {
+  cursor: pointer;
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+.bg-task-completed:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -6px rgba(0, 0, 0, 0.12);
+  border-color: #86efac;
+}
+
+.bg-task-error {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.bg-task-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-task-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid #e4e4e7;
+  border-top-color: #18181b;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+.bg-task-success-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.bg-task-error-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #dc2626;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.bg-task-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.bg-task-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bg-task-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #18181b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bg-task-action-hint {
+  font-size: 11px;
+  font-weight: 500;
+  color: #16a34a;
+  text-decoration: underline;
+}
+
+.bg-task-status-text {
+  font-size: 12px;
+  color: #71717a;
+  margin-top: 2px;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bg-task-close {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  line-height: 1;
+  color: #a1a1aa;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.bg-task-close:hover {
+  color: #18181b;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+

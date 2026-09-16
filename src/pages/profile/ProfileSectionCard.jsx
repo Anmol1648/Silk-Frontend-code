@@ -1,6 +1,6 @@
 import React from 'react';
 import KnowledgeField from '../../components/readiness/KnowledgeField';
-import { layoutFieldRows } from '../../components/readiness/profile-utils';
+import { layoutFieldRows, fieldHasValue } from '../../components/readiness/profile-utils';
 
 const FULL_WIDTH_KINDS = new Set([
   'textarea', 'upload', 'founders_array', 'products_array', 'markets_array',
@@ -18,7 +18,6 @@ export default function ProfileSectionCard({
   catIdx,
   subIdx,
   values,
-  confirmed,
   data,
   savingSubId,
   panelFieldId,
@@ -27,8 +26,6 @@ export default function ProfileSectionCard({
   onCancelSection,
   onSaveSection,
   onSetValue,
-  onConfirmField,
-  onUnconfirmField,
   onOpenPanel,
   readinessBreakdown,
 }) {
@@ -100,32 +97,22 @@ export default function ProfileSectionCard({
 
       <div className="cp-subsection-body">
         {layoutFieldRows(sub.items).map(row => {
-          const isCompact = row.every(i => !FULL_WIDTH_KINDS.has(i.kind));
+          const isCompact = row.length > 1 && row.every(i => !FULL_WIDTH_KINDS.has(i.kind));
           return (
             <div key={row.map(i => i.id).join('-')} className={isCompact ? 'cp-compact-row' : ''}>
-              {row.map(item => {
-                const sectionKey = item.id.split('__')[0];
-                const sectionConfirmedFields = data?.sections?.[sectionKey]?.confirmed_fields || [];
-                return (
-                  <div key={item.id} data-field-id={item.id} className="w-full">
-                    <KnowledgeField
-                      item={item}
-                      value={values[item.id] || ''}
-                      confirmed={!!confirmed[item.id]}
-                      confirmedFields={sectionConfirmedFields}
-                      onConfirmField={(fKey) => onConfirmField(String(fKey).startsWith(`${sectionKey}__`) ? fKey : `${sectionKey}__${fKey}`)}
-                      onUnconfirmField={(fKey) => onUnconfirmField(String(fKey).startsWith(`${sectionKey}__`) ? fKey : `${sectionKey}__${fKey}`)}
-                      onChange={v => onSetValue(item.id, v)}
-                      panelMode={panelFieldId === item.id ? panelMode : null}
-                      onAsk={() => onOpenPanel(item.id, 'ask')}
-                      onOpenAnalysis={() => onOpenPanel(item.id, 'analysis')}
-                      onSources={() => onOpenPanel(item.id, 'sources')}
-                      onConfirm={() => onConfirmField(item.id)}
-                      onUnconfirm={() => onUnconfirmField(item.id)}
-                    />
-                  </div>
-                );
-              })}
+              {row.map(item => (
+                <div key={item.id} data-field-id={item.id} className="w-full">
+                  <KnowledgeField
+                    item={item}
+                    value={values[item.id] || ''}
+                    onChange={v => onSetValue(item.id, v)}
+                    panelMode={panelFieldId === item.id ? panelMode : null}
+                    onAsk={() => onOpenPanel(item.id, 'ask')}
+                    onOpenAnalysis={() => onOpenPanel(item.id, 'analysis')}
+                    onSources={() => onOpenPanel(item.id, 'sources')}
+                  />
+                </div>
+              ))}
             </div>
           );
         })}

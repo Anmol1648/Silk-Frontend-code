@@ -50,7 +50,12 @@ export default function Dashboard() {
     })
     .catch((e) => { toastError(e); setItems([]); });
 
-  useEffect(() => { load(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    load();
+    const handleCreated = () => { load(); };
+    window.addEventListener('company-created', handleCreated);
+    return () => window.removeEventListener('company-created', handleCreated);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Group by company: one card per company, however many deals it has.
   const byCompany = new Map();
@@ -216,7 +221,7 @@ export default function Dashboard() {
             <div className="ds-empty-state">
               <span className="illo-wrap"><Illo name="handshake" size={110} /></span>
               <h2>Welcome to {brand.productName}</h2>
-              <p className="hint" style={{ maxWidth: 460, margin: '0 auto 18px' }}>
+              <p className="hint" style={{ maxWidth: 460, margin: '0 auto 18px', color: '#71717a' }}>
                 Add your company and {brand.productName} will build a complete company
                 profile from your website, your documents and public sources — then help
                 you plan the raise.

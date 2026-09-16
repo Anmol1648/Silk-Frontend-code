@@ -55,17 +55,6 @@ function SubFieldHeader({ fieldId, label, confirmedFields = [], itemIndex, confi
     }));
   };
 
-  const handleConfirm = () => {
-    const keyToUse = fieldKey !== undefined ? fieldKey : fieldId;
-    if (onConfirm && keyToUse !== undefined) onConfirm(keyToUse);
-  };
-
-  const handleUnconfirm = () => {
-    const keyToUse = fieldKey !== undefined ? fieldKey : fieldId;
-    if (onUnconfirm && keyToUse !== undefined) onUnconfirm(keyToUse);
-    else if (onConfirm && keyToUse !== undefined) onConfirm(keyToUse);
-  };
-
   return (
     <div
       className="flex items-center justify-between gap-2 mb-1.5 min-h-[22px]"
@@ -76,15 +65,7 @@ function SubFieldHeader({ fieldId, label, confirmedFields = [], itemIndex, confi
         <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
           {label}
         </span>
-        {isConfirmed ? (
-          <StatusTag
-            label="Confirmed"
-            hoverLabel="Unconfirm"
-            onClick={handleUnconfirm}
-          />
-        ) : (
-          <StatusTag label="AI Draft" tone="ai" />
-        )}
+        <StatusTag label="AI Draft" tone="ai" />
       </div>
 
       <div
@@ -95,18 +76,6 @@ function SubFieldHeader({ fieldId, label, confirmedFields = [], itemIndex, confi
           pointerEvents: hovered ? 'auto' : 'none',
         }}
       >
-        {!isConfirmed && (
-          <button
-            type="button"
-            onClick={e => {
-              e.preventDefault();
-              handleConfirm();
-            }}
-            className="cp-confirm-btn"
-          >
-            Confirm
-          </button>
-        )}
         <button
           type="button"
           onClick={e => { e.preventDefault(); handleAsk(); }}

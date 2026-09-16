@@ -173,11 +173,10 @@ function LeadershipEditor({ people, onChange, fieldId }) {
   );
 }
 
-/* ── KnowledgeField (exact from page.tsx line 666) ── */
+/* ── KnowledgeField ── */
 export default function KnowledgeField({
   item,
   value,
-  confirmed,
   conflict,
   docDraft,
   onChange,
@@ -185,19 +184,13 @@ export default function KnowledgeField({
   onAsk,
   onSources,
   onAnalysis,
-  onConfirm,
-  onUnconfirm,
   onOpenConflict,
   leadershipPeople,
   onLeadershipChange,
-  confirmedFields,
-  onConfirmField,
-  onUnconfirmField,
 }) {
   const hasValue = fieldHasValue(item.kind, value);
   const showConflict = Boolean(conflict);
-  const showAiDraft = Boolean(!showConflict && hasValue && !confirmed && (item.aiFilled || docDraft));
-  const showConfirmed = Boolean(hasValue && confirmed && !showConflict);
+  const showAiDraft = Boolean(!showConflict && hasValue && (item.aiFilled || docDraft));
   const askActive = panelMode === 'ask';
   const sourcesActive = panelMode === 'sources';
   const analysisActive = panelMode === 'analysis';
@@ -234,16 +227,6 @@ export default function KnowledgeField({
           }}
         >
           Conflict
-        </button>
-      )}
-      {!showConflict && showAiDraft && !isMultiFieldSection && (
-        <button
-          type="button"
-          aria-label={`Confirm ${item.name}`}
-          onClick={e => { e.preventDefault(); onConfirm(); }}
-          className="cp-confirm-btn"
-        >
-          Confirm
         </button>
       )}
       <button
