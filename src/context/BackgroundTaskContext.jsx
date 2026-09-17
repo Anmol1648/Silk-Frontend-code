@@ -156,7 +156,7 @@ export function BackgroundTaskProvider({ children }) {
 
       // Stop any existing timer for this company to prevent duplicates
       if (timersByCompanyRef.current.has(companyId)) {
-        try { timersByCompanyRef.current.get(companyId)(); } catch (_) {}
+        try { timersByCompanyRef.current.get(companyId)(); } catch (_) { }
       }
 
       const taskId = `company-gen-${companyId}`;
@@ -165,7 +165,7 @@ export function BackgroundTaskProvider({ children }) {
       // Persist in localStorage so page navigation/reload never loses the background watch
       try {
         localStorage.setItem(`silk_watch_${companyId}`, JSON.stringify({ companyId, companyName: cName, time: Date.now() }));
-      } catch (_) {}
+      } catch (_) { }
 
       setTasks((prev) => [
         ...prev.filter((t) => t.id !== taskId),
@@ -193,7 +193,7 @@ export function BackgroundTaskProvider({ children }) {
           if (isError) {
             finished = true;
             timersByCompanyRef.current.delete(companyId);
-            try { localStorage.removeItem(`silk_watch_${companyId}`); } catch (_) {}
+            try { localStorage.removeItem(`silk_watch_${companyId}`); } catch (_) { }
             if (stopTimer) stopTimer();
 
             updateTask(taskId, {
@@ -209,7 +209,7 @@ export function BackgroundTaskProvider({ children }) {
           if (isProfileGenerationComplete(res)) {
             finished = true;
             timersByCompanyRef.current.delete(companyId);
-            try { localStorage.removeItem(`silk_watch_${companyId}`); } catch (_) {}
+            try { localStorage.removeItem(`silk_watch_${companyId}`); } catch (_) { }
             if (stopTimer) stopTimer();
 
             updateTask(taskId, {
@@ -249,7 +249,7 @@ export function BackgroundTaskProvider({ children }) {
         if (!finished) {
           finished = true;
           timersByCompanyRef.current.delete(companyId);
-          try { localStorage.removeItem(`silk_watch_${companyId}`); } catch (_) {}
+          try { localStorage.removeItem(`silk_watch_${companyId}`); } catch (_) { }
           if (stopTimer) stopTimer();
         }
       }, 15 * 60 * 1000);
@@ -275,7 +275,7 @@ export function BackgroundTaskProvider({ children }) {
           }
         }
       }
-    } catch (_) {}
+    } catch (_) { }
   }, [watchCompanyGeneration]);
 
   return (
@@ -289,66 +289,9 @@ export function BackgroundTaskProvider({ children }) {
       }}
     >
       {children}
-      <FloatingTaskManager tasks={tasks} onDismiss={removeTask} onNavigate={navigate} />
     </BackgroundTaskContext.Provider>
   );
 }
 
 export const useBackgroundTasks = () => useContext(BackgroundTaskContext);
 
-/**
- * Floating task manager widget docked in bottom-right corner.
- * Shows active and recently finished background generation jobs.
- */
-function FloatingTaskManager({ tasks, onDismiss, onNavigate }) {
-  if (!tasks || tasks.length === 0) return null;
-
-  return (
-    <div className="bg-tasks-container" aria-live="polite">
-      {tasks.map((task) => (
-        <div
-          key={task.id}
-          className={`bg-task-card bg-task-${task.status}`}
-          onClick={() => {
-            if (task.status === 'completed' && task.companyId) {
-              onNavigate(`/companies/${task.companyId}/profile`);
-              onDismiss(task.id);
-            }
-          }}
-        >
-          <div className="bg-task-icon">
-            {task.status === 'completed' ? (
-              <span className="bg-task-success-badge">✓</span>
-            ) : task.status === 'error' ? (
-              <span className="bg-task-error-badge">!</span>
-            ) : (
-              <span className="bg-task-spinner" />
-            )}
-          </div>
-
-          <div className="bg-task-body">
-            <div className="bg-task-title">
-              <span className="bg-task-name">{task.companyName}</span>
-              {task.status === 'completed' ? (
-                <span className="bg-task-action-hint">Click to open</span>
-              ) : null}
-            </div>
-            <div className="bg-task-status-text">{task.stepMessage}</div>
-          </div>
-
-          <button
-            type="button"
-            className="bg-task-close"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDismiss(task.id);
-            }}
-            title="Dismiss"
-          >
-            ×
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-}
