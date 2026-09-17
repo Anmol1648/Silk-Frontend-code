@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { config as configApi, companies, profile as profileApi } from '../api/endpoints';
 import { useToast } from '../context/AppContext';
+import { useBackgroundTasks } from '../context/BackgroundTaskContext';
 import { Input } from './ui/input';
 import { OptionsCombobox } from './options-combobox';
 import { Checkbox } from './ui/checkbox';
@@ -27,6 +28,7 @@ const ACCEPTED = '.pdf,.docx,.doc,.ppt,.pptx,.xlsx,.xls,.csv,.png,.jpg,.jpeg,.zi
 
 export default function AddCompanyModal({ onCancel, onCreated }) {
   const { toast, error: toastError } = useToast();
+  const { watchCompanyGeneration, requestNotificationPermission } = useBackgroundTasks();
 
   /* ---- state ---- */
   const [companyName, setCompanyName] = useState('');
@@ -115,12 +117,14 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
     if (!validate()) return;
     setBusy(true);
 
-    // Trigger browser notification permission prompt during user click gesture
+    // Request notification permission during the user click gesture (must await
+    // so the browser prompt appears before we navigate away)
     try {
       if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
-        Notification.requestPermission().catch(() => {});
+        await requestNotificationPermission();
       }
     } catch (_) {}
+
     try {
       /* Step 1: create the company */
       const res = await companies.create({ name: companyName.trim() });
@@ -160,6 +164,12 @@ export default function AddCompanyModal({ onCancel, onCreated }) {
             selfConfirmed: !!f.selfConfirmed,
           })),
       });
+
+      /* Step 4: Start background watcher BEFORE navigating away so the
+         polling loop + notification dispatch survive page transitions. */
+      if (watchCompanyGeneration) {
+        watchCompanyGeneration({ companyId, companyName: companyName.trim() });
+      }
 
       onCreated(companyId);
     } catch (ex) {

@@ -289,6 +289,7 @@ export function BackgroundTaskProvider({ children }) {
       }}
     >
       {children}
+      <FloatingTaskManager tasks={tasks} onDismiss={removeTask} onNavigate={navigate} />
     </BackgroundTaskContext.Provider>
   );
 }

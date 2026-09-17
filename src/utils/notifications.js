@@ -5,10 +5,23 @@
  * audio chimes, and tab title flashing.
  */
 
-// Auto-register ServiceWorker to enable background notifications in Chrome
+// Auto-register ServiceWorker to enable background notifications in Chrome.
+// Retries once after a short delay if the first attempt fails (e.g. network hiccup).
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch((err) => {
-    console.warn('Service worker registration failed:', err);
+  const registerSW = () =>
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then((reg) => {
+        console.log('[Silk] Service worker registered, scope:', reg.scope);
+      })
+      .catch((err) => {
+        console.warn('[Silk] Service worker registration failed:', err);
+      });
+
+  // First attempt
+  registerSW().catch(() => {
+    // Retry once after 3 seconds
+    setTimeout(registerSW, 3000);
   });
 }
 

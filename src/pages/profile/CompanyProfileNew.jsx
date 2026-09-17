@@ -22,7 +22,7 @@ import { buildReadinessData, getSectionCandidateKeys, SECTION_SUBFIELDS } from '
 import ProfileTabs from './ProfileTabs';
 import ProfileSectionCard from './ProfileSectionCard';
 import GeneratingDialog from './GeneratingDialog';
-import { sendBrowserNotification, isProfileGenerationComplete, createUnthrottledTimer } from '../../utils/notifications';
+import { isProfileGenerationComplete, createUnthrottledTimer } from '../../utils/notifications';
 
 export default function CompanyProfileNew() {
   const { companyId } = useParams();
@@ -111,7 +111,9 @@ export default function CompanyProfileNew() {
     load();
   }, [load]);
 
-  // Poll if it's generating or draft
+  // Poll if it's generating or draft — refreshes the profile data so the UI
+  // updates in real time. Notifications are handled by BackgroundTaskContext's
+  // watchCompanyGeneration() to avoid duplicate desktop alerts.
   useEffect(() => {
     if (data && isProfileGenerationComplete(data)) {
       return undefined;
@@ -129,13 +131,8 @@ export default function CompanyProfileNew() {
       if (isProfileGenerationComplete(res)) {
         finished = true;
         if (stopTimer) stopTimer();
-        const name = res?.companyName || res?.name || 'Company';
-        sendBrowserNotification(`Workspace Ready: ${name}`, {
-          body: `AI profile generation complete for "${name}". Click to open.`,
-          onClickUrl: `/companies/${companyId}/profile`,
-          tag: `silk-company-${companyId}`,
-        });
-        toast(`🎉 "${name}" workspace is ready!`);
+        // No notification here — BackgroundTaskContext.watchCompanyGeneration()
+        // handles sendBrowserNotification + toast to avoid duplicates.
       }
     };
 
