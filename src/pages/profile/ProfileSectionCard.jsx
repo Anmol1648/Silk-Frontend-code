@@ -1,6 +1,6 @@
 import React from 'react';
 import KnowledgeField from '../../components/readiness/KnowledgeField';
-import { layoutFieldRows, fieldHasValue } from '../../components/readiness/profile-utils';
+import { layoutFieldRows, fieldHasValue, isCompactKind } from '../../components/readiness/profile-utils';
 
 const FULL_WIDTH_KINDS = new Set([
   'textarea', 'upload', 'founders_array', 'products_array', 'markets_array',
@@ -97,7 +97,8 @@ export default function ProfileSectionCard({
 
       <div className="cp-subsection-body">
         {layoutFieldRows(sub.items).map(row => {
-          const isCompact = row.length > 1 && row.every(i => !FULL_WIDTH_KINDS.has(i.kind));
+          const isCompact = row.every(i => isCompactKind(i.kind || '') && !FULL_WIDTH_KINDS.has(i.kind));
+          console.log(row, "rowww")
           return (
             <div key={row.map(i => i.id).join('-')} className={isCompact ? 'cp-compact-row' : ''}>
               {row.map(item => (
