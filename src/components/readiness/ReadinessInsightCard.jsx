@@ -54,7 +54,7 @@ function ScoreGauge({ score, done, total, ladder }) {
       </div>
       <div style={{ marginTop: '0.25rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <span className="cp-gauge-badge">{ladder}</span>
-        <p className="cp-gauge-verified">{done}/{total} verified</p>
+        <p className="cp-gauge-verified">{done}/{total} Populated</p>
       </div>
     </div>
   );

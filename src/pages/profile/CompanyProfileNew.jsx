@@ -333,13 +333,13 @@ export default function CompanyProfileNew() {
   // 4. Stats logic — directly from profile API readinessTotals
   const stats = useMemo(() => {
     const totals = data?.readinessTotals || data?.readiness_totals;
-    const confirmed = typeof totals?.confirmed === 'number'
-      ? totals.confirmed
+    const populated = typeof totals?.populated === 'number'
+      ? totals.populated
       : (typeof totals?.populated === 'number' ? totals.populated : 0);
     const totalFields = typeof totals?.fields === 'number' ? totals.fields : 0;
-
+    console.log(populated, totalFields)
     return {
-      done: confirmed,
+      done: populated,
       total: totalFields,
       score: backendScore,
       completenessPct,

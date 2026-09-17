@@ -98,7 +98,6 @@ export default function ProfileSectionCard({
       <div className="cp-subsection-body">
         {layoutFieldRows(sub.items).map(row => {
           const isCompact = row.every(i => isCompactKind(i.kind || '') && !FULL_WIDTH_KINDS.has(i.kind));
-          console.log(row, "rowww")
           return (
             <div key={row.map(i => i.id).join('-')} className={isCompact ? 'cp-compact-row' : ''}>
               {row.map(item => (
