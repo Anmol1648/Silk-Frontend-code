@@ -102,6 +102,7 @@ export default function CompanyProfileNew() {
       return res;
     } catch (e) {
       toastError(e);
+      return null;
     } finally {
       if (!silent) setLoading(false);
     }
@@ -128,6 +129,12 @@ export default function CompanyProfileNew() {
     const pollFn = async () => {
       if (finished) return;
       const res = await load(true); // silent load
+      if (!res) {
+        // Halt polling immediately if company was deleted or request failed
+        finished = true;
+        if (stopTimer) stopTimer();
+        return;
+      }
       if (isProfileGenerationComplete(res)) {
         finished = true;
         if (stopTimer) stopTimer();

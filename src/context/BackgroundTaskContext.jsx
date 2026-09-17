@@ -150,21 +150,52 @@ export function BackgroundTaskProvider({ children }) {
   // Map of actively running timer cleanup functions keyed by companyId
   const timersByCompanyRef = useRef(new Map());
 
+  const stopWatchingCompany = useCallback((companyId) => {
+    if (!companyId) return;
+    const cid = String(companyId);
+    if (timersByCompanyRef.current.has(cid)) {
+      try {
+        const cleanup = timersByCompanyRef.current.get(cid);
+        if (typeof cleanup === 'function') cleanup();
+      } catch (_) { }
+      timersByCompanyRef.current.delete(cid);
+    }
+    try {
+      localStorage.removeItem(`silk_watch_${cid}`);
+    } catch (_) { }
+    setTasks((prev) => prev.filter((t) => String(t.companyId) !== cid && t.id !== `company-gen-${cid}`));
+  }, []);
+
+  // Listen for global company deletion events to immediately halt background polling
+  useEffect(() => {
+    const handleCompanyDeleted = (e) => {
+      const cid = e?.detail?.companyId;
+      if (cid) {
+        stopWatchingCompany(cid);
+      }
+    };
+    window.addEventListener('company-deleted', handleCompanyDeleted);
+    return () => {
+      window.removeEventListener('company-deleted', handleCompanyDeleted);
+    };
+  }, [stopWatchingCompany]);
+
   const watchCompanyGeneration = useCallback(
     ({ companyId, companyName }) => {
       if (!companyId) return;
+      const cid = String(companyId);
 
       // Stop any existing timer for this company to prevent duplicates
-      if (timersByCompanyRef.current.has(companyId)) {
-        try { timersByCompanyRef.current.get(companyId)(); } catch (_) { }
+      if (timersByCompanyRef.current.has(cid)) {
+        try { timersByCompanyRef.current.get(cid)(); } catch (_) { }
       }
 
-      const taskId = `company-gen-${companyId}`;
+      const taskId = `company-gen-${cid}`;
       const cName = companyName || 'Company';
 
       // Persist in localStorage so page navigation/reload never loses the background watch
       try {
-        localStorage.setItem(`silk_watch_${companyId}`, JSON.stringify({ companyId, companyName: cName, time: Date.now() }));
+        localStorage.setItem(`silk_watch_${cid}`, JSON.stringify({ companyId: cid, companyName: cName, time: Date.now() }));
       } catch (_) { }
 
       setTasks((prev) => [
@@ -172,7 +203,7 @@ export function BackgroundTaskProvider({ children }) {
         {
           id: taskId,
           type: 'company_generation',
-          companyId,
+          companyId: cid,
           companyName: cName,
           status: 'generating',
           stepMessage: 'Silk AI is synthesizing company profile…',
@@ -182,18 +213,20 @@ export function BackgroundTaskProvider({ children }) {
 
       let finished = false;
       let stopTimer = null;
+      let consecutiveErrors = 0;
 
       const checkStatus = async () => {
         if (finished) return;
         try {
-          const res = await profileApi.read(companyId);
-          console.log(`[Silk Watcher] Polled ${companyId}:`, res?.status, res);
+          const res = await profileApi.read(cid);
+          consecutiveErrors = 0; // reset on success
+          console.log(`[Silk Watcher] Polled ${cid}:`, res?.status, res);
 
           const isError = res?.status === 'failed' || res?.status === 'error';
           if (isError) {
             finished = true;
-            timersByCompanyRef.current.delete(companyId);
-            try { localStorage.removeItem(`silk_watch_${companyId}`); } catch (_) { }
+            timersByCompanyRef.current.delete(cid);
+            try { localStorage.removeItem(`silk_watch_${cid}`); } catch (_) { }
             if (stopTimer) stopTimer();
 
             updateTask(taskId, {
@@ -208,8 +241,8 @@ export function BackgroundTaskProvider({ children }) {
 
           if (isProfileGenerationComplete(res)) {
             finished = true;
-            timersByCompanyRef.current.delete(companyId);
-            try { localStorage.removeItem(`silk_watch_${companyId}`); } catch (_) { }
+            timersByCompanyRef.current.delete(cid);
+            try { localStorage.removeItem(`silk_watch_${cid}`); } catch (_) { }
             if (stopTimer) stopTimer();
 
             updateTask(taskId, {
@@ -222,24 +255,40 @@ export function BackgroundTaskProvider({ children }) {
 
             await sendBrowserNotification(`Workspace Ready: ${finalName}`, {
               body: `AI profile generation complete for "${finalName}". Click to open.`,
-              onClickUrl: `/companies/${companyId}/profile`,
-              tag: `silk-company-${companyId}`,
+              onClickUrl: `/companies/${cid}/profile`,
+              tag: `silk-company-${cid}`,
               onNavigate: (path) => navigateRef.current(path),
             });
 
             toast(`🎉 "${finalName}" workspace is ready!`);
 
             if (typeof window !== 'undefined') {
-              window.dispatchEvent(new CustomEvent('company-created', { detail: { companyId } }));
+              window.dispatchEvent(new CustomEvent('company-created', { detail: { companyId: cid } }));
             }
           }
         } catch (err) {
-          console.warn(`Background watcher check for ${companyId}:`, err);
+          consecutiveErrors += 1;
+          console.warn(`Background watcher check for ${cid} (error count: ${consecutiveErrors}):`, err);
+
+          const isNotFound =
+            err?.status === 404 ||
+            err?.isNotFound ||
+            err?.code === 'NOT_FOUND' ||
+            (typeof err?.message === 'string' && err.message.includes('404'));
+
+          // If company was deleted (404 Not Found) or failed repeatedly (5 consecutive failures), terminate watcher
+          if (isNotFound || consecutiveErrors >= 5) {
+            finished = true;
+            timersByCompanyRef.current.delete(cid);
+            try { localStorage.removeItem(`silk_watch_${cid}`); } catch (_) { }
+            if (stopTimer) stopTimer();
+            setTasks((prev) => prev.filter((t) => t.id !== taskId));
+          }
         }
       };
 
       stopTimer = createUnthrottledTimer(checkStatus, 3000);
-      timersByCompanyRef.current.set(companyId, stopTimer);
+      timersByCompanyRef.current.set(cid, stopTimer);
 
       // Immediately run an initial poll check
       checkStatus();
@@ -248,8 +297,8 @@ export function BackgroundTaskProvider({ children }) {
       setTimeout(() => {
         if (!finished) {
           finished = true;
-          timersByCompanyRef.current.delete(companyId);
-          try { localStorage.removeItem(`silk_watch_${companyId}`); } catch (_) { }
+          timersByCompanyRef.current.delete(cid);
+          try { localStorage.removeItem(`silk_watch_${cid}`); } catch (_) { }
           if (stopTimer) stopTimer();
         }
       }, 15 * 60 * 1000);
@@ -284,6 +333,7 @@ export function BackgroundTaskProvider({ children }) {
         tasks,
         runCompanyCreation,
         watchCompanyGeneration,
+        stopWatchingCompany,
         removeTask,
         requestNotificationPermission,
       }}

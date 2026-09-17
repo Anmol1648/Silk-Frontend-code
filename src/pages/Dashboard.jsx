@@ -21,6 +21,7 @@ import AddCompanyModal from '../components/AddCompanyModal';
 import { AiMark } from '../components/ai-mark';
 import { Input } from '../components/ui/input';
 import { OptionsCombobox } from '../components/options-combobox';
+import { useBackgroundTasks } from '../context/BackgroundTaskContext';
 
 /**
  * Dashboard — the landing page after login (PRD §4).
@@ -33,6 +34,7 @@ export default function Dashboard() {
   const { user, logout } = useAuth();
   const { toast, error: toastError } = useToast();
   const { brand } = useConfig();
+  const { stopWatchingCompany } = useBackgroundTasks();
   const [items, setItems] = useState(null);
   const [adding, setAdding] = useState(false);
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
@@ -529,9 +531,15 @@ export default function Dashboard() {
                 e.preventDefault();
                 if (deleting) return;
                 setDeleting(true);
+                const delId = companyToDelete.companyId;
+                const delName = companyToDelete.companyName;
                 try {
-                  await companies.remove(companyToDelete.companyId);
-                  toast(`${companyToDelete.companyName} has been deleted.`);
+                  await companies.remove(delId);
+                  if (stopWatchingCompany) stopWatchingCompany(delId);
+                  if (typeof window !== 'undefined') {
+                    window.dispatchEvent(new CustomEvent('company-deleted', { detail: { companyId: delId } }));
+                  }
+                  toast(`${delName} has been deleted.`);
                   setCompanyToDelete(null);
                   load(); // refresh dashboard
                 } catch (ex) {
