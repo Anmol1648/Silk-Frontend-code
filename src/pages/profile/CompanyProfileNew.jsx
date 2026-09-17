@@ -330,21 +330,21 @@ export default function CompanyProfileNew() {
     };
   }, [categories, phase, loading]);
 
-  // 4. Stats logic — count filled fields
+  // 4. Stats logic — directly from profile API readinessTotals
   const stats = useMemo(() => {
-    let done = 0, total = 0;
-    for (const c of categories) {
-      for (const sub of c.subsections) {
-        for (const item of sub.items) {
-          total++;
-          if (fieldHasValue(item.kind, values[item.id])) {
-            done++;
-          }
-        }
-      }
-    }
-    return { done, total, score: backendScore, completenessPct };
-  }, [categories, values, backendScore, completenessPct]);
+    const totals = data?.readinessTotals || data?.readiness_totals;
+    const confirmed = typeof totals?.confirmed === 'number'
+      ? totals.confirmed
+      : (typeof totals?.populated === 'number' ? totals.populated : 0);
+    const totalFields = typeof totals?.fields === 'number' ? totals.fields : 0;
+
+    return {
+      done: confirmed,
+      total: totalFields,
+      score: backendScore,
+      completenessPct,
+    };
+  }, [data, backendScore, completenessPct]);
 
   const ladderPos = readinessStage || data?.readiness_stage || data?.readinessStage || READINESS_LADDER[ladderIndex(stats.score)] || 'just getting started';
 
