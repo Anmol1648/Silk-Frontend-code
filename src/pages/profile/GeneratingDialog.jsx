@@ -42,18 +42,6 @@ export default function GeneratingDialog({ data, companyId: propCompanyId, compa
   const companyId = propCompanyId || params.companyId || data?.id || data?.companyId;
   const companyName = propCompanyName || data?.name || data?.companyName || data?.company_name || 'Company';
 
-  // Auto-start the background watcher as soon as the generating dialog opens.
-  // If the user already granted notification permissions (e.g. from AddCompanyModal),
-  // they'll receive notifications without needing to click "Notify me" again.
-  useEffect(() => {
-    if (!isOpen) return;
-    if (!watchCompanyGeneration || !companyId) return;
-    watchCompanyGeneration({ companyId, companyName });
-    // Auto-mark as "notified" if permissions already granted
-    if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-      setNotifyClicked(true);
-    }
-  }, [isOpen, companyId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleNotifyMe() {
     const granted = await requestNotificationPermission();
