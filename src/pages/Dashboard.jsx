@@ -22,6 +22,9 @@ import { AiMark } from '../components/ai-mark';
 import { Input } from '../components/ui/input';
 import { OptionsCombobox } from '../components/options-combobox';
 import { useBackgroundTasks } from '../context/BackgroundTaskContext';
+import { ShareCompanyModal } from '../components/WorkspaceInviteControl';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Share08Icon } from '@hugeicons/core-free-icons';
 
 /**
  * Dashboard — the landing page after login (PRD §4).
@@ -38,6 +41,7 @@ export default function Dashboard() {
   const [items, setItems] = useState(null);
   const [adding, setAdding] = useState(false);
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
+  const [companyToShare, setCompanyToShare] = useState(null);
   const [companyToDelete, setCompanyToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'table'
@@ -350,6 +354,7 @@ export default function Dashboard() {
                       <CompanyCard 
                         key={c.companyId || c.companyName} 
                         company={c} 
+                        onShareClick={() => setCompanyToShare(c)}
                         onDeleteClick={() => setCompanyToDelete(c)}
                       />
                     ))}
@@ -408,6 +413,7 @@ export default function Dashboard() {
                           <CompanyTableRow 
                             key={c.companyId || c.companyName} 
                             company={c} 
+                            onShareClick={() => setCompanyToShare(c)}
                             onDeleteClick={() => setCompanyToDelete(c)} 
                           />
                         ))}
@@ -571,6 +577,13 @@ export default function Dashboard() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Share Company Modal */}
+      <ShareCompanyModal
+        open={!!companyToShare}
+        onClose={() => setCompanyToShare(null)}
+        company={companyToShare}
+      />
     </div>
   );
 }
@@ -602,7 +615,7 @@ function fmtRaiseDate(dateStr) {
 /**
  * CompanyCard — styled with rich fundraising metrics, document readiness, and shimmer interaction.
  */
-function CompanyCard({ company, isLastActive, onDeleteClick }) {
+function CompanyCard({ company, isLastActive, onShareClick, onDeleteClick }) {
   const navigate = useNavigate();
 
   function open() {
@@ -709,6 +722,21 @@ function CompanyCard({ company, isLastActive, onDeleteClick }) {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+          {/* Share action */}
+          <button 
+            type="button"
+            className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-black/[0.05] transition-colors cursor-pointer"
+            style={{ marginTop: '-4px' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onShareClick?.();
+            }}
+            title="Share Company"
+            aria-label="Share Company"
+          >
+            <HugeiconsIcon icon={Share08Icon} size={15} strokeWidth={2} />
+          </button>
+
           {/* Delete action: visible normally */}
           <button 
             type="button"
@@ -871,7 +899,7 @@ function fmtTableDate(dateStr) {
   }
 }
 
-function CompanyTableRow({ company, isLastActive, onDeleteClick }) {
+function CompanyTableRow({ company, isLastActive, onShareClick, onDeleteClick }) {
   const navigate = useNavigate();
 
   function open() {
@@ -982,6 +1010,15 @@ function CompanyTableRow({ company, isLastActive, onDeleteClick }) {
       {/* 6. Actions */}
       <td className="py-1 px-5 text-right">
         <div className="inline-flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <button 
+            type="button"
+            className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
+            onClick={onShareClick}
+            title="Share Company"
+            aria-label="Share Company"
+          >
+            <HugeiconsIcon icon={Share08Icon} size={14} strokeWidth={1.8} />
+          </button>
           <button 
             type="button"
             className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
