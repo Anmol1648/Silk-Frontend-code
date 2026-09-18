@@ -38,11 +38,20 @@ export default function CompanyLayout() {
   const location = useLocation();
   const { stages } = useConfig();
   const [company, setCompany] = useState(null);
+  const [accessError, setAccessError] = useState(null);
 
   useEffect(() => {
+    setAccessError(null);
     profileApi.read(companyId)
       .then((res) => setCompany(res))
-      .catch(() => setCompany(null));
+      .catch((err) => {
+        setCompany(null);
+        if (err?.status === 404 || err?.isNotFound) {
+          setAccessError('no_access');
+        } else {
+          setAccessError('general');
+        }
+      });
   }, [companyId]);
 
   const getPageTitle = (pathname) => {
@@ -153,16 +162,36 @@ export default function CompanyLayout() {
         </header>
 
         {/* ---- Page content ---- */}
-        <div
-          className="ds-content"
-          style={
-            location.pathname.includes('/strategy') || location.pathname.includes('/fundraising')
-              ? { padding: 0, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }
-              : undefined
-          }
-        >
-          <Outlet />
-        </div>
+        {accessError === 'no_access' ? (
+          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-[#fafafa]">
+            <div className="w-full max-w-[420px] bg-white border border-[#e5e7eb] rounded-2xl p-7 shadow-lg">
+              <div className="size-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-4 border border-amber-100">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 9v4" />
+                  <path d="M12 17h.01" />
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                </svg>
+              </div>
+              <h2 className="text-[18px] font-semibold text-[#030712] tracking-[-0.01em]">
+                You don't have access to this company
+              </h2>
+              <p className="text-[13.5px] text-[#6b7280] mt-2 leading-relaxed">
+                This company was not found or access has not been shared with your account. If someone invited you, please sign in with the invited email address.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div
+            className="ds-content"
+            style={
+              location.pathname.includes('/strategy') || location.pathname.includes('/fundraising')
+                ? { padding: 0, flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }
+                : undefined
+            }
+          >
+            <Outlet />
+          </div>
+        )}
       </div>
     </div>
   );

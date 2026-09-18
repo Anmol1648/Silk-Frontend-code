@@ -38,6 +38,7 @@ export default function App() {
                   <BackgroundTaskProvider>
                     <Routes>
                       <Route path="/login" element={<Login />} />
+                      <Route path="/invite/:inviteId" element={<Login />} />
 
                       {/* Dashboard — the landing page after login (PRD §4). */}
                       <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />

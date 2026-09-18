@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Cancel01Icon, PlusSignIcon, UserAdd01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import { useAuth, useToast } from '../context/AppContext';
+import { companies } from '../api/endpoints';
 
 const AVATAR_TONES = [
   '#2a2a2e',
@@ -54,6 +55,8 @@ function getDefaultOwner(user) {
     email,
     role: 'Founder',
     status: 'owner',
+    isOwner: true,
+    canRemove: false,
   };
 }
 
@@ -102,12 +105,12 @@ export function inviteMember(input, companyId, user) {
 }
 
 function MemberAvatar({ member, size = 'default', className = '' }) {
-  const initials = initialsFor(member.name, member.email);
+  const initials = initialsFor(member.displayName || member.name, member.email);
   const sizeClasses = size === 'sm' ? 'w-6 h-6 text-[10px]' : 'w-8 h-8 text-[12px]';
 
   return (
     <div
-      title={member.name || member.email}
+      title={member.displayName || member.name || member.email}
       style={{ backgroundColor: toneFor(member.email) }}
       className={`rounded-full flex items-center justify-center font-medium text-white shrink-0 ${sizeClasses} ${className}`}
     >
@@ -128,31 +131,72 @@ export function InviteModal({
   submitButtonText,
 }) {
   const { user } = useAuth();
-  const { toast } = useToast?.() || {};
+  const { toast, error: toastError } = useToast?.() || {};
   const [internalMembers, setInternalMembers] = useState([]);
+  const [canShare, setCanShare] = useState(true);
+  const [loadingShares, setLoadingShares] = useState(false);
   const [chips, setChips] = useState([]);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
+  const [infoMessage, setInfoMessage] = useState('');
   const [sending, setSending] = useState(false);
+  const [revokingId, setRevokingId] = useState(null);
   const inputRef = useRef(null);
+
+  const targetCompanyId = company?.companyId || company?.id;
+
+  const loadShares = async () => {
+    if (!targetCompanyId) return;
+    setLoadingShares(true);
+    try {
+      const res = await companies.shares(targetCompanyId);
+      if (res) {
+        setCanShare(res.canShare ?? true);
+        const mapped = (res.items || []).map((it) => ({
+          id: it.membershipId,
+          membershipId: it.membershipId,
+          userId: it.userId,
+          name: it.displayName || it.email,
+          displayName: it.displayName,
+          email: it.email,
+          status: it.status, // "joined" | "invited"
+          isOwner: it.isOwner,
+          canRemove: it.canRemove,
+          invitedBy: it.invitedBy,
+          sharedAt: it.sharedAt,
+          role: it.isOwner ? 'Owner' : 'Member',
+        }));
+        setInternalMembers(mapped);
+        if (onMembersChange) onMembersChange(mapped);
+      }
+    } catch (err) {
+      if (toastError) toastError(err);
+    } finally {
+      setLoadingShares(false);
+    }
+  };
 
   useEffect(() => {
     if (open) {
-      if (!propMembers) {
-        setInternalMembers(readMembers(user, company?.companyId));
+      setInfoMessage('');
+      if (targetCompanyId) {
+        loadShares();
+      } else if (!propMembers) {
+        setInternalMembers(readMembers(user));
       }
     } else {
       setChips([]);
       setDraft('');
       setError('');
+      setInfoMessage('');
       setSending(false);
     }
-  }, [open, propMembers, company?.companyId, user]);
+  }, [open, propMembers, targetCompanyId, user]);
 
   const members = propMembers || internalMembers;
 
   const existingEmails = useMemo(
-    () => new Set((members || []).map(m => m.email.toLowerCase())),
+    () => new Set((members || []).map(m => m.email?.toLowerCase()).filter(Boolean)),
     [members]
   );
 
@@ -161,6 +205,22 @@ export function InviteModal({
   const removeChip = (email) => {
     setChips(prev => prev.filter(c => c !== email));
     setError('');
+  };
+
+  const handleRevoke = async (member) => {
+    if (!targetCompanyId || !member.userId || !member.canRemove) return;
+    setRevokingId(member.id);
+    try {
+      await companies.revokeShare(targetCompanyId, member.userId);
+      const updated = members.filter((m) => m.id !== member.id && m.userId !== member.userId);
+      setInternalMembers(updated);
+      if (onMembersChange) onMembersChange(updated);
+      if (toast) toast(`Revoked access for ${member.email}`);
+    } catch (err) {
+      if (toastError) toastError(err);
+    } finally {
+      setRevokingId(null);
+    }
   };
 
   const applyCommit = (raw) => {
@@ -223,6 +283,7 @@ export function InviteModal({
   const submit = async (e) => {
     e.preventDefault();
     setError('');
+    setInfoMessage('');
 
     let pending = [...chips];
     if (draft.trim()) {
@@ -243,12 +304,48 @@ export function InviteModal({
     }
 
     setSending(true);
-    await new Promise(r => setTimeout(r, 280));
 
+    if (targetCompanyId) {
+      try {
+        let sentCount = 0;
+        let alreadyHasAccessCount = 0;
+        for (const email of pending) {
+          const res = await companies.createInvite(targetCompanyId, email);
+          if (res?.created) {
+            sentCount++;
+          } else if (res?.created === false) {
+            alreadyHasAccessCount++;
+          }
+        }
+        await loadShares();
+        setChips([]);
+        setDraft('');
+        if (alreadyHasAccessCount > 0 && sentCount === 0) {
+          setInfoMessage('That person already has access.');
+        } else {
+          if (toast) {
+            toast(sentCount === 1 ? `Invitation sent to ${pending[0]}` : `Invitations sent to ${sentCount} people`);
+          }
+          if (alreadyHasAccessCount > 0) {
+            setInfoMessage(`${alreadyHasAccessCount} person(s) already had access.`);
+          } else {
+            onClose();
+          }
+        }
+      } catch (err) {
+        if (toastError) toastError(err);
+      } finally {
+        setSending(false);
+      }
+      return;
+    }
+
+    // Local/mock fallback when no targetCompanyId is present
+    await new Promise(r => setTimeout(r, 280));
     let latest = members;
     for (const email of pending) {
-      const result = inviteMember({ email }, company?.companyId, user);
-      if (result.ok) latest = result.members || readMembers(user, company?.companyId);
+      const result = inviteMember({ email }, targetCompanyId, user);
+      if (result.ok) latest = result.members || readMembers(user, targetCompanyId);
     }
 
     setSending(false);
@@ -288,91 +385,119 @@ export function InviteModal({
         </div>
 
         <form onSubmit={submit}>
-          <div className="px-5 pt-4 pb-2">
-            <div
-              role="group"
-              onClick={() => inputRef.current?.focus()}
-              className={`w-full min-h-10 px-2 py-1.5 rounded-lg border bg-white flex flex-wrap items-center gap-1.5 cursor-text transition-all duration-150 ${error
-                ? 'border-red-400'
-                : 'border-[#e5e7eb] focus-within:border-[#030712] focus-within:ring-4 focus-within:ring-[#030712]/[0.08]'
-                }`}
-            >
-              {chips.map(email => (
-                <span
-                  key={email}
-                  className="inline-flex items-center gap-1 max-w-full h-7 pl-2.5 pr-1 rounded-md bg-[#f4f4f5] text-[12.5px] text-[#030712]"
-                >
-                  <span className="truncate">{email}</span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeChip(email);
-                    }}
-                    className="size-5 rounded-md flex items-center justify-center text-[#9ca3af] hover:text-[#030712] transition-colors"
+          {canShare && (
+            <div className="px-5 pt-4 pb-2">
+              <div
+                role="group"
+                onClick={() => inputRef.current?.focus()}
+                className={`w-full min-h-10 px-2 py-1.5 rounded-lg border bg-white flex flex-wrap items-center gap-1.5 cursor-text transition-all duration-150 ${error
+                  ? 'border-red-400'
+                  : 'border-[#e5e7eb] focus-within:border-[#030712] focus-within:ring-4 focus-within:ring-[#030712]/[0.08]'
+                  }`}
+              >
+                {chips.map(email => (
+                  <span
+                    key={email}
+                    className="inline-flex items-center gap-1 max-w-full h-7 pl-2.5 pr-1 rounded-md bg-[#f4f4f5] text-[12.5px] text-[#030712]"
                   >
-                    <HugeiconsIcon icon={Cancel01Icon} size={12} strokeWidth={2.5} />
-                  </button>
-                </span>
-              ))}
-              <input
-                ref={inputRef}
-                type="text"
-                value={draft}
-                onChange={e => onDraftChange(e.target.value)}
-                onKeyDown={onKeyDown}
-                onBlur={() => {
-                  if (draft.trim() && applyCommit(draft)) setDraft('');
-                }}
-                placeholder={chips.length === 0 ? 'Email addresses, separated by commas' : 'Add another'}
-                className="flex-1 min-w-[140px] h-7 px-1 bg-transparent text-[14px] text-[#030712] placeholder:text-[#9ca3af] outline-none border-none ring-0 shadow-none focus:outline-none focus:ring-0 focus:border-none"
-                style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }}
-              />
+                    <span className="truncate">{email}</span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeChip(email);
+                      }}
+                      className="size-5 rounded-md flex items-center justify-center text-[#9ca3af] hover:text-[#030712] transition-colors"
+                    >
+                      <HugeiconsIcon icon={Cancel01Icon} size={12} strokeWidth={2.5} />
+                    </button>
+                  </span>
+                ))}
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={draft}
+                  onChange={e => onDraftChange(e.target.value)}
+                  onKeyDown={onKeyDown}
+                  onBlur={() => {
+                    if (draft.trim() && applyCommit(draft)) setDraft('');
+                  }}
+                  placeholder={chips.length === 0 ? 'Email addresses, separated by commas' : 'Add another'}
+                  className="flex-1 min-w-[140px] h-7 px-1 bg-transparent text-[14px] text-[#030712] placeholder:text-[#9ca3af] outline-none border-none ring-0 shadow-none focus:outline-none focus:ring-0 focus:border-none"
+                  style={{ border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent' }}
+                />
+              </div>
+              {error && <p className="mt-2 text-[13px] text-red-500">{error}</p>}
+              {infoMessage && <p className="mt-2 text-[13px] text-blue-600 bg-blue-50 px-2.5 py-1.5 rounded-md font-medium">{infoMessage}</p>}
             </div>
-            {error && <p className="mt-2 text-[13px] text-red-500">{error}</p>}
-          </div>
+          )}
 
           <div className="px-5 pt-3 pb-4">
-            <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#9ca3af] mb-2.5">
-              {sectionTitle || 'In this workspace'}
+            <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-[#9ca3af] mb-2.5 flex items-center justify-between">
+              <span>{sectionTitle || 'People with access'}</span>
+              {loadingShares && <span className="text-[10px] text-[#9ca3af] animate-pulse">Loading…</span>}
             </div>
             <ul className="space-y-1 max-h-64 overflow-y-auto -mx-1">
               {(members || []).map(member => {
                 const isPending = member.status === 'invited';
                 return (
-                  <li key={member.id || member.email} className="flex items-center gap-3 px-1 py-2 rounded-lg">
+                  <li key={member.id || member.email} className="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-[#fafafa] transition-colors">
                     <MemberAvatar member={member} size="sm" />
-                    <div className="min-w-0 flex-1 text-[13.5px] font-medium text-[#030712] truncate">
-                      {member.name || member.email}
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[13.5px] font-medium text-[#030712] truncate">
+                        {member.displayName || member.name || member.email}
+                      </div>
+                      {member.displayName && member.email && (
+                        <div className="text-[11.5px] text-[#6b7280] truncate">{member.email}</div>
+                      )}
                     </div>
-                    {isPending ? (
-                      <span className="shrink-0 inline-flex items-center h-6 px-2 rounded-md bg-amber-50 text-[11.5px] font-medium text-amber-800">
-                        Pending invite
-                      </span>
-                    ) : (
-                      <span className="text-[11.5px] font-medium text-[#9ca3af] shrink-0">
-                        {member.role || 'Owner'}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2 shrink-0">
+                      {isPending ? (
+                        <span className="inline-flex items-center h-5 px-2 rounded-md bg-amber-50 text-[11px] font-medium text-amber-800">
+                          Pending invite
+                        </span>
+                      ) : (
+                        <span className="text-[11.5px] font-medium text-[#9ca3af]">
+                          {member.isOwner == true ? "Owner" : member.status}
+                        </span>
+                      )}
+                      {member.canRemove && (
+                        <button
+                          type="button"
+                          disabled={revokingId === member.id}
+                          onClick={() => handleRevoke(member)}
+                          title="Revoke access"
+                          className="size-6 rounded-md flex items-center justify-center text-[#9ca3af] hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
+                        >
+                          {revokingId === member.id ? (
+                            <span className="size-3 border-2 border-red-500/30 border-t-red-600 rounded-full animate-spin" />
+                          ) : (
+                            <HugeiconsIcon icon={Cancel01Icon} size={13} strokeWidth={2} />
+                          )}
+                        </button>
+                      )}
+                    </div>
                   </li>
                 );
               })}
             </ul>
           </div>
 
-          <div className="px-5 py-4 border-t border-[#f3f4f6]">
-            <button
-              type="submit"
-              disabled={sending || (chips.length === 0 && !draft.trim())}
-              className="w-full h-11 rounded-xl text-[14px] font-medium text-white bg-[#030712] hover:bg-[#18181b] active:bg-[#27272a] transition-colors disabled:opacity-55 disabled:cursor-not-allowed"
-            >
-              {sending
-                ? 'Sending…'
-                : chips.length > 1
-                  ? `${submitButtonText || 'Invite'} ${chips.length}`
-                  : (submitButtonText || 'Invite')}
-            </button>
-          </div>
+          {canShare && (
+            <div className="px-5 py-4 border-t border-[#f3f4f6]">
+              <button
+                type="submit"
+                disabled={sending || (chips.length === 0 && !draft.trim())}
+                className="w-full h-11 rounded-xl text-[14px] font-medium text-white bg-[#030712] hover:bg-[#18181b] active:bg-[#27272a] transition-colors disabled:opacity-55 disabled:cursor-not-allowed"
+              >
+                {sending
+                  ? 'Sending…'
+                  : chips.length > 1
+                    ? `${submitButtonText || 'Invite'} ${chips.length}`
+                    : (submitButtonText || 'Invite')}
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>,

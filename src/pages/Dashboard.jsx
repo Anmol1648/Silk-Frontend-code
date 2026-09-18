@@ -85,6 +85,9 @@ export default function Dashboard() {
         totalFundingReceivedUsdMn: it.totalFundingReceivedUsdMn,
         lastRaise: it.lastRaise,
         attachmentLinks: it.attachmentLinks,
+        isOwner: it.isOwner ?? true,
+        canShare: it.canShare ?? true,
+        canDelete: it.canDelete ?? true,
         deals: [],
       });
     }
@@ -100,6 +103,9 @@ export default function Dashboard() {
       if (it.attachmentLinks !== undefined) row.attachmentLinks = it.attachmentLinks;
       if (it.profileComplete !== undefined) row.profileComplete = it.profileComplete;
       if (it.logoUrl !== undefined) row.logoUrl = it.logoUrl;
+      if (it.isOwner !== undefined) row.isOwner = it.isOwner;
+      if (it.canShare !== undefined) row.canShare = it.canShare;
+      if (it.canDelete !== undefined) row.canDelete = it.canDelete;
     }
 
     if (it.dealId && it.scope === 'deal') row.deals.push(it);
@@ -723,36 +729,40 @@ function CompanyCard({ company, isLastActive, onShareClick, onDeleteClick }) {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           {/* Share action */}
-          <button 
-            type="button"
-            className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-black/[0.05] transition-colors cursor-pointer"
-            style={{ marginTop: '-4px' }}
-            onClick={(e) => {
-              e.stopPropagation();
-              onShareClick?.();
-            }}
-            title="Share Company"
-            aria-label="Share Company"
-          >
-            <HugeiconsIcon icon={Share08Icon} size={15} strokeWidth={2} />
-          </button>
+          {company.canShare && (
+            <button 
+              type="button"
+              className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-black/[0.05] transition-colors cursor-pointer"
+              style={{ marginTop: '-4px' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onShareClick?.();
+              }}
+              title="Share Company"
+              aria-label="Share Company"
+            >
+              <HugeiconsIcon icon={Share08Icon} size={15} strokeWidth={2} />
+            </button>
+          )}
 
-          {/* Delete action: visible normally */}
-          <button 
-            type="button"
-            className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-            style={{ marginTop: '-4px', marginRight: '-4px' }}
-            onClick={(e) => {
-              e.stopPropagation();
-              onDeleteClick();
-            }}
-            title="Delete Company"
-          >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            </svg>
-          </button>
+          {/* Delete action */}
+          {company.canDelete && (
+            <button 
+              type="button"
+              className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+              style={{ marginTop: '-4px', marginRight: '-4px' }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeleteClick();
+              }}
+              title="Delete Company"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          )}
         </div>
       </div>
 
@@ -1010,26 +1020,30 @@ function CompanyTableRow({ company, isLastActive, onShareClick, onDeleteClick })
       {/* 6. Actions */}
       <td className="py-1 px-5 text-right">
         <div className="inline-flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-          <button 
-            type="button"
-            className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
-            onClick={onShareClick}
-            title="Share Company"
-            aria-label="Share Company"
-          >
-            <HugeiconsIcon icon={Share08Icon} size={14} strokeWidth={1.8} />
-          </button>
-          <button 
-            type="button"
-            className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
-            onClick={onDeleteClick}
-            title="Delete Company"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-            </svg>
-          </button>
+          {company.canShare && (
+            <button 
+              type="button"
+              className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              onClick={onShareClick}
+              title="Share Company"
+              aria-label="Share Company"
+            >
+              <HugeiconsIcon icon={Share08Icon} size={14} strokeWidth={1.8} />
+            </button>
+          )}
+          {company.canDelete && (
+            <button 
+              type="button"
+              className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
+              onClick={onDeleteClick}
+              title="Delete Company"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          )}
           <button
             type="button"
             className="p-1.5 rounded-md text-foreground-subtle hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"

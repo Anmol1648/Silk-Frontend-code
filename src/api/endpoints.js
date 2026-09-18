@@ -33,7 +33,15 @@ export const companies = {
   createDeal: (companyId, body) => post(`/companies/${companyId}/deals`, body), // {name, roundType}
   remove: (companyId) => del(`/companies/${companyId}`),                        // DELETE — cascades everything
   updateLogo: (companyId, body) => patch(`/companies/${companyId}/logo`, body), // {logoBase64}
+  createInvite: (companyId, email) => post(`/companies/${companyId}/invites`, { email }),
+  shares: (companyId) => get(`/companies/${companyId}/shares`),
+  revokeShare: (companyId, userId) => del(`/companies/${companyId}/shares/${userId}`),
 };
+
+export const invites = {
+  getPreview: (inviteId) => get(`/invites/${inviteId}`, { auth: false }),
+};
+
 
 // ---- Deal navigation (M0) --------------------------------------------------
 export const deal = {

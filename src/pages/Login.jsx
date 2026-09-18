@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { auth } from '../api/endpoints';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { auth, invites } from '../api/endpoints';
 import { useAuth, useToast } from '../context/AppContext';
 import { useConfig } from '../context/ConfigContext';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -434,6 +434,7 @@ function RightPanel({ companyName, email, name }) {
 }
 
 export default function Login() {
+  const [searchParams] = useSearchParams();
   const { login } = useAuth();
   const { error: toastError } = useToast();
   const navigate = useNavigate();
@@ -443,6 +444,14 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [companyName, setCompanyName] = useState('');
+
+  // Autofill email from URL query parameters (e.g. ?email=mohitvermag75%40gmail.com&next=...)
+  useEffect(() => {
+    const urlEmail = searchParams.get('email');
+    if (urlEmail) {
+      setEmail(urlEmail);
+    }
+  }, [searchParams]);
 
   // 6 separate OTP slot values
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
@@ -582,7 +591,8 @@ export default function Login() {
     try {
       const res = await auth.verifyOtp(email.trim(), fullCode);
       login(res);
-      navigate('/dashboard', { replace: true });
+      const nextParam = searchParams.get('next');
+      navigate(nextParam || '/dashboard', { replace: true });
     } catch (ex) {
       const errorMsg = ex?.detail || ex?.message || (typeof ex === 'string' ? ex : 'Incorrect code. Please try again.');
       setErr(errorMsg);
